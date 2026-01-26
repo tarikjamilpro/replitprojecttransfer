@@ -1,0 +1,26 @@
+Role: Senior Full Stack Web Developer
+Task: Build a fully functional, responsive SEO & Utility Tools website inspired by "SmallSEOTools".
+Tech Stack: React.js, Tailwind CSS, Lucide React (Icons), and Shadcn UI components.
+
+Core Requirements:
+1.  Modern UI/UX: Create a clean, professional interface with a white and blue color scheme (trustworthy look). It must be fully responsive for mobile and desktop.
+2.  Architecture: The site should have a clear Homepage listing all tool categories (Text Analysis, Image Tools, Keyword Tools).
+3.  Functionality: Implement the following tools to be 100% functional using client-side logic (JavaScript) without needing a backend initially:
+    * Word Counter: Real-time counting of words, characters, sentences, and reading time.
+    * Case Converter: Buttons to toggle text between UPPERCASE, lowercase, Sentence case, and Capitalized Case.
+    * Password Generator: A tool to generate secure passwords with adjustable length and character types.
+    * Lorem Ipsum Generator: Generate dummy text based on user input (paragraphs/words).
+4.  Navigation: A sticky header with a search bar to find tools quickly, and a footer with standard links.
+5.  Ad-Space Placeholder: Leave distinct spaces (divs with gray backgrounds) in the layout for future Google AdSense placement (Top banner, Sidebar).
+
+Detailed Implementation Plan:
+
+* Homepage: A grid layout displaying tool cards with icons and short descriptions. Group them by category (e.g., "Text Content Tools", "Password Management").
+* Tool Page Layout: Each tool should have its own dedicated route/view. The layout must have:
+    * Title & Description.
+    * The Main Functional Area (Input box, Action Buttons, Output box).
+    * "How to use" section below the tool.
+* Code Quality: Use modular components. Don't put everything in one file. Ensure error handling (e.g., alert if the input is empty).
+
+Instruction for AI:
+Start by scaffolding the application shell and the Homepage. Then, immediately build the "Word Counter" and "Case Converter" tools to demonstrate full functionality. Ensure the design is polished and ready for deployment.
