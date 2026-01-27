@@ -18,6 +18,7 @@ const tools = [
   { name: "Meta Tag Generator", path: "/meta-tag-generator" },
   { name: "Robots.txt Generator", path: "/robots-txt-generator" },
   { name: "Fancy Font Generator", path: "/fancy-font-generator" },
+  { name: "YouTube Thumbnail Downloader", path: "/youtube-thumbnail-downloader" },
 ];
 
 export function Header() {

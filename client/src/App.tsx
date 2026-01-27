@@ -18,6 +18,7 @@ import JSONFormatter from "@/pages/JSONFormatter";
 import MetaTagGenerator from "@/pages/MetaTagGenerator";
 import RobotsTxtGenerator from "@/pages/RobotsTxtGenerator";
 import FancyFontGenerator from "@/pages/FancyFontGenerator";
+import YouTubeThumbnailDownloader from "@/pages/YouTubeThumbnailDownloader";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -37,6 +38,7 @@ function Router() {
       <Route path="/meta-tag-generator" component={MetaTagGenerator} />
       <Route path="/robots-txt-generator" component={RobotsTxtGenerator} />
       <Route path="/fancy-font-generator" component={FancyFontGenerator} />
+      <Route path="/youtube-thumbnail-downloader" component={YouTubeThumbnailDownloader} />
       <Route component={NotFound} />
     </Switch>
   );

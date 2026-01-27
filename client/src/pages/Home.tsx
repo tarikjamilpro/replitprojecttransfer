@@ -17,7 +17,8 @@ import {
   Tags,
   Bot,
   Search,
-  Sparkles
+  Sparkles,
+  Youtube
 } from "lucide-react";
 
 const textTools = [
@@ -58,6 +59,13 @@ const imageTools = [
     icon: ImageIcon,
     path: "/image-compressor",
     color: "bg-pink-500 dark:bg-pink-600",
+  },
+  {
+    name: "YouTube Thumbnail Downloader",
+    description: "Download high-quality thumbnails from any YouTube video in HD, SD, and other sizes.",
+    icon: Youtube,
+    path: "/youtube-thumbnail-downloader",
+    color: "bg-red-500 dark:bg-red-600",
   },
 ];
 
