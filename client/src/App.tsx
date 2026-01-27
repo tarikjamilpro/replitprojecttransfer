@@ -17,6 +17,7 @@ import QRCodeGenerator from "@/pages/QRCodeGenerator";
 import JSONFormatter from "@/pages/JSONFormatter";
 import MetaTagGenerator from "@/pages/MetaTagGenerator";
 import RobotsTxtGenerator from "@/pages/RobotsTxtGenerator";
+import FancyFontGenerator from "@/pages/FancyFontGenerator";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -35,6 +36,7 @@ function Router() {
       <Route path="/json-formatter" component={JSONFormatter} />
       <Route path="/meta-tag-generator" component={MetaTagGenerator} />
       <Route path="/robots-txt-generator" component={RobotsTxtGenerator} />
+      <Route path="/fancy-font-generator" component={FancyFontGenerator} />
       <Route component={NotFound} />
     </Switch>
   );

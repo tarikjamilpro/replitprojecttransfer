@@ -17,6 +17,7 @@ const tools = [
   { name: "JSON Formatter", path: "/json-formatter" },
   { name: "Meta Tag Generator", path: "/meta-tag-generator" },
   { name: "Robots.txt Generator", path: "/robots-txt-generator" },
+  { name: "Fancy Font Generator", path: "/fancy-font-generator" },
 ];
 
 export function Header() {

@@ -16,6 +16,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **JSON Formatter**: Format, beautify, or minify JSON data with syntax validation
 - **Meta Tag Generator**: Generate HTML meta tags for SEO, Open Graph, and Twitter cards
 - **Robots.txt Generator**: Create robots.txt files to control search engine crawling
+- **Fancy Font Generator**: Convert text into stylish Unicode fonts (9 styles including Script, Bold, Upside Down)
 
 ## Project Structure
 ```
@@ -38,6 +39,7 @@ client/
 │   │   ├── JSONFormatter.tsx # JSON formatter tool
 │   │   ├── MetaTagGenerator.tsx # Meta tag generator tool
 │   │   ├── RobotsTxtGenerator.tsx # Robots.txt generator tool
+│   │   ├── FancyFontGenerator.tsx # Fancy font generator tool
 │   │   └── not-found.tsx    # 404 page
 │   ├── App.tsx              # Main app with routing
 │   ├── index.css            # Theme colors (blue/white scheme)
@@ -62,6 +64,7 @@ server/
 - `/json-formatter` - JSON Formatter tool
 - `/meta-tag-generator` - Meta Tag Generator tool
 - `/robots-txt-generator` - Robots.txt Generator tool
+- `/fancy-font-generator` - Fancy Font Generator tool
 
 ## Design
 - Professional blue and white color scheme

@@ -16,7 +16,8 @@ import {
   Code,
   Tags,
   Bot,
-  Search
+  Search,
+  Sparkles
 } from "lucide-react";
 
 const textTools = [
@@ -40,6 +41,13 @@ const textTools = [
     icon: AlignLeft,
     path: "/lorem-ipsum",
     color: "bg-purple-500 dark:bg-purple-600",
+  },
+  {
+    name: "Fancy Font Generator",
+    description: "Convert text into stylish Unicode fonts for Instagram, Twitter, and social media.",
+    icon: Sparkles,
+    path: "/fancy-font-generator",
+    color: "bg-fuchsia-500 dark:bg-fuchsia-600",
   },
 ];
 
