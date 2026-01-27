@@ -13,6 +13,8 @@ import ImageCompressor from "@/pages/ImageCompressor";
 import SpeedTest from "@/pages/SpeedTest";
 import ImageConverter from "@/pages/ImageConverter";
 import ImageResizer from "@/pages/ImageResizer";
+import QRCodeGenerator from "@/pages/QRCodeGenerator";
+import JSONFormatter from "@/pages/JSONFormatter";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -27,6 +29,8 @@ function Router() {
       <Route path="/speed-test" component={SpeedTest} />
       <Route path="/image-converter" component={ImageConverter} />
       <Route path="/image-resizer" component={ImageResizer} />
+      <Route path="/qr-code-generator" component={QRCodeGenerator} />
+      <Route path="/json-formatter" component={JSONFormatter} />
       <Route component={NotFound} />
     </Switch>
   );

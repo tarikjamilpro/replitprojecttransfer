@@ -10,7 +10,10 @@ import {
   Image as ImageIcon,
   Wifi,
   RefreshCw,
-  Maximize2
+  Maximize2,
+  QrCode,
+  Braces,
+  Code
 } from "lucide-react";
 
 const textTools = [
@@ -71,6 +74,23 @@ const networkTools = [
     icon: Wifi,
     path: "/speed-test",
     color: "bg-cyan-500 dark:bg-cyan-600",
+  },
+];
+
+const developerTools = [
+  {
+    name: "QR Code Generator",
+    description: "Generate QR codes for URLs or text with real-time preview and download as PNG.",
+    icon: QrCode,
+    path: "/qr-code-generator",
+    color: "bg-violet-500 dark:bg-violet-600",
+  },
+  {
+    name: "JSON Formatter",
+    description: "Format, beautify, or minify JSON data with syntax validation.",
+    icon: Braces,
+    path: "/json-formatter",
+    color: "bg-amber-500 dark:bg-amber-600",
   },
 ];
 
@@ -179,6 +199,18 @@ export default function Home() {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {networkTools.map((tool) => (
+                  <ToolCard key={tool.path} {...tool} />
+                ))}
+              </div>
+            </section>
+
+            <section className="mb-12">
+              <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2" data-testid="text-section-developer-tools">
+                <Code className="w-6 h-6 text-primary" />
+                Developer & Web Tools
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {developerTools.map((tool) => (
                   <ToolCard key={tool.path} {...tool} />
                 ))}
               </div>

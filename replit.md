@@ -12,6 +12,8 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Speed Test**: Test internet connection speed including download, upload, and latency measurements
 - **PNG/JPG Converter**: Convert images between PNG and JPG formats directly in the browser
 - **Image Resizer**: Resize images to any dimensions with aspect ratio lock and preset sizes
+- **QR Code Generator**: Generate QR codes for URLs or text with real-time preview and PNG download
+- **JSON Formatter**: Format, beautify, or minify JSON data with syntax validation
 
 ## Project Structure
 ```
@@ -30,6 +32,8 @@ client/
 │   │   ├── SpeedTest.tsx    # Internet speed test tool
 │   │   ├── ImageConverter.tsx # PNG/JPG converter tool
 │   │   ├── ImageResizer.tsx # Image resizing tool
+│   │   ├── QRCodeGenerator.tsx # QR code generator tool
+│   │   ├── JSONFormatter.tsx # JSON formatter tool
 │   │   └── not-found.tsx    # 404 page
 │   ├── App.tsx              # Main app with routing
 │   ├── index.css            # Theme colors (blue/white scheme)
@@ -50,6 +54,8 @@ server/
 - `/speed-test` - Internet Speed Test tool
 - `/image-converter` - PNG/JPG Converter tool
 - `/image-resizer` - Image Resizer tool
+- `/qr-code-generator` - QR Code Generator tool
+- `/json-formatter` - JSON Formatter tool
 
 ## Design
 - Professional blue and white color scheme

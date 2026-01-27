@@ -13,6 +13,8 @@ const tools = [
   { name: "Speed Test", path: "/speed-test" },
   { name: "Image Converter", path: "/image-converter" },
   { name: "Image Resizer", path: "/image-resizer" },
+  { name: "QR Code Generator", path: "/qr-code-generator" },
+  { name: "JSON Formatter", path: "/json-formatter" },
 ];
 
 export function Header() {
@@ -188,6 +190,19 @@ export function Footer() {
               <li>
                 <Link href="/speed-test" className="text-muted-foreground hover:text-foreground">
                   Speed Test
+                </Link>
+              </li>
+            </ul>
+            <h3 className="font-semibold text-foreground mb-3 mt-4">Developer Tools</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link href="/qr-code-generator" className="text-muted-foreground hover:text-foreground">
+                  QR Code Generator
+                </Link>
+              </li>
+              <li>
+                <Link href="/json-formatter" className="text-muted-foreground hover:text-foreground">
+                  JSON Formatter
                 </Link>
               </li>
             </ul>
