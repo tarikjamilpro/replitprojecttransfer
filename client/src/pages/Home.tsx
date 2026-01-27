@@ -75,6 +75,13 @@ const imageTools = [
     path: "/youtube-thumbnail-downloader",
     color: "bg-red-500 dark:bg-red-600",
   },
+  {
+    name: "Universal Image Processor",
+    description: "Convert and resize images to JPG, PNG, WEBP, BMP, ICO. Batch process with ZIP download.",
+    icon: ImageIcon,
+    path: "/image-processor",
+    color: "bg-indigo-500 dark:bg-indigo-600",
+  },
 ];
 
 const imageEditingTools = [

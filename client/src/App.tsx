@@ -27,6 +27,7 @@ import PasswordStrengthChecker from "@/pages/PasswordStrengthChecker";
 import ImageToPDF from "@/pages/ImageToPDF";
 import MergePDF from "@/pages/MergePDF";
 import ResumeBuilder from "@/pages/ResumeBuilder";
+import UniversalImageProcessor from "@/pages/UniversalImageProcessor";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -55,6 +56,7 @@ function Router() {
       <Route path="/image-to-pdf" component={ImageToPDF} />
       <Route path="/merge-pdf" component={MergePDF} />
       <Route path="/resume-builder" component={ResumeBuilder} />
+      <Route path="/image-processor" component={UniversalImageProcessor} />
       <Route component={NotFound} />
     </Switch>
   );
