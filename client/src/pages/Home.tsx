@@ -7,7 +7,8 @@ import {
   Key, 
   AlignLeft,
   ArrowRight,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Wifi
 } from "lucide-react";
 
 const textTools = [
@@ -41,6 +42,16 @@ const imageTools = [
     icon: ImageIcon,
     path: "/image-compressor",
     color: "bg-pink-500 dark:bg-pink-600",
+  },
+];
+
+const networkTools = [
+  {
+    name: "Speed Test",
+    description: "Test your internet connection speed including download, upload, and latency.",
+    icon: Wifi,
+    path: "/speed-test",
+    color: "bg-cyan-500 dark:bg-cyan-600",
   },
 ];
 
@@ -125,6 +136,18 @@ export default function Home() {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {imageTools.map((tool) => (
+                  <ToolCard key={tool.path} {...tool} />
+                ))}
+              </div>
+            </section>
+
+            <section className="mb-12">
+              <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2" data-testid="text-section-network-tools">
+                <Wifi className="w-6 h-6 text-primary" />
+                Network Tools
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {networkTools.map((tool) => (
                   <ToolCard key={tool.path} {...tool} />
                 ))}
               </div>

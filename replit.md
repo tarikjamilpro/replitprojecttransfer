@@ -9,6 +9,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Password Generator**: Generate secure passwords with adjustable length (8-64 characters) and character types
 - **Lorem Ipsum Generator**: Generate placeholder text by paragraphs, sentences, or words
 - **Image Compressor**: Compress images directly in the browser using Canvas API - no server upload required
+- **Speed Test**: Test internet connection speed including download, upload, and latency measurements
 
 ## Project Structure
 ```
@@ -24,6 +25,7 @@ client/
 │   │   ├── PasswordGenerator.tsx # Password generation tool
 │   │   ├── LoremIpsum.tsx   # Lorem ipsum generator
 │   │   ├── ImageCompressor.tsx # Image compression tool
+│   │   ├── SpeedTest.tsx    # Internet speed test tool
 │   │   └── not-found.tsx    # 404 page
 │   ├── App.tsx              # Main app with routing
 │   ├── index.css            # Theme colors (blue/white scheme)
@@ -41,6 +43,7 @@ server/
 - `/password-generator` - Password Generator tool
 - `/lorem-ipsum` - Lorem Ipsum Generator tool
 - `/image-compressor` - Image Compressor tool
+- `/speed-test` - Internet Speed Test tool
 
 ## Design
 - Professional blue and white color scheme

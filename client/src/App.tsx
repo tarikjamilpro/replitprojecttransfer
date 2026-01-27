@@ -10,6 +10,7 @@ import CaseConverter from "@/pages/CaseConverter";
 import PasswordGenerator from "@/pages/PasswordGenerator";
 import LoremIpsum from "@/pages/LoremIpsum";
 import ImageCompressor from "@/pages/ImageCompressor";
+import SpeedTest from "@/pages/SpeedTest";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -21,6 +22,7 @@ function Router() {
       <Route path="/password-generator" component={PasswordGenerator} />
       <Route path="/lorem-ipsum" component={LoremIpsum} />
       <Route path="/image-compressor" component={ImageCompressor} />
+      <Route path="/speed-test" component={SpeedTest} />
       <Route component={NotFound} />
     </Switch>
   );

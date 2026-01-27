@@ -10,6 +10,7 @@ const tools = [
   { name: "Password Generator", path: "/password-generator" },
   { name: "Lorem Ipsum Generator", path: "/lorem-ipsum" },
   { name: "Image Compressor", path: "/image-compressor" },
+  { name: "Speed Test", path: "/speed-test" },
 ];
 
 export function Header() {
@@ -164,6 +165,14 @@ export function Footer() {
               <li>
                 <Link href="/image-compressor" className="text-muted-foreground hover:text-foreground">
                   Image Compressor
+                </Link>
+              </li>
+            </ul>
+            <h3 className="font-semibold text-foreground mb-3 mt-4">Network Tools</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link href="/speed-test" className="text-muted-foreground hover:text-foreground">
+                  Speed Test
                 </Link>
               </li>
             </ul>
