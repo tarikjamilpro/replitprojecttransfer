@@ -35,6 +35,7 @@ import WifiQRGenerator from "@/pages/WifiQRGenerator";
 import KeyboardTester from "@/pages/KeyboardTester";
 import CPSTest from "@/pages/CPSTest";
 import ColorPalette from "@/pages/ColorPalette";
+import GradientGenerator from "@/pages/GradientGenerator";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -71,6 +72,7 @@ function Router() {
       <Route path="/keyboard-tester" component={KeyboardTester} />
       <Route path="/cps-test" component={CPSTest} />
       <Route path="/color-palette" component={ColorPalette} />
+      <Route path="/gradient-generator" component={GradientGenerator} />
       <Route component={NotFound} />
     </Switch>
   );

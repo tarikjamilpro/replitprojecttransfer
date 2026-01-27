@@ -38,6 +38,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Keyboard & Mouse Tester**: Test keyboard keys and mouse buttons for hardware diagnostics
 - **CPS Test**: Click speed test with multiple durations and ranking system
 - **Color Palette Generator**: Generate harmonious color palettes with HSL algorithms, lock colors, and export options
+- **CSS Gradient Generator**: Create beautiful CSS gradients with real-time preview, presets, and code generation
 
 ## Project Structure
 ```
@@ -104,6 +105,7 @@ server/
 - `/keyboard-tester` - Keyboard & Mouse Tester tool
 - `/cps-test` - CPS Test (Click Speed Test) tool
 - `/color-palette` - Color Palette Generator tool
+- `/gradient-generator` - CSS Gradient Generator tool
 
 ## Design
 - Professional blue and white color scheme

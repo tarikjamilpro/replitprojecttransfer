@@ -33,7 +33,8 @@ import {
   WifiIcon,
   KeyboardIcon,
   MousePointerClick,
-  Palette
+  Palette,
+  PaintBucket
 } from "lucide-react";
 
 const textTools = [
@@ -174,6 +175,13 @@ const developerTools = [
     icon: Palette,
     path: "/color-palette",
     color: "bg-gradient-to-r from-pink-500 to-violet-500",
+  },
+  {
+    name: "CSS Gradient Generator",
+    description: "Create beautiful CSS gradients with real-time preview and code generation.",
+    icon: PaintBucket,
+    path: "/gradient-generator",
+    color: "bg-gradient-to-r from-orange-500 to-pink-500",
   },
 ];
 
