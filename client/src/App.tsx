@@ -34,6 +34,7 @@ import EMICalculator from "@/pages/EMICalculator";
 import WifiQRGenerator from "@/pages/WifiQRGenerator";
 import KeyboardTester from "@/pages/KeyboardTester";
 import CPSTest from "@/pages/CPSTest";
+import ColorPalette from "@/pages/ColorPalette";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -69,6 +70,7 @@ function Router() {
       <Route path="/wifi-qr-generator" component={WifiQRGenerator} />
       <Route path="/keyboard-tester" component={KeyboardTester} />
       <Route path="/cps-test" component={CPSTest} />
+      <Route path="/color-palette" component={ColorPalette} />
       <Route component={NotFound} />
     </Switch>
   );

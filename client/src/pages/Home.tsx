@@ -32,7 +32,8 @@ import {
   Calculator,
   WifiIcon,
   KeyboardIcon,
-  MousePointerClick
+  MousePointerClick,
+  Palette
 } from "lucide-react";
 
 const textTools = [
@@ -166,6 +167,13 @@ const developerTools = [
     icon: MousePointerClick,
     path: "/cps-test",
     color: "bg-rose-500 dark:bg-rose-600",
+  },
+  {
+    name: "Color Palette Generator",
+    description: "Generate harmonious color palettes with lock and copy functionality.",
+    icon: Palette,
+    path: "/color-palette",
+    color: "bg-gradient-to-r from-pink-500 to-violet-500",
   },
 ];
 

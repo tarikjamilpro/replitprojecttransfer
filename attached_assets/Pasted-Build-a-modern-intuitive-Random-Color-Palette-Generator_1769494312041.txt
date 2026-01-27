@@ -1,0 +1,312 @@
+Build a modern, intuitive Random Color Palette Generator web application using Next.js 16, React 19, and TypeScript. This tool helps designers discover harmonious color combinations with interactive features for locking colors and copying hex codes.
+
+Core Features
+1. Color Bar Display
+Layout Structure:
+
+Display 5 vertical color bars side by side
+Each bar fills equal width (20% of screen width each)
+Full viewport height (100vh) for immersive experience
+No gaps between bars (seamless color display)
+Responsive: Stack or adjust on mobile if needed
+Bar Components: Each color bar should contain:
+
+Background: Solid color filling entire bar
+Hex Code: Displayed prominently in center (e.g., #FF5733)
+Lock Icon: Top-right or top-center position
+Copy Indicator: Subtle text like "Click to copy" on hover
+Visual Specifications:
+
+
+Code Project
+2. Color Generation Logic
+Harmonious Color Algorithm: Use HSL (Hue, Saturation, Lightness) for better color harmony.
+
+Color Scheme Strategies (Randomly select one):
+
+Analogous: Colors near each other on color wheel
+
+Base hue ± 30-60 degrees
+Complementary: Opposite colors on color wheel
+
+Base hue and hue + 180 degrees
+Triadic: Three evenly spaced colors
+
+Base hue, hue + 120°, hue + 240°
+Monochromatic: Same hue, varying saturation/lightness
+
+Same hue with different S and L values
+Random Balanced: Random hues with consistent saturation/lightness ranges
+Implementation Example:
+
+
+Code Project
+Color Constraints:
+
+Avoid extremely dark colors (lightness > 20%)
+Avoid extremely light colors (lightness < 85%)
+Maintain readable contrast for text overlay
+Ensure saturation is not too dull (> 30%)
+3. Generate Functionality
+Generate Button:
+
+Large, prominent button below color bars
+Text: "Generate Palette" or "Generate New Colors"
+Icon: Shuffle or refresh icon from lucide-react
+Position: Centered below bars or floating
+Styling: High contrast, call-to-action design
+Keyboard Shortcut:
+
+Listen for Spacebar key press globally
+Trigger same action as Generate button
+Show hint: "Press SPACE to generate" on UI
+Prevent scrolling when Spacebar pressed
+Generation Behavior:
+
+Generate new colors for unlocked bars only
+Keep locked bars unchanged
+Smooth color transition animation (300ms fade)
+Optional: Slide or shuffle animation
+Implementation:
+
+
+Code Project
+4. Copy to Clipboard Functionality
+Click to Copy:
+
+Click anywhere on hex code text to copy
+Alternative: Click on entire color bar to copy
+Visual feedback:
+
+Brief scale animation on click
+Show "Copied!" toast notification
+Change text briefly to "Copied!" then back to hex
+Implementation:
+
+
+Code Project
+User Experience:
+
+Hover state: Show "Click to copy" hint
+Cursor changes to pointer on hover
+Ripple effect on click (optional)
+Copy confirmation persists for 1-2 seconds
+5. Lock/Unlock Color Bars
+Lock Icon:
+
+Position: Top-right or top-center of each bar
+Icon states:
+
+Unlocked: Open lock icon (Unlock from lucide-react)
+Locked: Closed lock icon (Lock from lucide-react)
+Styling:
+
+Semi-transparent background circle
+High contrast with bar color (white or black depending on lightness)
+Size: 32-40px clickable area
+Lock Behavior:
+
+Click lock icon to toggle lock state
+Locked bars:
+
+Visual indicator (locked icon + optional outline/glow)
+Don't change when "Generate" is pressed
+Persist across multiple generations
+Unlocked bars:
+
+Change to new random color on generate
+Visual indicator (unlocked icon)
+Implementation:
+
+
+Code Project
+Visual Feedback:
+
+Locked bars: Add subtle border glow or overlay
+Lock icon animation on toggle
+Tooltip: "Lock to preserve this color"
+6. Additional UI Elements
+Export Options (Optional but Recommended):
+
+"Copy All HEX" button: Copy all 5 hex codes as comma-separated
+"Export as CSS" button: Copy as CSS variables
+"Export as JSON" button: Download palette data
+"Save Palette" button: Store to localStorage
+Palette Information (Optional):
+
+Display color scheme name (e.g., "Analogous Harmony")
+Show RGB values on hover
+HSL values display option
+History/Favorites (Optional Enhancement):
+
+Show last 5 generated palettes
+Star/favorite palettes to save
+Browse saved palettes
+Technical Requirements
+Tech Stack:
+
+Next.js 16 (App Router)
+React 19 with TypeScript
+Tailwind CSS v4
+shadcn/ui components (Button, Badge, Toast)
+lucide-react icons (Lock, Unlock, Copy, Shuffle, Check)
+File Structure:
+
+
+Code Project
+State Management:
+
+
+Code Project
+Design Guidelines
+Color Bar Design:
+
+Full height: 100vh or min-height: 600px
+Equal width: 20% each (flex: 1)
+No gaps between bars (seamless)
+Smooth color transitions (transition: background-color 300ms ease)
+Text Contrast:
+
+Calculate luminance of background color
+Use white text on dark backgrounds (luminance < 0.5)
+Use black text on light backgrounds (luminance ≥ 0.5)
+Ensure WCAG AA contrast ratio (4.5:1 minimum)
+Typography:
+
+Hex code: Large, bold, monospace font (text-3xl or text-4xl)
+"Click to copy" hint: Smaller, lighter (text-sm, opacity-70)
+Font family: Monospace for hex codes, sans-serif for UI
+Interactions:
+
+Hover effects on all interactive elements
+Smooth transitions (200-300ms)
+Scale animation on click (scale: 0.95)
+Cursor changes: pointer for clickable areas
+Responsive Design:
+
+Desktop: 5 vertical bars side by side
+Tablet: Consider 5 bars or adjust bar width
+Mobile: Stack vertically OR horizontal scroll OR smaller bars
+Animations:
+
+Color transition: Fade between colors (300ms)
+Lock toggle: Rotate or scale animation
+Copy feedback: Brief scale + opacity change
+Generate button: Rotate icon on click
+Implementation Priority
+Phase 1: Core Functionality (MVP)
+
+Setup Next.js project structure
+Create 5 color bars layout (flexbox)
+Implement basic random color generation
+Display hex codes on each bar
+Add Generate button functionality
+Implement click-to-copy hex code
+Phase 2: Color Harmony
+
+Implement HSL color generation
+Create harmonious color algorithms (analogous, complementary, etc.)
+Add color scheme variation
+Ensure good color combinations
+Phase 3: Lock Functionality
+
+Add lock icons to each bar
+Implement lock/unlock toggle
+Modify generation to respect locked bars
+Visual feedback for locked state
+Phase 4: Polish & Enhancement
+
+Add Spacebar keyboard shortcut
+Implement toast notifications for copy
+Text contrast adjustment (black/white)
+Smooth animations and transitions
+Responsive design optimization
+Export options (copy all, CSS, JSON)
+Phase 5: Advanced Features (Optional)
+
+Palette history
+Save favorites to localStorage
+Export as image
+Color adjustment sliders
+Accessibility mode
+Key Implementation Details
+Color Bar Component:
+
+
+Code Project
+Luminance Calculation:
+
+
+Code Project
+Success Criteria
+✅ 5 color bars displayed side by side filling screen width
+✅ Colors are harmonious and visually appealing
+✅ Generate button creates new color palette
+✅ Spacebar keyboard shortcut works globally
+✅ Click on hex code copies to clipboard
+✅ Toast notification confirms successful copy
+✅ Lock icon on each bar toggles lock state
+✅ Locked bars don't change on generate
+✅ Text color adjusts for contrast (black on light, white on dark)
+✅ Smooth animations between color changes
+✅ Responsive design works on all devices
+✅ No layout shifts or visual glitches
+
+User Experience Enhancements
+Instructions Display:
+
+
+Code Project
+Export Formats:
+
+HEX Array: ["#A8E6CF", "#FF5733", "#3498DB", "#E74C3C", "#95A5A6"]
+CSS Variables:
+
+
+Code Project
+Tailwind Config:
+
+
+Code Project
+Additional Features (Optional)
+Advanced Options:
+
+Adjust hue, saturation, lightness with sliders
+Choose specific color scheme (dropdown)
+Add more bars (6-10 colors)
+Shuffle individual colors (without full regeneration)
+Undo/Redo functionality
+Color name display (e.g., "Sky Blue")
+Download palette as PNG image
+Share palette via URL parameters
+Accessibility:
+
+Keyboard navigation between bars
+Screen reader announcements
+High contrast mode
+Colorblind-friendly indicators
+Focus visible states
+Important Notes
+Performance:
+
+Optimize re-renders with React.memo
+Use CSS transitions for smooth animations
+Avoid expensive calculations in render
+Browser Compatibility:
+
+Test clipboard API across browsers
+Provide fallback for older browsers
+Test keyboard shortcuts
+Color Quality:
+
+Test generated palettes for harmony
+Avoid muddy or dull color combinations
+Ensure colors are distinct from each other
+Validate hex codes are properly formatted
+User Feedback:
+
+Clear visual feedback for all actions
+Helpful tooltips and hints
+Error handling for clipboard failures
+Loading states if needed
+Expected Deliverable: A production-ready, beautiful Random Color Palette Generator that creates harmonious color combinations, allows designers to lock favorite colors, copy hex codes with one click, and provides an intuitive, delightful user experience with smooth animations and professional design.

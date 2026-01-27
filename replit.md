@@ -37,6 +37,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **WiFi QR Generator**: Generate QR codes for WiFi network sharing with print support
 - **Keyboard & Mouse Tester**: Test keyboard keys and mouse buttons for hardware diagnostics
 - **CPS Test**: Click speed test with multiple durations and ranking system
+- **Color Palette Generator**: Generate harmonious color palettes with HSL algorithms, lock colors, and export options
 
 ## Project Structure
 ```
@@ -102,6 +103,7 @@ server/
 - `/wifi-qr-generator` - WiFi QR Generator tool
 - `/keyboard-tester` - Keyboard & Mouse Tester tool
 - `/cps-test` - CPS Test (Click Speed Test) tool
+- `/color-palette` - Color Palette Generator tool
 
 ## Design
 - Professional blue and white color scheme
