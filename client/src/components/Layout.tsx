@@ -1,46 +1,80 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Menu, X, Wrench } from "lucide-react";
+import { Search, Menu, X, Wrench, ChevronDown, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const tools = [
-  { name: "Word Counter", path: "/word-counter" },
-  { name: "Case Converter", path: "/case-converter" },
-  { name: "Password Generator", path: "/password-generator" },
-  { name: "Lorem Ipsum Generator", path: "/lorem-ipsum" },
-  { name: "Image Compressor", path: "/image-compressor" },
-  { name: "Speed Test", path: "/speed-test" },
-  { name: "Image Converter", path: "/image-converter" },
-  { name: "Image Resizer", path: "/image-resizer" },
-  { name: "QR Code Generator", path: "/qr-code-generator" },
-  { name: "JSON Formatter", path: "/json-formatter" },
-  { name: "Meta Tag Generator", path: "/meta-tag-generator" },
-  { name: "Robots.txt Generator", path: "/robots-txt-generator" },
-  { name: "Fancy Font Generator", path: "/fancy-font-generator" },
-  { name: "YouTube Thumbnail Downloader", path: "/youtube-thumbnail-downloader" },
-  { name: "What is My IP", path: "/what-is-my-ip" },
-  { name: "Age Calculator", path: "/age-calculator" },
-  { name: "Percentage Calculator", path: "/percentage-calculator" },
-  { name: "MD5 Generator", path: "/md5-generator" },
-  { name: "Password Strength Checker", path: "/password-strength-checker" },
-  { name: "JPG/PNG to PDF", path: "/image-to-pdf" },
-  { name: "Merge PDF Files", path: "/merge-pdf" },
-  { name: "Resume Builder", path: "/resume-builder" },
-];
+const toolCategories = {
+  "Text Tools": [
+    { name: "Word Counter", path: "/word-counter" },
+    { name: "Case Converter", path: "/case-converter" },
+    { name: "Lorem Ipsum Generator", path: "/lorem-ipsum" },
+    { name: "Fancy Font Generator", path: "/fancy-font-generator" },
+    { name: "Text Cleaner", path: "/text-cleaner" },
+    { name: "Grammar Checker", path: "/grammar-checker" },
+    { name: "AI Humanizer", path: "/ai-humanizer" },
+  ],
+  "Image Tools": [
+    { name: "Image Compressor", path: "/image-compressor" },
+    { name: "Image Converter", path: "/image-converter" },
+    { name: "Image Resizer", path: "/image-resizer" },
+    { name: "Image Processor", path: "/image-processor" },
+    { name: "JPG/PNG to PDF", path: "/image-to-pdf" },
+    { name: "Meme Generator", path: "/meme-generator" },
+  ],
+  "Developer Tools": [
+    { name: "QR Code Generator", path: "/qr-code-generator" },
+    { name: "JSON Formatter", path: "/json-formatter" },
+    { name: "Meta Tag Generator", path: "/meta-tag-generator" },
+    { name: "Robots.txt Generator", path: "/robots-txt-generator" },
+    { name: "MD5 Generator", path: "/md5-generator" },
+    { name: "Password Generator", path: "/password-generator" },
+    { name: "Password Strength Checker", path: "/password-strength-checker" },
+    { name: "Color Palette", path: "/color-palette" },
+    { name: "Gradient Generator", path: "/gradient-generator" },
+    { name: "What is My IP", path: "/what-is-my-ip" },
+    { name: "Speed Test", path: "/speed-test" },
+    { name: "WiFi QR Generator", path: "/wifi-qr-generator" },
+    { name: "Keyboard Tester", path: "/keyboard-tester" },
+    { name: "CPS Test", path: "/cps-test" },
+  ],
+  "Calculators": [
+    { name: "Age Calculator", path: "/age-calculator" },
+    { name: "Percentage Calculator", path: "/percentage-calculator" },
+    { name: "BMI Calculator", path: "/bmi-calculator" },
+    { name: "EMI Calculator", path: "/emi-calculator" },
+  ],
+  "YouTube Tools": [
+    { name: "YouTube Thumbnail Downloader", path: "/youtube-thumbnail-downloader" },
+  ],
+  "Other Tools": [
+    { name: "Merge PDF Files", path: "/merge-pdf" },
+    { name: "Resume Builder", path: "/resume-builder" },
+    { name: "Wheel of Decision", path: "/wheel-of-decision" },
+  ],
+};
+
+const allTools = Object.values(toolCategories).flat();
 
 export function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [expandedMobileCategory, setExpandedMobileCategory] = useState<string | null>(null);
   const [, setLocation] = useLocation();
 
-  const filteredTools = tools.filter((tool) =>
+  const filteredTools = allTools.filter((tool) =>
     tool.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleToolSelect = (path: string) => {
     setSearchQuery("");
     setLocation(path);
+    setMobileMenuOpen(false);
+  };
+
+  const toggleMobileCategory = (category: string) => {
+    setExpandedMobileCategory(expandedMobileCategory === category ? null : category);
   };
 
   return (
@@ -67,7 +101,7 @@ export function Header() {
               data-testid="input-search"
             />
             {searchQuery && filteredTools.length > 0 && (
-              <div className="absolute top-full mt-1 left-0 right-0 bg-card border border-border rounded-md shadow-lg z-50">
+              <div className="absolute top-full mt-1 left-0 right-0 bg-card border border-border rounded-md shadow-lg z-50 max-h-64 overflow-y-auto">
                 {filteredTools.map((tool) => (
                   <button
                     key={tool.path}
@@ -82,20 +116,46 @@ export function Header() {
             )}
           </div>
 
-          <nav className="hidden md:flex items-center gap-1">
-            {tools.slice(0, 3).map((tool) => (
-              <Link key={tool.path} href={tool.path}>
-                <Button variant="ghost" size="sm" data-testid={`nav-${tool.path.slice(1)}`}>
-                  {tool.name}
+          <nav className="hidden lg:flex items-center gap-1">
+            {Object.entries(toolCategories).slice(0, 5).map(([category, tools]) => (
+              <div
+                key={category}
+                className="relative"
+                onMouseEnter={() => setOpenDropdown(category)}
+                onMouseLeave={() => setOpenDropdown(null)}
+              >
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="gap-1"
+                  data-testid={`nav-category-${category.toLowerCase().replace(/\s+/g, "-")}`}
+                >
+                  {category}
+                  <ChevronDown className="w-3 h-3" />
                 </Button>
-              </Link>
+                {openDropdown === category && (
+                  <div className="absolute top-full left-0 mt-1 bg-card border border-border rounded-md shadow-lg z-50 min-w-[200px] py-1">
+                    {tools.map((tool) => (
+                      <Link key={tool.path} href={tool.path}>
+                        <button
+                          className="w-full text-left px-4 py-2 text-sm hover-elevate text-foreground"
+                          onClick={() => setOpenDropdown(null)}
+                          data-testid={`dropdown-${tool.path.slice(1)}`}
+                        >
+                          {tool.name}
+                        </button>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </nav>
 
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="lg:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             data-testid="button-mobile-menu"
           >
@@ -104,7 +164,7 @@ export function Header() {
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border">
+          <div className="lg:hidden py-4 border-t border-border max-h-[calc(100vh-4rem)] overflow-y-auto">
             <div className="relative mb-4">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
@@ -116,20 +176,59 @@ export function Header() {
                 data-testid="input-search-mobile"
               />
             </div>
-            <nav className="flex flex-col gap-1">
-              {tools.map((tool) => (
-                <Link key={tool.path} href={tool.path}>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start"
-                    onClick={() => setMobileMenuOpen(false)}
-                    data-testid={`mobile-nav-${tool.path.slice(1)}`}
-                  >
-                    {tool.name}
-                  </Button>
-                </Link>
-              ))}
-            </nav>
+            
+            {searchQuery ? (
+              <nav className="flex flex-col gap-1">
+                {filteredTools.map((tool) => (
+                  <Link key={tool.path} href={tool.path}>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
+                      onClick={() => handleToolSelect(tool.path)}
+                      data-testid={`mobile-search-${tool.path.slice(1)}`}
+                    >
+                      {tool.name}
+                    </Button>
+                  </Link>
+                ))}
+              </nav>
+            ) : (
+              <nav className="flex flex-col gap-1">
+                {Object.entries(toolCategories).map(([category, tools]) => (
+                  <div key={category}>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-between font-semibold"
+                      onClick={() => toggleMobileCategory(category)}
+                      data-testid={`mobile-category-${category.toLowerCase().replace(/\s+/g, "-")}`}
+                    >
+                      {category}
+                      {expandedMobileCategory === category ? (
+                        <ChevronDown className="w-4 h-4" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4" />
+                      )}
+                    </Button>
+                    {expandedMobileCategory === category && (
+                      <div className="ml-4 flex flex-col gap-1">
+                        {tools.map((tool) => (
+                          <Link key={tool.path} href={tool.path}>
+                            <Button
+                              variant="ghost"
+                              className="w-full justify-start text-muted-foreground"
+                              onClick={() => setMobileMenuOpen(false)}
+                              data-testid={`mobile-nav-${tool.path.slice(1)}`}
+                            >
+                              {tool.name}
+                            </Button>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </nav>
+            )}
           </div>
         )}
       </div>
@@ -157,87 +256,36 @@ export function Footer() {
           <div>
             <h3 className="font-semibold text-foreground mb-3">Text Tools</h3>
             <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/word-counter" className="text-muted-foreground hover:text-foreground">
-                  Word Counter
-                </Link>
-              </li>
-              <li>
-                <Link href="/case-converter" className="text-muted-foreground hover:text-foreground">
-                  Case Converter
-                </Link>
-              </li>
-              <li>
-                <Link href="/lorem-ipsum" className="text-muted-foreground hover:text-foreground">
-                  Lorem Ipsum Generator
-                </Link>
-              </li>
+              {toolCategories["Text Tools"].slice(0, 4).map((tool) => (
+                <li key={tool.path}>
+                  <Link href={tool.path} className="text-muted-foreground hover:text-foreground">
+                    {tool.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div>
             <h3 className="font-semibold text-foreground mb-3">Image Tools</h3>
             <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/image-compressor" className="text-muted-foreground hover:text-foreground">
-                  Image Compressor
-                </Link>
-              </li>
-            </ul>
-            <h3 className="font-semibold text-foreground mb-3 mt-4">Image Editing Tools</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/image-converter" className="text-muted-foreground hover:text-foreground">
-                  PNG/JPG Converter
-                </Link>
-              </li>
-              <li>
-                <Link href="/image-resizer" className="text-muted-foreground hover:text-foreground">
-                  Image Resizer
-                </Link>
-              </li>
-            </ul>
-            <h3 className="font-semibold text-foreground mb-3 mt-4">Network Tools</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/speed-test" className="text-muted-foreground hover:text-foreground">
-                  Speed Test
-                </Link>
-              </li>
+              {toolCategories["Image Tools"].slice(0, 4).map((tool) => (
+                <li key={tool.path}>
+                  <Link href={tool.path} className="text-muted-foreground hover:text-foreground">
+                    {tool.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
             <h3 className="font-semibold text-foreground mb-3 mt-4">Developer Tools</h3>
             <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/qr-code-generator" className="text-muted-foreground hover:text-foreground">
-                  QR Code Generator
-                </Link>
-              </li>
-              <li>
-                <Link href="/json-formatter" className="text-muted-foreground hover:text-foreground">
-                  JSON Formatter
-                </Link>
-              </li>
-            </ul>
-            <h3 className="font-semibold text-foreground mb-3 mt-4">SEO & Meta Tags</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/meta-tag-generator" className="text-muted-foreground hover:text-foreground">
-                  Meta Tag Generator
-                </Link>
-              </li>
-              <li>
-                <Link href="/robots-txt-generator" className="text-muted-foreground hover:text-foreground">
-                  Robots.txt Generator
-                </Link>
-              </li>
-            </ul>
-            <h3 className="font-semibold text-foreground mb-3 mt-4">Security Tools</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/password-generator" className="text-muted-foreground hover:text-foreground">
-                  Password Generator
-                </Link>
-              </li>
+              {toolCategories["Developer Tools"].slice(0, 3).map((tool) => (
+                <li key={tool.path}>
+                  <Link href={tool.path} className="text-muted-foreground hover:text-foreground">
+                    {tool.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
