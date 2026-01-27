@@ -110,6 +110,7 @@ export default function ImageConverter() {
     <ToolPageLayout
       title="Image to PNG/JPG Converter"
       description="Convert your images between PNG and JPG formats directly in your browser. No upload to server required - your images stay private."
+      toolPath="/image-converter"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Upload an image by clicking the upload area or dragging and dropping.</li>

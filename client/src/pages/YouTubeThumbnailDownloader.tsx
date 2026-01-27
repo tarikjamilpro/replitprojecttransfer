@@ -103,6 +103,7 @@ export default function YouTubeThumbnailDownloader() {
     <ToolPageLayout
       title="YouTube Thumbnail Downloader"
       description="Download high-quality thumbnails from any YouTube video. Supports HD, SD, and various resolutions."
+      toolPath="/youtube-thumbnail-downloader"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Copy the URL of any YouTube video (supports youtube.com, youtu.be, shorts, and mobile links).</li>

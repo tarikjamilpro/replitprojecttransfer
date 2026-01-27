@@ -137,6 +137,7 @@ export default function MergePDF() {
     <ToolPageLayout
       title="Merge PDF Files"
       description="Combine multiple PDF files into one document. Arrange files in your preferred order before merging."
+      toolPath="/merge-pdf"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Drag and drop PDF files or click to select them.</li>

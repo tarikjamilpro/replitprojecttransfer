@@ -170,6 +170,7 @@ export default function ImageToPDF() {
     <ToolPageLayout
       title="JPG/PNG to PDF Converter"
       description="Convert multiple images to a single PDF file. Arrange images in your preferred order and choose page size."
+      toolPath="/image-to-pdf"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Drag and drop images or click to select JPG/PNG files.</li>

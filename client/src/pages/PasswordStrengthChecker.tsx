@@ -81,6 +81,7 @@ export default function PasswordStrengthChecker() {
     <ToolPageLayout
       title="Password Strength Checker"
       description="Check how strong your password is. Analyze password complexity including length, numbers, and special characters."
+      toolPath="/password-strength-checker"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Enter your password in the input field.</li>

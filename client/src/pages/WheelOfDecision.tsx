@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Shuffle, Trophy, Trash2, RotateCcw, Copy, X, Sparkles } from "lucide-react";
 import confetti from "canvas-confetti";
 import { SEO } from "@/components/SEO";
+import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
 
 type SpinState = "idle" | "spinning" | "finished";
@@ -343,6 +344,8 @@ export default function WheelOfDecision() {
             </div>
           </CardContent>
         </Card>
+
+        <RelatedTools currentToolId="wheel-of-decision" category="Utility Tools" />
       </div>
     </div>
   );

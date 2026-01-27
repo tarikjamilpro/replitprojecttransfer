@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { MousePointerClick, Timer, Trophy, RotateCcw, Zap, Target } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
 
 type TestState = "idle" | "running" | "finished";
@@ -310,6 +311,8 @@ export default function CPSTest() {
             </div>
           </CardContent>
         </Card>
+
+        <RelatedTools currentToolId="cps-test" category="Utility Tools" />
       </div>
     </div>
   );

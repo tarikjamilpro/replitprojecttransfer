@@ -15,6 +15,7 @@ import {
   Loader2
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
 
 const MEME_TEMPLATES = [
@@ -403,6 +404,8 @@ export default function MemeGenerator() {
             </div>
           </CardContent>
         </Card>
+
+        <RelatedTools currentToolId="meme-generator" category="Design Tools" />
       </div>
     </div>
   );

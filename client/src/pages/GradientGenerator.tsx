@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Check, Shuffle, Palette } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
 
 type GradientType = "linear" | "radial";
@@ -340,6 +341,8 @@ export default function GradientGenerator() {
             </div>
           </CardContent>
         </Card>
+
+        <RelatedTools currentToolId="gradient-generator" category="Design Tools" />
       </div>
     </div>
   );

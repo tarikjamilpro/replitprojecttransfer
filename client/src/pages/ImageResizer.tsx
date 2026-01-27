@@ -141,6 +141,7 @@ export default function ImageResizer() {
     <ToolPageLayout
       title="Image Resizer"
       description="Resize your images to any dimension directly in your browser. No upload to server required - your images stay private."
+      toolPath="/image-resizer"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Upload an image by clicking the upload area or dragging and dropping.</li>

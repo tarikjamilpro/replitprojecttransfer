@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Calculator, Percent, Calendar, RotateCcw, TrendingUp, Wallet, PiggyBank, Coins } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 import { SEO } from "@/components/SEO";
+import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
 
 type TenureUnit = "years" | "months";
@@ -447,6 +448,8 @@ export default function EMICalculator() {
             </div>
           </CardContent>
         </Card>
+
+        <RelatedTools currentToolId="emi-calculator" category="Calculators" />
       </div>
     </div>
   );

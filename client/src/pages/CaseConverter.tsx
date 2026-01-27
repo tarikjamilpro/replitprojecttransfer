@@ -88,6 +88,7 @@ export default function CaseConverter() {
     <ToolPageLayout
       title="Case Converter"
       description="Convert your text to UPPERCASE, lowercase, Sentence case, Title Case, or Capitalized Case instantly."
+      toolPath="/case-converter"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Enter or paste your text in the input area.</li>

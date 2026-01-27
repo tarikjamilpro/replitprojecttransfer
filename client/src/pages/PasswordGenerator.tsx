@@ -100,6 +100,7 @@ export default function PasswordGenerator() {
     <ToolPageLayout
       title="Password Generator"
       description="Generate secure, random passwords with customizable length and character types."
+      toolPath="/password-generator"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Adjust the password length using the slider (8-64 characters).</li>

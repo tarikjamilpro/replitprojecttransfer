@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Activity, Scale, Ruler, ArrowDown } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
 
 type UnitSystem = "metric" | "imperial";
@@ -306,6 +307,8 @@ export default function BMICalculator() {
             </p>
           </CardContent>
         </Card>
+
+        <RelatedTools currentToolId="bmi-calculator" category="Calculators" />
       </div>
     </div>
   );

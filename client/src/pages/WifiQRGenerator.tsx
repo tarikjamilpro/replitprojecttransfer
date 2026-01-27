@@ -21,6 +21,7 @@ import {
   Lock
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
 
 type EncryptionType = "WPA" | "WPA3" | "WEP" | "nopass";
@@ -422,6 +423,8 @@ export default function WifiQRGenerator() {
             </div>
           </CardContent>
         </Card>
+
+        <RelatedTools currentToolId="wifi-qr-generator" category="Generator Tools" />
       </div>
     </div>
   );

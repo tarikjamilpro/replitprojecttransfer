@@ -84,6 +84,7 @@ export default function JSONFormatter() {
     <ToolPageLayout
       title="JSON Formatter & Minifier"
       description="Format, beautify, or minify your JSON data. Validate JSON syntax and copy the result with one click."
+      toolPath="/json-formatter"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Paste your JSON data in the left input area.</li>

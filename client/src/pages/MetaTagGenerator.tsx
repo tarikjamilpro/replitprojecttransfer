@@ -75,6 +75,7 @@ export default function MetaTagGenerator() {
     <ToolPageLayout
       title="Meta Tag Generator"
       description="Generate essential HTML meta tags for SEO, social media sharing, and better search engine visibility."
+      toolPath="/meta-tag-generator"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Enter your site title (appears in browser tabs and search results).</li>

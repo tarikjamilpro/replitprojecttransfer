@@ -40,6 +40,7 @@ export default function PercentageCalculator() {
     <ToolPageLayout
       title="Percentage Calculator"
       description="Calculate percentages instantly. Find what percent a number is of another, or calculate a percentage of any number."
+      toolPath="/percentage-calculator"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Use "Percentage of a Number" to find X% of any number.</li>

@@ -232,6 +232,7 @@ export default function ImageCompressor() {
     <ToolPageLayout
       title="Image Compressor"
       description="Compress images in your browser without uploading to any server. Your images stay private on your device."
+      toolPath="/image-compressor"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Click "Select Images" or drag and drop images to upload.</li>

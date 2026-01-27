@@ -84,6 +84,7 @@ export default function AgeCalculator() {
     <ToolPageLayout
       title="Age Calculator"
       description="Calculate your exact age in years, months, and days. Find out how old you are down to the day."
+      toolPath="/age-calculator"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Enter your date of birth using the date picker.</li>

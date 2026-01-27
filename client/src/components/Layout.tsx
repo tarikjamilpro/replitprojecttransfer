@@ -4,7 +4,8 @@ import { Search, Menu, X, Wrench, ChevronDown, ChevronRight } from "lucide-react
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
-import { getToolSEO } from "@/data/toolsData";
+import { RelatedTools } from "@/components/RelatedTools";
+import { getToolSEO, type ToolCategory } from "@/data/toolsData";
 
 const toolCategories = {
   "Text Tools": [
@@ -334,6 +335,8 @@ export function ToolPageLayout({
   children,
   howToUse,
   toolPath,
+  toolId,
+  category,
   seoTitle,
   seoDescription,
 }: {
@@ -342,12 +345,16 @@ export function ToolPageLayout({
   children: React.ReactNode;
   howToUse: React.ReactNode;
   toolPath?: string;
+  toolId?: string;
+  category?: ToolCategory;
   seoTitle?: string;
   seoDescription?: string;
 }) {
   const toolSEO = toolPath ? getToolSEO(toolPath) : undefined;
   const finalSeoTitle = seoTitle || toolSEO?.seoTitle || title;
   const finalSeoDescription = seoDescription || toolSEO?.seoDescription || description;
+  const finalToolId = toolId || toolSEO?.id;
+  const finalCategory = category || toolSEO?.category;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -375,6 +382,10 @@ export function ToolPageLayout({
               {howToUse}
             </div>
           </div>
+
+          {finalToolId && finalCategory && (
+            <RelatedTools currentToolId={finalToolId} category={finalCategory} />
+          )}
         </div>
 
         <div className="lg:col-span-1">

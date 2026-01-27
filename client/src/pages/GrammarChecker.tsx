@@ -20,6 +20,7 @@ import {
   RefreshCw
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
 
 interface GrammarError {
@@ -599,6 +600,8 @@ export default function GrammarChecker() {
                 </ol>
               </CardContent>
             </Card>
+
+            <RelatedTools currentToolId="grammar-checker" category="Text Tools" />
           </div>
         </div>
       </div>

@@ -131,6 +131,7 @@ export default function LoremIpsum() {
     <ToolPageLayout
       title="Lorem Ipsum Generator"
       description="Generate placeholder text for your designs, mockups, and layouts."
+      toolPath="/lorem-ipsum"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Select what you want to generate (paragraphs, sentences, or words).</li>

@@ -39,6 +39,7 @@ export default function MD5Generator() {
     <ToolPageLayout
       title="MD5 Generator"
       description="Generate MD5 hash from any text instantly. MD5 produces a 128-bit hash value commonly used for checksums."
+      toolPath="/md5-generator"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Enter or paste your text in the input field.</li>

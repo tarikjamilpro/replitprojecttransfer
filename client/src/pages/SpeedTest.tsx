@@ -179,6 +179,7 @@ export default function SpeedTest() {
     <ToolPageLayout
       title="Internet Speed Test"
       description="Test your internet connection speed including download, upload, and latency measurements."
+      toolPath="/speed-test"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Click the "Start Speed Test" button to begin testing.</li>

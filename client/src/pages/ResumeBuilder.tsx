@@ -11,6 +11,7 @@ import ModernTemplate from "@/components/resume-templates/ModernTemplate";
 import ClassicTemplate from "@/components/resume-templates/ClassicTemplate";
 import CreativeTemplate from "@/components/resume-templates/CreativeTemplate";
 import { SEO } from "@/components/SEO";
+import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
 
 interface Education {
@@ -813,6 +814,8 @@ export default function ResumeBuilder() {
             </Card>
           </div>
         </div>
+
+        <RelatedTools currentToolId="resume-builder" category="Utility Tools" />
       </div>
     </div>
   );

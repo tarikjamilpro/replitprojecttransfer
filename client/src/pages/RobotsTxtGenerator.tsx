@@ -90,6 +90,7 @@ export default function RobotsTxtGenerator() {
     <ToolPageLayout
       title="Robots.txt Generator"
       description="Generate a robots.txt file to control how search engine bots crawl and index your website."
+      toolPath="/robots-txt-generator"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Choose whether to allow all bots to crawl your site.</li>

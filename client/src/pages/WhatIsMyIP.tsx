@@ -42,6 +42,7 @@ export default function WhatIsMyIP() {
     <ToolPageLayout
       title="What is My IP"
       description="Instantly discover your public IP address. Your IP is fetched securely from a trusted API."
+      toolPath="/what-is-my-ip"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Your public IP address is automatically detected when you load this page.</li>

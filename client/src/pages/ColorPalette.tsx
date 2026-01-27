@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Lock, Unlock, Shuffle, Copy, Check } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
 
 interface ColorBar {
@@ -295,6 +296,8 @@ export default function ColorPalette() {
           <div className="mt-4 text-center text-xs text-muted-foreground">
             <p>Click any color bar to copy its hex code. Click the lock icon to preserve colors during generation.</p>
           </div>
+
+          <RelatedTools currentToolId="color-palette" category="Design Tools" />
         </div>
       </div>
     </div>

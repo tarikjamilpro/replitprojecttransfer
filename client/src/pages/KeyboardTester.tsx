@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { Keyboard, Mouse, RotateCcw, Check, ArrowUp, ArrowDown } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
 
 interface KeyData {
@@ -431,6 +432,8 @@ export default function KeyboardTester() {
             </div>
           </CardContent>
         </Card>
+
+        <RelatedTools currentToolId="keyboard-tester" category="Utility Tools" />
       </div>
     </div>
   );

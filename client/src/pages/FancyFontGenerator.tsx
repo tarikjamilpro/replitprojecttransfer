@@ -495,6 +495,7 @@ export default function FancyFontGenerator() {
     <ToolPageLayout
       title="Fancy Font Generator"
       description="Convert your text into stylish Unicode fonts for social media, Instagram bios, and more. 39 unique styles!"
+      toolPath="/fancy-font-generator"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Type or paste your text in the input field above.</li>

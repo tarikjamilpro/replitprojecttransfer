@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Check, Trash2, Download, Link, ListFilter, Type } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
 
 export default function TextCleaner() {
@@ -425,6 +426,8 @@ export default function TextCleaner() {
                   </div>
                 </CardContent>
               </Card>
+
+              <RelatedTools currentToolId="text-cleaner" category="Text Tools" />
             </div>
           </TabsContent>
         </Tabs>

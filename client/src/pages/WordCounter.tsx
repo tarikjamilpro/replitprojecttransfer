@@ -59,6 +59,7 @@ export default function WordCounter() {
     <ToolPageLayout
       title="Word Counter"
       description="Count words, characters, sentences, paragraphs, and estimate reading time instantly."
+      toolPath="/word-counter"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Paste or type your text in the input area above.</li>

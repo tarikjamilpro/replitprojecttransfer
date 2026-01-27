@@ -52,6 +52,7 @@ export default function QRCodeGenerator() {
     <ToolPageLayout
       title="QR Code Generator"
       description="Generate QR codes for URLs, text, or any data instantly. Download as a high-quality PNG image."
+      toolPath="/qr-code-generator"
       howToUse={
         <ol className="list-decimal list-inside space-y-2">
           <li>Enter your URL or text in the input field.</li>

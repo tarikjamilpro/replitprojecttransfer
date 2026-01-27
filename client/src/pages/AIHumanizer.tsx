@@ -23,6 +23,7 @@ import {
   RefreshCw
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
 
 const LANGUAGES = [
@@ -366,6 +367,8 @@ export default function AIHumanizer() {
             </div>
           </CardContent>
         </Card>
+
+        <RelatedTools currentToolId="ai-humanizer" category="Text Tools" />
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import { Upload, Download, Loader2, CheckCircle, XCircle, Image as ImageIcon, Lo
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { SEO } from "@/components/SEO";
+import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
 
 interface ImageFile {
@@ -506,6 +507,8 @@ export default function UniversalImageProcessor() {
             <p className="text-sm">Drop some images above to get started</p>
           </div>
         )}
+
+        <RelatedTools currentToolId="image-processor" category="Image Tools" />
       </div>
     </div>
   );
