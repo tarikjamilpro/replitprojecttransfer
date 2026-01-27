@@ -15,6 +15,8 @@ import ImageConverter from "@/pages/ImageConverter";
 import ImageResizer from "@/pages/ImageResizer";
 import QRCodeGenerator from "@/pages/QRCodeGenerator";
 import JSONFormatter from "@/pages/JSONFormatter";
+import MetaTagGenerator from "@/pages/MetaTagGenerator";
+import RobotsTxtGenerator from "@/pages/RobotsTxtGenerator";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -31,6 +33,8 @@ function Router() {
       <Route path="/image-resizer" component={ImageResizer} />
       <Route path="/qr-code-generator" component={QRCodeGenerator} />
       <Route path="/json-formatter" component={JSONFormatter} />
+      <Route path="/meta-tag-generator" component={MetaTagGenerator} />
+      <Route path="/robots-txt-generator" component={RobotsTxtGenerator} />
       <Route component={NotFound} />
     </Switch>
   );

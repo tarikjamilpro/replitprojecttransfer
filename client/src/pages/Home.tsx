@@ -13,7 +13,10 @@ import {
   Maximize2,
   QrCode,
   Braces,
-  Code
+  Code,
+  Tags,
+  Bot,
+  Search
 } from "lucide-react";
 
 const textTools = [
@@ -91,6 +94,23 @@ const developerTools = [
     icon: Braces,
     path: "/json-formatter",
     color: "bg-amber-500 dark:bg-amber-600",
+  },
+];
+
+const seoTools = [
+  {
+    name: "Meta Tag Generator",
+    description: "Generate essential HTML meta tags for SEO and social media sharing.",
+    icon: Tags,
+    path: "/meta-tag-generator",
+    color: "bg-emerald-500 dark:bg-emerald-600",
+  },
+  {
+    name: "Robots.txt Generator",
+    description: "Create a robots.txt file to control how search engines crawl your site.",
+    icon: Bot,
+    path: "/robots-txt-generator",
+    color: "bg-rose-500 dark:bg-rose-600",
   },
 ];
 
@@ -211,6 +231,18 @@ export default function Home() {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {developerTools.map((tool) => (
+                  <ToolCard key={tool.path} {...tool} />
+                ))}
+              </div>
+            </section>
+
+            <section className="mb-12">
+              <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2" data-testid="text-section-seo-tools">
+                <Search className="w-6 h-6 text-primary" />
+                SEO & Meta Tags
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {seoTools.map((tool) => (
                   <ToolCard key={tool.path} {...tool} />
                 ))}
               </div>

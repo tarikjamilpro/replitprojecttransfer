@@ -15,6 +15,8 @@ const tools = [
   { name: "Image Resizer", path: "/image-resizer" },
   { name: "QR Code Generator", path: "/qr-code-generator" },
   { name: "JSON Formatter", path: "/json-formatter" },
+  { name: "Meta Tag Generator", path: "/meta-tag-generator" },
+  { name: "Robots.txt Generator", path: "/robots-txt-generator" },
 ];
 
 export function Header() {
@@ -203,6 +205,19 @@ export function Footer() {
               <li>
                 <Link href="/json-formatter" className="text-muted-foreground hover:text-foreground">
                   JSON Formatter
+                </Link>
+              </li>
+            </ul>
+            <h3 className="font-semibold text-foreground mb-3 mt-4">SEO & Meta Tags</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link href="/meta-tag-generator" className="text-muted-foreground hover:text-foreground">
+                  Meta Tag Generator
+                </Link>
+              </li>
+              <li>
+                <Link href="/robots-txt-generator" className="text-muted-foreground hover:text-foreground">
+                  Robots.txt Generator
                 </Link>
               </li>
             </ul>

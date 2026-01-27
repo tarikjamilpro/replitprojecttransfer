@@ -14,6 +14,8 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Image Resizer**: Resize images to any dimensions with aspect ratio lock and preset sizes
 - **QR Code Generator**: Generate QR codes for URLs or text with real-time preview and PNG download
 - **JSON Formatter**: Format, beautify, or minify JSON data with syntax validation
+- **Meta Tag Generator**: Generate HTML meta tags for SEO, Open Graph, and Twitter cards
+- **Robots.txt Generator**: Create robots.txt files to control search engine crawling
 
 ## Project Structure
 ```
@@ -34,6 +36,8 @@ client/
 │   │   ├── ImageResizer.tsx # Image resizing tool
 │   │   ├── QRCodeGenerator.tsx # QR code generator tool
 │   │   ├── JSONFormatter.tsx # JSON formatter tool
+│   │   ├── MetaTagGenerator.tsx # Meta tag generator tool
+│   │   ├── RobotsTxtGenerator.tsx # Robots.txt generator tool
 │   │   └── not-found.tsx    # 404 page
 │   ├── App.tsx              # Main app with routing
 │   ├── index.css            # Theme colors (blue/white scheme)
@@ -56,6 +60,8 @@ server/
 - `/image-resizer` - Image Resizer tool
 - `/qr-code-generator` - QR Code Generator tool
 - `/json-formatter` - JSON Formatter tool
+- `/meta-tag-generator` - Meta Tag Generator tool
+- `/robots-txt-generator` - Robots.txt Generator tool
 
 ## Design
 - Professional blue and white color scheme
