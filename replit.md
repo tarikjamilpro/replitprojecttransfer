@@ -1,4 +1,4 @@
-# SEO Tools Hub
+# Digi Best Tools
 
 ## Overview
 A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOTools. Built with React, Tailwind CSS, and Shadcn UI components featuring a professional blue and white color scheme.

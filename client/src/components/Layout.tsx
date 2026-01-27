@@ -88,7 +88,7 @@ export function Header() {
               <Wrench className="w-6 h-6 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold text-foreground hidden sm:block" data-testid="text-logo">
-              SEO Tools Hub
+              Digi Best Tools
             </span>
           </Link>
 
@@ -248,7 +248,7 @@ export function Footer() {
               <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
                 <Wrench className="w-4 h-4 text-primary-foreground" />
               </div>
-              <span className="font-bold text-foreground">SEO Tools Hub</span>
+              <span className="font-bold text-foreground">Digi Best Tools</span>
             </div>
             <p className="text-sm text-muted-foreground">
               Free online tools to help you with SEO, content creation, and more.
@@ -308,7 +308,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} SEO Tools Hub. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Digi Best Tools. All rights reserved.</p>
         </div>
       </div>
     </footer>

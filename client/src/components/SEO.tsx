@@ -6,7 +6,7 @@ interface SEOProps {
   canonicalUrl?: string;
 }
 
-const SITE_NAME = "SEO Tools Hub";
+const SITE_NAME = "Digi Best Tools";
 
 export function SEO({ title, description, canonicalUrl }: SEOProps) {
   const fullTitle = `${title} | ${SITE_NAME}`;
