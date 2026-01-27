@@ -29,7 +29,8 @@ import {
   FileUser,
   Activity,
   Smile,
-  Calculator
+  Calculator,
+  WifiIcon
 } from "lucide-react";
 
 const textTools = [
@@ -142,6 +143,13 @@ const developerTools = [
     icon: Braces,
     path: "/json-formatter",
     color: "bg-amber-500 dark:bg-amber-600",
+  },
+  {
+    name: "WiFi QR Generator",
+    description: "Generate QR codes for easy WiFi network sharing with print support.",
+    icon: WifiIcon,
+    path: "/wifi-qr-generator",
+    color: "bg-cyan-500 dark:bg-cyan-600",
   },
 ];
 

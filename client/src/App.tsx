@@ -31,6 +31,7 @@ import UniversalImageProcessor from "@/pages/UniversalImageProcessor";
 import BMICalculator from "@/pages/BMICalculator";
 import MemeGenerator from "@/pages/MemeGenerator";
 import EMICalculator from "@/pages/EMICalculator";
+import WifiQRGenerator from "@/pages/WifiQRGenerator";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -63,6 +64,7 @@ function Router() {
       <Route path="/bmi-calculator" component={BMICalculator} />
       <Route path="/meme-generator" component={MemeGenerator} />
       <Route path="/emi-calculator" component={EMICalculator} />
+      <Route path="/wifi-qr-generator" component={WifiQRGenerator} />
       <Route component={NotFound} />
     </Switch>
   );

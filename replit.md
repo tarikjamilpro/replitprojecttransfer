@@ -34,6 +34,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **BMI Calculator**: Calculate Body Mass Index with visual gauge and health advice
 - **Meme Generator**: Create memes with custom text from templates or uploaded images
 - **Loan EMI Calculator**: Calculate monthly loan EMI with interactive sliders and pie chart breakdown
+- **WiFi QR Generator**: Generate QR codes for WiFi network sharing with print support
 
 ## Project Structure
 ```
@@ -96,6 +97,7 @@ server/
 - `/bmi-calculator` - BMI Calculator tool
 - `/meme-generator` - Meme Generator tool
 - `/emi-calculator` - Loan EMI Calculator tool
+- `/wifi-qr-generator` - WiFi QR Generator tool
 
 ## Design
 - Professional blue and white color scheme

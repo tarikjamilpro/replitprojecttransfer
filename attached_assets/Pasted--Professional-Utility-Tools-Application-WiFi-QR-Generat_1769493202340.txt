@@ -1,0 +1,336 @@
+️ Professional Utility Tools Application - WiFi QR Generator + Image Format Converter
+Project Overview
+Build a modern, multi-tool utility web application using Next.js 16, React 19, and TypeScript. The application will feature two powerful tools: WiFi QR Code Generator and Universal Image Format Converter.
+
+Tool 1: WiFi QR Code Generator
+Core Requirements
+1. Input Form Fields
+Implement a clean, intuitive form with the following inputs:
+
+A. Network Name (SSID)
+
+Input type: Text
+Label: "WiFi Network Name (SSID)"
+Placeholder: "e.g., MyHomeWiFi"
+Validation: Required, 1-32 characters
+Auto-trim whitespace
+B. Password
+
+Input type: Password with toggle visibility (eye icon)
+Label: "Password"
+Placeholder: "Enter WiFi password"
+Validation: Optional (can be empty for open networks)
+Show/Hide password toggle button
+Character limit: 63 characters (WiFi standard)
+C. Encryption Type
+
+Input type: Dropdown/Select
+Label: "Security Type"
+Options:
+
+WPA/WPA2 (default, most common)
+WPA3
+WEP (legacy, show warning)
+None (no encryption, open network)
+Use shadcn Select component
+D. Hidden Network
+
+Input type: Checkbox
+Label: "Hidden Network (SSID not broadcast)"
+Default: Unchecked
+Tooltip: "Check if your network doesn't appear in WiFi lists"
+E. Generate Button
+
+Primary action button
+Text: "Generate QR Code"
+Disabled until SSID is filled
+Loading state while generating
+2. QR Code Generation Logic
+WiFi QR Code Format (Standard):
+
+
+Code Project
+Implementation Details:
+
+T = Security type (WPA, WEP, nopass)
+S = Network SSID (escape special characters: \, ;, ,, :, ")
+P = Password (escape same special characters)
+H = Hidden network (true/false)
+Example Output Strings:
+
+
+Code Project
+Library: Use qrcode.react or react-qr-code
+
+QR Code size: 256x256px (default), scalable
+Error correction level: M (medium, 15% correction)
+Include margin/quiet zone
+3. QR Code Display & Preview
+Live Preview Section:
+
+Display QR code in real-time as user types
+Center-aligned QR code image
+Card container with subtle shadow
+Network name displayed below QR code
+Smooth fade-in animation when QR generates
+Information Display:
+
+Show network name prominently
+Show security type (with icon)
+Password masked with option to reveal
+Visual indicator for hidden networks
+4. Print Functionality
+Print Button Requirements:
+
+Button text: "Print QR Code" with printer icon
+Opens print-friendly window/dialog
+Print Layout Specifications:
+
+Page Content:
+
+WiFi network name (large, bold, centered)
+QR code (scaled to 300x300px or larger)
+Instructions: "Scan to connect to WiFi network"
+Optional: Password displayed (if user chooses)
+Clean, minimal design (black text on white)
+CSS Print Styles:
+
+Remove all navigation, headers, footers
+Hide all UI controls (buttons, inputs)
+Center content on page
+Use @media print queries
+Ensure high contrast for QR code
+Implementation:
+
+
+Code Project
+Tool 2: Universal Image Format Converter
+Core Requirements
+1. Image Upload System
+Upload Interface:
+
+Drag & drop zone (primary method)
+File picker button (fallback)
+Accept all image formats: .jpg, .jpeg, .png, .gif, .bmp, .webp, .svg, .tiff, .ico, .heic
+Show preview of uploaded image
+Display file info: name, size, current format
+Allow multiple file uploads (batch conversion)
+Upload Features:
+
+Visual drag-over state (border highlight)
+Progress indicator for large files
+File size limit: 10MB per file (configurable)
+Error handling for invalid files
+Clear/remove uploaded image option
+2. Format Selection
+Target Format Dropdown:
+
+Label: "Convert To"
+Supported output formats:
+
+JPG/JPEG (lossy, small size)
+PNG (lossless, transparency support)
+WebP (modern, efficient)
+GIF (animation support)
+BMP (uncompressed)
+ICO (icon format, 16x16 to 256x256)
+SVG (vector, if input is SVG)
+TIFF (high quality)
+Quality Settings (for lossy formats):
+
+Slider for JPEG/WebP quality (0-100%)
+Default: 90%
+Real-time file size estimation
+Show format recommendations
+Advanced Options (Optional):
+
+Resize dimensions (maintain aspect ratio)
+Background color (for formats without transparency)
+DPI settings for print formats
+3. Conversion Logic
+Client-Side Image Conversion:
+
+Use HTML5 Canvas API for most conversions
+Use File Reader API to load images
+Conversion Process:
+
+
+Code Project
+Special Format Handling:
+
+SVG: Cannot convert FROM SVG to raster (show note)
+ICO: Support multiple sizes in single file
+GIF: Preserve animation if possible (use library like gif.js)
+HEIC: May require browser support check
+TIFF: Use library like tiff.js for reading
+Required Library:
+
+
+Code Project
+4. Output & Download
+Preview Section:
+
+Show converted image preview
+Display before/after comparison
+Show file size reduction/increase
+Format conversion confirmation
+Download Options:
+
+Single Download: "Download Converted Image" button
+Batch Download: "Download All as ZIP" (if multiple files)
+Filename format: original-name-converted.ext
+Automatic download or preview in new tab
+Additional Features:
+
+Copy to clipboard option
+Share options (optional)
+Conversion history (localStorage)
+Technical Implementation
+Tech Stack
+Framework & Libraries:
+
+Next.js 16 (App Router)
+React 19 with TypeScript
+Tailwind CSS v4
+shadcn/ui components (Card, Button, Input, Select, Checkbox, Tabs, Label, Progress)
+qrcode.react or react-qr-code for QR generation
+browser-image-compression for image processing
+lucide-react for icons
+Required Dependencies:
+
+
+Code Project
+File Structure
+
+Code Project
+Key Features
+WiFi QR Generator Features:
+✅ Real-time QR code generation as user types
+✅ Support all major WiFi encryption types
+✅ Special character escaping in SSID/password
+✅ Hidden network support
+✅ Print-friendly layout (QR + network name only)
+✅ QR code download option (PNG)
+✅ Responsive design for mobile/tablet
+✅ Input validation with helpful error messages
+✅ Copy WiFi string to clipboard
+
+Image Converter Features:
+✅ Support 10+ image formats (input & output)
+✅ Drag & drop interface with file picker fallback
+✅ Batch conversion (multiple files at once)
+✅ Quality control for lossy formats
+✅ Real-time preview of converted image
+✅ File size comparison (before/after)
+✅ Download single or batch (ZIP)
+✅ Client-side processing (privacy-focused)
+✅ Progress indicators for large files
+✅ Format recommendations based on use case
+
+Design Guidelines
+Color Scheme
+Choose 3-5 colors total
+1 primary brand color (buttons, accents)
+2-3 neutrals (backgrounds, text, borders)
+1 accent color (success states, highlights)
+Avoid purple/violet unless requested
+Layout Structure
+Navigation:
+
+Top navigation bar or sidebar
+Tool switcher (tabs or links)
+Clean, minimal header
+Tool Pages:
+
+Two-column layout (desktop): Inputs left, Output right
+Single column (mobile): Inputs top, Output bottom
+Card-based sections
+Clear visual separation
+Typography:
+
+Maximum 2 font families
+Clear hierarchy: h1 (page title), h2 (sections), h3 (cards)
+Readable body text (16px minimum)
+Bold, large text for important values
+Responsive Design
+Mobile-first approach
+Breakpoints: sm (640px), md (768px), lg (1024px)
+Stack vertically on mobile
+Touch-friendly buttons (min 44px height)
+Implementation Priority
+Phase 1: WiFi QR Generator
+Setup Next.js project with proper structure
+Create WiFi QR generator form with all inputs
+Implement QR string generation with escaping
+Integrate qrcode.react library
+Display QR code with live preview
+Add print functionality with CSS print styles
+Input validation and error handling
+Phase 2: Image Converter
+Create image upload component (drag & drop)
+File validation and preview
+Format selector dropdown
+Implement canvas-based conversion
+Quality settings for lossy formats
+Download functionality
+Batch conversion support
+Phase 3: Polish & Enhancement
+Navigation between tools
+Responsive design for all screens
+Loading states and progress indicators
+Error boundaries and user feedback
+Accessibility improvements (ARIA, keyboard nav)
+Add helpful tooltips and documentation
+LocalStorage for recent conversions/QR codes
+Success Criteria
+WiFi QR Generator:
+✔️ Generate valid WiFi QR codes that work on all devices
+✔️ Handle special characters correctly in SSID/password
+✔️ Print layout shows only QR code and network name
+✔️ Support all encryption types (WPA, WEP, Open)
+✔️ Mobile-friendly interface
+
+Image Converter:
+✔️ Successfully convert between all major image formats
+✔️ Maintain image quality during conversion
+✔️ Handle large files (up to 10MB) without crashing
+✔️ Accurate file size estimates
+✔️ Batch conversion works smoothly
+✔️ Client-side processing (no server uploads)
+
+Overall:
+✔️ Clean, professional design
+✔️ Fast, responsive performance
+✔️ Accessible to all users
+✔️ Error-free across major browsers
+✔️ Intuitive user experience
+
+Important Implementation Notes
+WiFi QR Generator:
+Character Escaping:
+
+
+Code Project
+QR Code Format:
+
+
+Code Project
+Image Converter:
+Canvas Conversion:
+
+
+Code Project
+Additional Enhancements (Optional)
+WiFi QR Generator:
+Save frequently used networks
+QR code customization (colors, logo)
+Export QR as SVG
+Share QR code via link
+Image Converter:
+Image editing (crop, rotate, filters)
+Bulk rename files
+Cloud storage integration
+Conversion presets (web, print, social media)
+Animated GIF support
+PDF to image conversion
+Expected Deliverable: A production-ready, professional utility tools application with a fully functional WiFi QR Code Generator and Universal Image Format Converter. The application should feature beautiful design, excellent user experience, and work flawlessly across all devices and browsers.
