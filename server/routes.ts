@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -15,10 +15,10 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Text is required" });
       }
 
-      const apiKey = process.env.GOOGLE_API_KEY;
+      const apiKey = process.env.OPENAI_API_KEY;
       if (!apiKey) {
-        console.error("GOOGLE_API_KEY not found in environment");
-        return res.status(500).json({ error: "GOOGLE_API_KEY not configured" });
+        console.error("OPENAI_API_KEY not found in environment");
+        return res.status(500).json({ error: "OPENAI_API_KEY not configured" });
       }
 
       const wordCount = text.trim().split(/\s+/).length;
@@ -44,10 +44,14 @@ export async function registerRoutes(
       res.setHeader("Cache-Control", "no-cache");
       res.setHeader("Connection", "keep-alive");
 
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+      const openai = new OpenAI({ apiKey });
 
-      const prompt = `You are an expert writing assistant that transforms AI-generated text into natural, human-like content. Your task is to:
+      const stream = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: `You are an expert writing assistant that transforms AI-generated text into natural, human-like content. Your task is to:
 
 1. Rewrite the text to sound more natural and conversational
 2. Add subtle variations in sentence structure and length
@@ -57,16 +61,19 @@ export async function registerRoutes(
 6. Avoid overly formal or robotic phrasing
 7. Add a human touch with slight imperfections that feel natural
 
-Output the humanized text in ${targetLanguage}. Do not include any explanations or meta-commentary - just output the humanized version of the text.
+Output the humanized text in ${targetLanguage}. Do not include any explanations or meta-commentary - just output the humanized version of the text.`,
+          },
+          {
+            role: "user",
+            content: `Please humanize the following text:\n\n${text}`,
+          },
+        ],
+        stream: true,
+        max_tokens: 4096,
+      });
 
-Please humanize the following text:
-
-${text}`;
-
-      const result = await model.generateContentStream(prompt);
-
-      for await (const chunk of result.stream) {
-        const content = chunk.text();
+      for await (const chunk of stream) {
+        const content = chunk.choices[0]?.delta?.content || "";
         if (content) {
           res.write(`data: ${JSON.stringify({ content })}\n\n`);
         }
