@@ -19,7 +19,9 @@ import {
   Search,
   Sparkles,
   Youtube,
-  Globe
+  Globe,
+  CalendarDays,
+  Percent
 } from "lucide-react";
 
 const textTools = [
@@ -148,6 +150,23 @@ const securityTools = [
   },
 ];
 
+const calculatorTools = [
+  {
+    name: "Age Calculator",
+    description: "Calculate your exact age in years, months, and days from your birth date.",
+    icon: CalendarDays,
+    path: "/age-calculator",
+    color: "bg-lime-500 dark:bg-lime-600",
+  },
+  {
+    name: "Percentage Calculator",
+    description: "Calculate percentages instantly with multiple calculation modes.",
+    icon: Percent,
+    path: "/percentage-calculator",
+    color: "bg-yellow-500 dark:bg-yellow-600",
+  },
+];
+
 function ToolCard({
   name,
   description,
@@ -272,13 +291,25 @@ export default function Home() {
               </div>
             </section>
 
-            <section>
+            <section className="mb-12">
               <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2" data-testid="text-section-security-tools">
                 <Key className="w-6 h-6 text-primary" />
                 Security Tools
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {securityTools.map((tool) => (
+                  <ToolCard key={tool.path} {...tool} />
+                ))}
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2" data-testid="text-section-calculator-tools">
+                <CalendarDays className="w-6 h-6 text-primary" />
+                Calculators
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {calculatorTools.map((tool) => (
                   <ToolCard key={tool.path} {...tool} />
                 ))}
               </div>

@@ -20,6 +20,8 @@ import RobotsTxtGenerator from "@/pages/RobotsTxtGenerator";
 import FancyFontGenerator from "@/pages/FancyFontGenerator";
 import YouTubeThumbnailDownloader from "@/pages/YouTubeThumbnailDownloader";
 import WhatIsMyIP from "@/pages/WhatIsMyIP";
+import AgeCalculator from "@/pages/AgeCalculator";
+import PercentageCalculator from "@/pages/PercentageCalculator";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -41,6 +43,8 @@ function Router() {
       <Route path="/fancy-font-generator" component={FancyFontGenerator} />
       <Route path="/youtube-thumbnail-downloader" component={YouTubeThumbnailDownloader} />
       <Route path="/what-is-my-ip" component={WhatIsMyIP} />
+      <Route path="/age-calculator" component={AgeCalculator} />
+      <Route path="/percentage-calculator" component={PercentageCalculator} />
       <Route component={NotFound} />
     </Switch>
   );

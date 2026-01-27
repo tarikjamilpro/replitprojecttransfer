@@ -20,6 +20,8 @@ const tools = [
   { name: "Fancy Font Generator", path: "/fancy-font-generator" },
   { name: "YouTube Thumbnail Downloader", path: "/youtube-thumbnail-downloader" },
   { name: "What is My IP", path: "/what-is-my-ip" },
+  { name: "Age Calculator", path: "/age-calculator" },
+  { name: "Percentage Calculator", path: "/percentage-calculator" },
 ];
 
 export function Header() {

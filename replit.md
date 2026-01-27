@@ -19,6 +19,8 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Fancy Font Generator**: Convert text into stylish Unicode fonts (39 styles including Script, Bold, Upside Down)
 - **YouTube Thumbnail Downloader**: Download high-quality thumbnails from YouTube videos (HD, SD, HQ, MQ)
 - **What is My IP**: Instantly discover your public IP address using a public API
+- **Age Calculator**: Calculate exact age in years, months, and days from date of birth
+- **Percentage Calculator**: Calculate percentages with two modes - "X% of Y" and "A is what % of B"
 
 ## Project Structure
 ```
@@ -70,6 +72,8 @@ server/
 - `/fancy-font-generator` - Fancy Font Generator tool
 - `/youtube-thumbnail-downloader` - YouTube Thumbnail Downloader tool
 - `/what-is-my-ip` - What is My IP tool
+- `/age-calculator` - Age Calculator tool
+- `/percentage-calculator` - Percentage Calculator tool
 
 ## Design
 - Professional blue and white color scheme
