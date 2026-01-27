@@ -26,6 +26,10 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **JPG/PNG to PDF Converter**: Convert multiple images to PDF with page size and orientation options
 - **Merge PDF Files**: Combine multiple PDFs into one document with reorder support
 - **Resume Builder**: Create professional resumes with live preview, collapsible sections, and PDF download
+  - Multi-template system: Modern (blue sidebar), Classic (traditional), Creative (purple gradient)
+  - Profile photo upload with circular preview
+  - Digital signature upload support
+  - All images converted to Base64 for PDF compatibility
 
 ## Project Structure
 ```

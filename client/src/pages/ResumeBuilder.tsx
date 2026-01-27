@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,7 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useToast } from "@/hooks/use-toast";
-import { Download, Plus, Trash2, ChevronDown, FileText, Sparkles, User, GraduationCap, Briefcase, Wrench } from "lucide-react";
+import { Download, Plus, Trash2, ChevronDown, FileText, Sparkles, User, GraduationCap, Briefcase, Wrench, ImageIcon, PenTool, Palette, Check } from "lucide-react";
+import ModernTemplate from "@/components/resume-templates/ModernTemplate";
+import ClassicTemplate from "@/components/resume-templates/ClassicTemplate";
+import CreativeTemplate from "@/components/resume-templates/CreativeTemplate";
 
 interface Education {
   id: string;
@@ -35,6 +38,9 @@ interface ResumeData {
   education: Education[];
   experience: Experience[];
   skills: string[];
+  photo: string | null;
+  signature: string | null;
+  activeTemplate: "modern" | "classic" | "creative";
 }
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
@@ -69,6 +75,9 @@ const demoData: ResumeData = {
     },
   ],
   skills: ["JavaScript", "TypeScript", "React", "Node.js", "Python", "AWS", "Docker", "PostgreSQL"],
+  photo: null,
+  signature: null,
+  activeTemplate: "modern",
 };
 
 const emptyData: ResumeData = {
@@ -76,25 +85,59 @@ const emptyData: ResumeData = {
   education: [],
   experience: [],
   skills: [],
+  photo: null,
+  signature: null,
+  activeTemplate: "modern",
 };
+
+const templates = [
+  { id: "modern" as const, name: "Modern", description: "Clean, Blue accents, Left sidebar", color: "from-blue-500 to-blue-700" },
+  { id: "classic" as const, name: "Classic", description: "Traditional, Centered header", color: "from-gray-600 to-gray-800" },
+  { id: "creative" as const, name: "Creative", description: "Bold header, Two columns", color: "from-purple-500 to-indigo-600" },
+];
 
 export default function ResumeBuilder() {
   const [resumeData, setResumeData] = useState<ResumeData>(emptyData);
   const [openSections, setOpenSections] = useState({
+    template: true,
     personal: true,
     education: true,
     experience: true,
     skills: true,
+    signature: true,
   });
   const [newSkill, setNewSkill] = useState("");
   const [downloading, setDownloading] = useState(false);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const signatureInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>, field: "photo" | "signature") => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Invalid file type", description: "Please upload an image file", variant: "destructive" });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = e.target?.result as string;
+      setResumeData((prev) => ({ ...prev, [field]: base64 }));
+    };
+    reader.readAsDataURL(file);
+  };
 
   const updatePersonal = (field: keyof ResumeData["personal"], value: string) => {
     setResumeData((prev) => ({
       ...prev,
       personal: { ...prev.personal, [field]: value },
     }));
+  };
+
+  const setActiveTemplate = (template: ResumeData["activeTemplate"]) => {
+    setResumeData((prev) => ({ ...prev, activeTemplate: template }));
   };
 
   const addEducation = () => {
@@ -157,7 +200,7 @@ export default function ResumeBuilder() {
   };
 
   const loadDemoData = () => {
-    setResumeData(demoData);
+    setResumeData({ ...demoData, activeTemplate: resumeData.activeTemplate });
     toast({ title: "Demo data loaded!", description: "You can now see how your resume will look" });
   };
 
@@ -191,7 +234,29 @@ export default function ResumeBuilder() {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
 
-  const { personal, education, experience, skills } = resumeData;
+  const { personal, education, experience, skills, photo, activeTemplate } = resumeData;
+
+  const renderTemplate = () => {
+    const templateData = {
+      personal: resumeData.personal,
+      education: resumeData.education,
+      experience: resumeData.experience,
+      skills: resumeData.skills,
+      photo: resumeData.photo,
+      signature: resumeData.signature,
+    };
+
+    switch (activeTemplate) {
+      case "modern":
+        return <ModernTemplate resumeData={templateData} />;
+      case "classic":
+        return <ClassicTemplate resumeData={templateData} />;
+      case "creative":
+        return <CreativeTemplate resumeData={templateData} />;
+      default:
+        return <ModernTemplate resumeData={templateData} />;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -210,6 +275,47 @@ export default function ResumeBuilder() {
             </div>
 
             <Card>
+              <Collapsible open={openSections.template} onOpenChange={() => toggleSection("template")}>
+                <CollapsibleTrigger asChild>
+                  <CardContent className="p-4 cursor-pointer hover-elevate flex items-center justify-between">
+                    <div className="flex items-center gap-2 font-semibold">
+                      <Palette className="w-5 h-5 text-primary" />
+                      Choose Template
+                    </div>
+                    <ChevronDown className={`w-5 h-5 transition-transform ${openSections.template ? "rotate-180" : ""}`} />
+                  </CardContent>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <CardContent className="p-4 pt-0">
+                    <div className="grid grid-cols-3 gap-3">
+                      {templates.map((template) => (
+                        <button
+                          key={template.id}
+                          onClick={() => setActiveTemplate(template.id)}
+                          className={`relative p-3 rounded-lg border-2 transition-all ${
+                            activeTemplate === template.id
+                              ? "border-primary ring-2 ring-primary/20"
+                              : "border-border hover:border-primary/50"
+                          }`}
+                          data-testid={`button-template-${template.id}`}
+                        >
+                          <div className={`h-16 rounded bg-gradient-to-br ${template.color} mb-2`} />
+                          <p className="text-sm font-medium">{template.name}</p>
+                          <p className="text-xs text-muted-foreground">{template.description}</p>
+                          {activeTemplate === template.id && (
+                            <div className="absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                              <Check className="w-3 h-3 text-primary-foreground" />
+                            </div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </CardContent>
+                </CollapsibleContent>
+              </Collapsible>
+            </Card>
+
+            <Card>
               <Collapsible open={openSections.personal} onOpenChange={() => toggleSection("personal")}>
                 <CollapsibleTrigger asChild>
                   <CardContent className="p-4 cursor-pointer hover-elevate flex items-center justify-between">
@@ -222,6 +328,48 @@ export default function ResumeBuilder() {
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <CardContent className="p-4 pt-0 space-y-4">
+                    <div className="space-y-2">
+                      <Label>Profile Photo</Label>
+                      <div className="flex items-center gap-4">
+                        {photo ? (
+                          <img src={photo} alt="Profile" className="w-16 h-16 rounded-full object-cover border-2 border-border" />
+                        ) : (
+                          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+                            <ImageIcon className="w-6 h-6 text-muted-foreground" />
+                          </div>
+                        )}
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => photoInputRef.current?.click()}
+                            data-testid="button-upload-photo"
+                          >
+                            <ImageIcon className="w-4 h-4 mr-2" />
+                            {photo ? "Change" : "Upload"}
+                          </Button>
+                          {photo && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setResumeData((prev) => ({ ...prev, photo: null }))}
+                              data-testid="button-remove-photo"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
+                        <input
+                          ref={photoInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => handleImageUpload(e, "photo")}
+                          data-testid="input-photo"
+                        />
+                      </div>
+                    </div>
+
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="name">Full Name</Label>
@@ -482,6 +630,65 @@ export default function ResumeBuilder() {
               </Collapsible>
             </Card>
 
+            <Card>
+              <Collapsible open={openSections.signature} onOpenChange={() => toggleSection("signature")}>
+                <CollapsibleTrigger asChild>
+                  <CardContent className="p-4 cursor-pointer hover-elevate flex items-center justify-between">
+                    <div className="flex items-center gap-2 font-semibold">
+                      <PenTool className="w-5 h-5 text-primary" />
+                      Digital Signature
+                    </div>
+                    <ChevronDown className={`w-5 h-5 transition-transform ${openSections.signature ? "rotate-180" : ""}`} />
+                  </CardContent>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <CardContent className="p-4 pt-0 space-y-4">
+                    <p className="text-sm text-muted-foreground">Upload an image of your signature to add it to your resume.</p>
+                    <div className="flex items-center gap-4">
+                      {resumeData.signature ? (
+                        <div className="p-2 border rounded-lg bg-white">
+                          <img src={resumeData.signature} alt="Signature" className="max-h-[60px] object-contain" />
+                        </div>
+                      ) : (
+                        <div className="w-32 h-16 border-2 border-dashed rounded-lg flex items-center justify-center">
+                          <PenTool className="w-6 h-6 text-muted-foreground" />
+                        </div>
+                      )}
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => signatureInputRef.current?.click()}
+                          data-testid="button-upload-signature"
+                        >
+                          <PenTool className="w-4 h-4 mr-2" />
+                          {resumeData.signature ? "Change" : "Upload"}
+                        </Button>
+                        {resumeData.signature && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setResumeData((prev) => ({ ...prev, signature: null }))}
+                            data-testid="button-remove-signature"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                      <input
+                        ref={signatureInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handleImageUpload(e, "signature")}
+                        data-testid="input-signature"
+                      />
+                    </div>
+                  </CardContent>
+                </CollapsibleContent>
+              </Collapsible>
+            </Card>
+
             <Button
               onClick={handleDownloadPDF}
               disabled={downloading || !personal.name}
@@ -504,91 +711,21 @@ export default function ResumeBuilder() {
             <Card className="overflow-hidden">
               <CardContent className="p-0">
                 <div className="bg-muted/50 p-2 text-center text-sm text-muted-foreground border-b">
-                  Live Preview
+                  Live Preview - {templates.find((t) => t.id === activeTemplate)?.name} Template
                 </div>
                 <div className="p-4 bg-muted/20 flex justify-center overflow-auto" style={{ maxHeight: "calc(100vh - 150px)" }}>
                   <div
                     id="resume-preview"
-                    className="bg-white text-black shadow-lg"
+                    className="bg-white text-black shadow-lg overflow-hidden"
                     style={{
                       width: "210mm",
                       minHeight: "297mm",
-                      padding: "15mm",
-                      fontFamily: "'Inter', sans-serif",
                     }}
                   >
                     {personal.name ? (
-                      <>
-                        <header className="text-center mb-6 pb-4 border-b-2 border-gray-300">
-                          <h1 className="text-3xl font-bold text-gray-900 mb-1">{personal.name}</h1>
-                          {personal.title && <p className="text-lg text-gray-600 mb-2">{personal.title}</p>}
-                          <div className="text-sm text-gray-500 flex flex-wrap justify-center gap-x-4 gap-y-1">
-                            {personal.email && <span>{personal.email}</span>}
-                            {personal.phone && <span>{personal.phone}</span>}
-                            {personal.location && <span>{personal.location}</span>}
-                          </div>
-                        </header>
-
-                        {personal.summary && (
-                          <section className="mb-5">
-                            <h2 className="text-lg font-bold text-gray-800 mb-2 pb-1 border-b border-gray-200">Summary</h2>
-                            <p className="text-sm text-gray-700 leading-relaxed">{personal.summary}</p>
-                          </section>
-                        )}
-
-                        {experience.length > 0 && (
-                          <section className="mb-5">
-                            <h2 className="text-lg font-bold text-gray-800 mb-2 pb-1 border-b border-gray-200">Experience</h2>
-                            {experience.map((exp) => (
-                              <div key={exp.id} className="mb-3">
-                                <div className="flex justify-between items-start">
-                                  <div>
-                                    <h3 className="font-semibold text-gray-900">{exp.role || "Role"}</h3>
-                                    <p className="text-sm text-gray-600">{exp.company || "Company"}</p>
-                                  </div>
-                                  <span className="text-sm text-gray-500">{exp.year}</span>
-                                </div>
-                                {exp.description && (
-                                  <p className="text-sm text-gray-700 mt-1 leading-relaxed">{exp.description}</p>
-                                )}
-                              </div>
-                            ))}
-                          </section>
-                        )}
-
-                        {education.length > 0 && (
-                          <section className="mb-5">
-                            <h2 className="text-lg font-bold text-gray-800 mb-2 pb-1 border-b border-gray-200">Education</h2>
-                            {education.map((edu) => (
-                              <div key={edu.id} className="mb-2 flex justify-between items-start">
-                                <div>
-                                  <h3 className="font-semibold text-gray-900">{edu.degree || "Degree"}</h3>
-                                  <p className="text-sm text-gray-600">{edu.school || "School"}</p>
-                                </div>
-                                <span className="text-sm text-gray-500">{edu.year}</span>
-                              </div>
-                            ))}
-                          </section>
-                        )}
-
-                        {skills.length > 0 && (
-                          <section>
-                            <h2 className="text-lg font-bold text-gray-800 mb-2 pb-1 border-b border-gray-200">Skills</h2>
-                            <div className="flex flex-wrap gap-2">
-                              {skills.map((skill, index) => (
-                                <span
-                                  key={index}
-                                  className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm"
-                                >
-                                  {skill}
-                                </span>
-                              ))}
-                            </div>
-                          </section>
-                        )}
-                      </>
+                      renderTemplate()
                     ) : (
-                      <div className="h-full min-h-[400px] flex items-center justify-center text-gray-400">
+                      <div className="h-full min-h-[400px] flex items-center justify-center text-gray-400 p-8">
                         <div className="text-center">
                           <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />
                           <p className="text-lg">Start typing to see your resume</p>

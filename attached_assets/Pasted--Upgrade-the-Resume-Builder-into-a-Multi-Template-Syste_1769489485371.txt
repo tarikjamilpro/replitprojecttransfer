@@ -1,0 +1,37 @@
+ Upgrade the "Resume Builder" into a Multi-Template System with Image & Signature support.
+
+1. State Management Update:
+Modify the resumeData state to include two new fields:
+* photo: (stores Base64 string of the uploaded profile picture).
+* signature: (stores Base64 string of the uploaded signature).
+* activeTemplate: (string, default to 'modern').
+
+2. New Feature: Image & Signature Uploader:
+* Logic: Create a utility function handleImageUpload that accepts a file input event. Use FileReader to convert the uploaded file into a Base64 string.
+    * *Why Base64?* This ensures images render correctly inside html2pdf.js without CORS issues.
+* UI (Left Sidebar):
+    * Add a "Profile Photo" upload section at the top of "Personal Info". Show a small circular preview after upload.
+    * Add a "Digital Signature" upload section at the very bottom.
+
+3. New Feature: Visual Template Selector:
+* Create a new section in the Left Sidebar called "Choose Template".
+* UI: Display a grid of 3 clickable thumbnails (placeholders for now):
+    1.  Modern: (Clean, Blue accents, Left sidebar column).
+    2.  Classic: (Traditional, Centered header, Top-down layout).
+    3.  Creative: (Bold header, Two columns).
+* Action: Clicking a thumbnail updates the activeTemplate state.
+
+4. Modular Template Architecture (Important):
+* Refactor the Right Panel (Preview) to use a specific component based on activeTemplate.
+* Create a new folder src/components/resume-templates/ and create three separate components:
+    * ModernTemplate.jsx
+    * ClassicTemplate.jsx
+    * CreativeTemplate.jsx
+* Implementation: All three templates must accept resumeData as a prop and render the data differently.
+    * *Photo Placement:* Ensure the photo appears in the header or sidebar depending on the chosen template.
+    * *Signature Placement:* Ensure the signature appears at the bottom of the resume with a "Signature" label.
+
+5. CSS & Styling:
+* Ensure the photo has object-cover and usually rounded-full or rounded-lg classes.
+* Ensure the signature is sized appropriately (max-height: 60px) so it doesn't break the layout.
+* The Template components should handle their own internal layout (Grid vs Flexbox) using Tailwind CSS.
