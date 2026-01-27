@@ -8,8 +8,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Check } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 export default function RobotsTxtGenerator() {
+  const toolSEO = getToolSEO("/robots-txt-generator");
   const [allowAllBots, setAllowAllBots] = useState(true);
   const [enableCrawlDelay, setEnableCrawlDelay] = useState(false);
   const [crawlDelay, setCrawlDelay] = useState("10");
@@ -97,6 +100,7 @@ export default function RobotsTxtGenerator() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardContent className="p-6 space-y-4">

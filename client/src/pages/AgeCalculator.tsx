@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Calendar, Calculator } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 interface AgeResult {
   years: number;
@@ -46,6 +48,7 @@ function formatDate(date: Date): string {
 }
 
 export default function AgeCalculator() {
+  const toolSEO = getToolSEO("/age-calculator");
   const [birthDate, setBirthDate] = useState("");
   const [toDate, setToDate] = useState(formatDate(new Date()));
   const [result, setResult] = useState<AgeResult | null>(null);
@@ -90,6 +93,7 @@ export default function AgeCalculator() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-6">
         <Card>
           <CardContent className="p-6">

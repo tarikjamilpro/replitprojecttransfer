@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Shield, Eye, EyeOff, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 interface PasswordAnalysis {
   score: number;
@@ -60,6 +62,7 @@ function analyzePassword(password: string): PasswordAnalysis {
 }
 
 export default function PasswordStrengthChecker() {
+  const toolSEO = getToolSEO("/password-strength-checker");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -87,6 +90,7 @@ export default function PasswordStrengthChecker() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-6">
         <Card>
           <CardContent className="p-6">

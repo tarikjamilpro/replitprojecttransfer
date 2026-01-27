@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Lock, Unlock, Shuffle, Copy, Check } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 interface ColorBar {
   hex: string;
@@ -102,6 +104,7 @@ const initialPalette = (): ColorBar[] => {
 };
 
 export default function ColorPalette() {
+  const toolSEO = getToolSEO("/color-palette");
   const [palette, setPalette] = useState<ColorBar[]>(initialPalette);
   const { toast } = useToast();
 
@@ -194,6 +197,7 @@ export default function ColorPalette() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="flex flex-1 flex-col sm:flex-row" style={{ minHeight: "60vh" }}>
         {palette.map((bar, index) => {
           const isLight = getLuminance(bar.hex) > 0.5;

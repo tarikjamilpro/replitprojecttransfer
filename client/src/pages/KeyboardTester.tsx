@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { Keyboard, Mouse, RotateCcw, Check, ArrowUp, ArrowDown } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 interface KeyData {
   code: string;
@@ -125,6 +127,7 @@ const NAV_KEYS: KeyData[][] = [
 const TOTAL_KEYS = 87;
 
 export default function KeyboardTester() {
+  const toolSEO = getToolSEO("/keyboard-tester");
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
   const [currentlyPressed, setCurrentlyPressed] = useState<Set<string>>(new Set());
   const [leftClick, setLeftClick] = useState(false);
@@ -224,6 +227,7 @@ export default function KeyboardTester() {
 
   return (
     <div className="min-h-screen bg-background">
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-2">

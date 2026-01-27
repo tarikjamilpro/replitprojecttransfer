@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Download, Search, AlertCircle } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 interface ThumbnailQuality {
   name: string;
@@ -28,6 +30,7 @@ const extractVideoId = (url: string): string | false => {
 };
 
 export default function YouTubeThumbnailDownloader() {
+  const toolSEO = getToolSEO("/youtube-thumbnail-downloader");
   const [url, setUrl] = useState("");
   const [videoId, setVideoId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -110,6 +113,7 @@ export default function YouTubeThumbnailDownloader() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-6">
         <Card>
           <CardContent className="p-6">

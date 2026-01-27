@@ -6,8 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { QRCodeSVG } from "qrcode.react";
 import { Download, QrCode } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 export default function QRCodeGenerator() {
+  const toolSEO = getToolSEO("/qr-code-generator");
   const [inputText, setInputText] = useState("");
   const [qrSize, setQrSize] = useState(256);
   const qrRef = useRef<HTMLDivElement>(null);
@@ -59,6 +62,7 @@ export default function QRCodeGenerator() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-6">
         <Card>
           <CardContent className="p-6">

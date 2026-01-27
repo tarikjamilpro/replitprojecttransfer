@@ -8,6 +8,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useDropzone } from "react-dropzone";
 import { PDFDocument } from "pdf-lib";
 import { Upload, FileImage, Trash2, ChevronUp, ChevronDown, Loader2, Download, AlertCircle } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 interface ImageFile {
   id: string;
@@ -24,6 +26,7 @@ const PAGE_SIZES = {
 };
 
 export default function ImageToPDF() {
+  const toolSEO = getToolSEO("/image-to-pdf");
   const [images, setImages] = useState<ImageFile[]>([]);
   const [pageSize, setPageSize] = useState<PageSize>("a4");
   const [orientation, setOrientation] = useState<Orientation>("portrait");
@@ -176,6 +179,7 @@ export default function ImageToPDF() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-6">
         <Card>
           <CardContent className="p-6">

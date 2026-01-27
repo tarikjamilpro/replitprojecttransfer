@@ -20,6 +20,8 @@ import {
   ShieldOff,
   Lock
 } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 type EncryptionType = "WPA" | "WPA3" | "WEP" | "nopass";
 
@@ -57,6 +59,7 @@ const generateWifiString = (
 };
 
 export default function WifiQRGenerator() {
+  const toolSEO = getToolSEO("/wifi-qr-generator");
   const [ssid, setSsid] = useState("");
   const [password, setPassword] = useState("");
   const [encryption, setEncryption] = useState<EncryptionType>("WPA");
@@ -207,6 +210,7 @@ export default function WifiQRGenerator() {
 
   return (
     <div className="min-h-screen bg-background">
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-2">

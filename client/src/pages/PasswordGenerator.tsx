@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Copy, RefreshCw, Shield, ShieldCheck, ShieldAlert } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 const CHAR_SETS = {
   uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
@@ -17,6 +19,7 @@ const CHAR_SETS = {
 };
 
 export default function PasswordGenerator() {
+  const toolSEO = getToolSEO("/password-generator");
   const [password, setPassword] = useState("");
   const [length, setLength] = useState(16);
   const [options, setOptions] = useState({
@@ -106,6 +109,7 @@ export default function PasswordGenerator() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-6">
         <Card>
           <CardContent className="p-4">

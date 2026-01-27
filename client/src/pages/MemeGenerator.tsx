@@ -14,6 +14,8 @@ import {
   Type,
   Loader2
 } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 const MEME_TEMPLATES = [
   { id: "drake", name: "Drake Hotline Bling", url: "https://i.imgflip.com/30b1gx.jpg" },
@@ -27,6 +29,7 @@ const MEME_TEMPLATES = [
 ];
 
 export default function MemeGenerator() {
+  const toolSEO = getToolSEO("/meme-generator");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [topText, setTopText] = useState("");
   const [bottomText, setBottomText] = useState("");
@@ -188,6 +191,7 @@ export default function MemeGenerator() {
 
   return (
     <div className="min-h-screen bg-background">
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="container mx-auto px-4 py-8 max-w-5xl">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-2">

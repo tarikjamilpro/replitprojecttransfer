@@ -5,8 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Copy, Trash2, FileText, Type, AlignLeft, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 export default function WordCounter() {
+  const toolSEO = getToolSEO("/word-counter");
   const [text, setText] = useState("");
   const { toast } = useToast();
 
@@ -65,6 +68,7 @@ export default function WordCounter() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-6">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <StatCard

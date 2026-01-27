@@ -4,8 +4,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Percent } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 export default function PercentageCalculator() {
+  const toolSEO = getToolSEO("/percentage-calculator");
   const [percentOf, setPercentOf] = useState({ percent: "", number: "" });
   const [whatPercent, setWhatPercent] = useState({ value: "", total: "" });
   const [percentOfResult, setPercentOfResult] = useState<string | null>(null);
@@ -46,6 +49,7 @@ export default function PercentageCalculator() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardContent className="p-6">

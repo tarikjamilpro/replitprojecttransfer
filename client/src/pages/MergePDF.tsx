@@ -7,6 +7,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useDropzone } from "react-dropzone";
 import { PDFDocument } from "pdf-lib";
 import { Upload, FileText, Trash2, ChevronUp, ChevronDown, Loader2, Download, AlertCircle } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 interface PDFFile {
   id: string;
@@ -17,6 +19,7 @@ interface PDFFile {
 }
 
 export default function MergePDF() {
+  const toolSEO = getToolSEO("/merge-pdf");
   const [pdfFiles, setPdfFiles] = useState<PDFFile[]>([]);
   const [processing, setProcessing] = useState(false);
   const { toast } = useToast();
@@ -143,6 +146,7 @@ export default function MergePDF() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-6">
         <Card>
           <CardContent className="p-6">

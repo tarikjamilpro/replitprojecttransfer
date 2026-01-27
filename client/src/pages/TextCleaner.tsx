@@ -8,8 +8,11 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Check, Trash2, Download, Link, ListFilter, Type } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 export default function TextCleaner() {
+  const toolSEO = getToolSEO("/text-cleaner");
   const { toast } = useToast();
   
   const [dupInput, setDupInput] = useState("");
@@ -137,6 +140,7 @@ export default function TextCleaner() {
 
   return (
     <div className="min-h-screen bg-background">
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-2">

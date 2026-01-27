@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { AdPlaceholder } from "@/components/Layout";
+import { HomeSEO } from "@/components/SEO";
 import { 
   FileText, 
   Type, 
@@ -355,6 +356,7 @@ function ToolCard({
 export default function Home() {
   return (
     <div className="min-h-screen">
+      <HomeSEO />
       <section className="bg-gradient-to-b from-primary/10 to-background py-16 sm:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-4" data-testid="text-hero-title">

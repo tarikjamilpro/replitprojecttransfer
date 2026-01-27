@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Check } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 const boldSerifMap: Record<string, string> = {
   'A': '𝐀', 'B': '𝐁', 'C': '𝐂', 'D': '𝐃', 'E': '𝐄', 'F': '𝐅', 'G': '𝐆', 'H': '𝐇', 'I': '𝐈', 'J': '𝐉',
@@ -466,6 +468,7 @@ const fontStyles: FontStyle[] = [
 ];
 
 export default function FancyFontGenerator() {
+  const toolSEO = getToolSEO("/fancy-font-generator");
   const [inputText, setInputText] = useState("Hello World");
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const { toast } = useToast();
@@ -502,6 +505,7 @@ export default function FancyFontGenerator() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-6">
         <Card>
           <CardContent className="p-6">

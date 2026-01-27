@@ -12,6 +12,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Upload, Download, Loader2, CheckCircle, XCircle, Image as ImageIcon, Lock, Unlock, FileArchive, Trash2, Settings } from "lucide-react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 interface ImageFile {
   id: string;
@@ -56,6 +58,7 @@ const formatBytes = (bytes: number): string => {
 };
 
 export default function UniversalImageProcessor() {
+  const toolSEO = getToolSEO("/image-processor");
   const [images, setImages] = useState<ImageFile[]>([]);
   const [resizeEnabled, setResizeEnabled] = useState(false);
   const [targetWidth, setTargetWidth] = useState<number>(800);
@@ -282,6 +285,7 @@ export default function UniversalImageProcessor() {
 
   return (
     <div className="min-h-screen bg-background">
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="container mx-auto px-4 py-6 max-w-6xl">
         <div className="flex items-center gap-3 mb-6">
           <ImageIcon className="w-8 h-8 text-primary" />

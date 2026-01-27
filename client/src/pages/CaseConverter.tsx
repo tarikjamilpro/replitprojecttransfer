@@ -4,10 +4,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Copy, Trash2, ArrowDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 type CaseType = "uppercase" | "lowercase" | "sentence" | "title" | "capitalize";
 
 export default function CaseConverter() {
+  const toolSEO = getToolSEO("/case-converter");
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
   const { toast } = useToast();
@@ -94,6 +97,7 @@ export default function CaseConverter() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-6">
         <div>
           <label className="text-sm font-medium text-foreground mb-2 block">

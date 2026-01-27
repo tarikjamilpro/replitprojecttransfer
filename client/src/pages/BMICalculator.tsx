@@ -4,6 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Activity, Scale, Ruler, ArrowDown } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 type UnitSystem = "metric" | "imperial";
 
@@ -56,6 +58,7 @@ const categoryLabels = {
 };
 
 export default function BMICalculator() {
+  const toolSEO = getToolSEO("/bmi-calculator");
   const [unitSystem, setUnitSystem] = useState<UnitSystem>("metric");
   const [weightKg, setWeightKg] = useState("");
   const [heightCm, setHeightCm] = useState("");
@@ -100,6 +103,7 @@ export default function BMICalculator() {
 
   return (
     <div className="min-h-screen bg-background">
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-2">

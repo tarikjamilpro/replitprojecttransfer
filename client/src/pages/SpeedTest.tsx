@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Wifi, Download, Upload, Clock, Play, RotateCcw } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 type TestStatus = "idle" | "testing" | "complete";
 type TestPhase = "download" | "upload" | "latency" | "none";
@@ -15,6 +17,7 @@ interface SpeedResults {
 }
 
 export default function SpeedTest() {
+  const toolSEO = getToolSEO("/speed-test");
   const [status, setStatus] = useState<TestStatus>("idle");
   const [phase, setPhase] = useState<TestPhase>("none");
   const [progress, setProgress] = useState(0);
@@ -186,6 +189,7 @@ export default function SpeedTest() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-8">
         <div className="text-center">
           <div className="relative inline-flex items-center justify-center w-48 h-48 mb-6">

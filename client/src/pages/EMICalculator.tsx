@@ -8,6 +8,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calculator, Percent, Calendar, RotateCcw, TrendingUp, Wallet, PiggyBank, Coins } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 type TenureUnit = "years" | "months";
 
@@ -72,6 +74,7 @@ const CURRENCIES: Currency[] = [
 ];
 
 export default function EMICalculator() {
+  const toolSEO = getToolSEO("/emi-calculator");
   const [currency, setCurrency] = useState<string>("USD");
   const [loanAmount, setLoanAmount] = useState<number>(50000);
   const [interestRate, setInterestRate] = useState<number>(8.5);
@@ -160,6 +163,7 @@ export default function EMICalculator() {
 
   return (
     <div className="min-h-screen bg-background">
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="container mx-auto px-4 py-8 max-w-5xl">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-2">

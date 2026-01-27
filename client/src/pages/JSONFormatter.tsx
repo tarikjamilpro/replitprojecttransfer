@@ -5,8 +5,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Wand2, Minimize2, Copy, AlertCircle, Check } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 export default function JSONFormatter() {
+  const toolSEO = getToolSEO("/json-formatter");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -91,6 +94,7 @@ export default function JSONFormatter() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-4">
         <div className="flex flex-wrap gap-2">
           <Button onClick={formatJSON} data-testid="button-format">

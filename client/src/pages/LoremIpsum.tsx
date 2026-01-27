@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Copy, Trash2, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 const LOREM_WORDS = [
   "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit",
@@ -31,6 +33,7 @@ const FIRST_SENTENCE = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 type GenerationType = "paragraphs" | "words" | "sentences";
 
 export default function LoremIpsum() {
+  const toolSEO = getToolSEO("/lorem-ipsum");
   const [output, setOutput] = useState("");
   const [count, setCount] = useState(3);
   const [type, setType] = useState<GenerationType>("paragraphs");
@@ -138,6 +141,7 @@ export default function LoremIpsum() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="space-y-3">

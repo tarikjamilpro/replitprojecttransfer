@@ -5,8 +5,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Upload, Download, Image as ImageIcon, X } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 export default function ImageConverter() {
+  const toolSEO = getToolSEO("/image-converter");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [convertedUrl, setConvertedUrl] = useState<string | null>(null);
@@ -117,6 +120,7 @@ export default function ImageConverter() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-6">
         <input
           type="file"

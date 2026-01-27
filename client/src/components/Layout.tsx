@@ -3,6 +3,8 @@ import { Link, useLocation } from "wouter";
 import { Search, Menu, X, Wrench, ChevronDown, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 const toolCategories = {
   "Text Tools": [
@@ -331,14 +333,25 @@ export function ToolPageLayout({
   description,
   children,
   howToUse,
+  toolPath,
+  seoTitle,
+  seoDescription,
 }: {
   title: string;
   description: string;
   children: React.ReactNode;
   howToUse: React.ReactNode;
+  toolPath?: string;
+  seoTitle?: string;
+  seoDescription?: string;
 }) {
+  const toolSEO = toolPath ? getToolSEO(toolPath) : undefined;
+  const finalSeoTitle = seoTitle || toolSEO?.seoTitle || title;
+  const finalSeoDescription = seoDescription || toolSEO?.seoDescription || description;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <SEO title={finalSeoTitle} description={finalSeoDescription} />
       <AdPlaceholder position="top" />
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-4 gap-8">

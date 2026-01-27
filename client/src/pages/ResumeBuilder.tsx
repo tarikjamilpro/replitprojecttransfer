@@ -10,6 +10,8 @@ import { Download, Plus, Trash2, ChevronDown, FileText, Sparkles, User, Graduati
 import ModernTemplate from "@/components/resume-templates/ModernTemplate";
 import ClassicTemplate from "@/components/resume-templates/ClassicTemplate";
 import CreativeTemplate from "@/components/resume-templates/CreativeTemplate";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 interface Education {
   id: string;
@@ -167,6 +169,7 @@ const templates = [
 ];
 
 export default function ResumeBuilder() {
+  const toolSEO = getToolSEO("/resume-builder");
   const [resumeData, setResumeData] = useState<ResumeData>(emptyData);
   const [openSections, setOpenSections] = useState({
     template: true,
@@ -330,6 +333,7 @@ export default function ResumeBuilder() {
 
   return (
     <div className="min-h-screen bg-background">
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="lg:w-1/2 space-y-4 overflow-y-auto" style={{ maxHeight: "calc(100vh - 100px)" }}>

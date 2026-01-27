@@ -3,6 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { MousePointerClick, Timer, Trophy, RotateCcw, Zap, Target } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 type TestState = "idle" | "running" | "finished";
 type Duration = 1 | 5 | 10 | 30 | 60;
@@ -37,6 +39,7 @@ const getRank = (cps: number): Rank => {
 };
 
 export default function CPSTest() {
+  const toolSEO = getToolSEO("/cps-test");
   const [duration, setDuration] = useState<Duration>(5);
   const [testState, setTestState] = useState<TestState>("idle");
   const [clicks, setClicks] = useState(0);
@@ -119,6 +122,7 @@ export default function CPSTest() {
 
   return (
     <div className="min-h-screen bg-background">
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="container mx-auto px-4 py-8 max-w-3xl">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-2">

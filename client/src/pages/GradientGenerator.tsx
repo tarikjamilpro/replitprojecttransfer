@@ -6,6 +6,8 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Check, Shuffle, Palette } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 type GradientType = "linear" | "radial";
 
@@ -61,6 +63,7 @@ const PRESETS = [
 ];
 
 export default function GradientGenerator() {
+  const toolSEO = getToolSEO("/gradient-generator");
   const [startColor, setStartColor] = useState("#FF6B6B");
   const [endColor, setEndColor] = useState("#4ECDC4");
   const [angle, setAngle] = useState(90);
@@ -133,6 +136,7 @@ export default function GradientGenerator() {
 
   return (
     <div className="min-h-screen bg-background">
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="container mx-auto px-4 py-8 max-w-5xl">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-2">

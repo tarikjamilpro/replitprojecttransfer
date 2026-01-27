@@ -3,12 +3,15 @@ import { ToolPageLayout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RefreshCw, Globe, Loader2 } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 interface IPData {
   ip: string;
 }
 
 export default function WhatIsMyIP() {
+  const toolSEO = getToolSEO("/what-is-my-ip");
   const [ipData, setIpData] = useState<IPData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -48,6 +51,7 @@ export default function WhatIsMyIP() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="flex flex-col items-center justify-center space-y-6">
         <Card className="w-full max-w-lg">
           <CardContent className="p-8 text-center">

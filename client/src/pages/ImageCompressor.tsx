@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Upload, Download, Trash2, Image as ImageIcon, FileImage } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 interface ImageFile {
   original: File;
@@ -17,6 +19,7 @@ interface ImageFile {
 }
 
 export default function ImageCompressor() {
+  const toolSEO = getToolSEO("/image-compressor");
   const [images, setImages] = useState<ImageFile[]>([]);
   const [quality, setQuality] = useState(80);
   const [isCompressing, setIsCompressing] = useState(false);
@@ -239,6 +242,7 @@ export default function ImageCompressor() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-6">
         <input
           type="file"

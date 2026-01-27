@@ -22,6 +22,8 @@ import {
   SpellCheck,
   RefreshCw
 } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 const LANGUAGES = [
   { code: "en", name: "English" },
@@ -40,6 +42,7 @@ const SAMPLE_TEXT = `Artificial intelligence has emerged as a transformative tec
 const MAX_WORDS = 2000;
 
 export default function AIHumanizer() {
+  const toolSEO = getToolSEO("/ai-humanizer");
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
   const [language, setLanguage] = useState("en");
@@ -177,6 +180,7 @@ export default function AIHumanizer() {
 
   return (
     <div className="min-h-screen bg-background">
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-2">

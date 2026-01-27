@@ -7,8 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Check } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 export default function MetaTagGenerator() {
+  const toolSEO = getToolSEO("/meta-tag-generator");
   const [siteTitle, setSiteTitle] = useState("");
   const [siteDescription, setSiteDescription] = useState("");
   const [keywords, setKeywords] = useState("");
@@ -82,6 +85,7 @@ export default function MetaTagGenerator() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardContent className="p-6 space-y-4">

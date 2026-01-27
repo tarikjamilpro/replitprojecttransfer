@@ -7,8 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Hash } from "lucide-react";
 import MD5 from "crypto-js/md5";
+import { SEO } from "@/components/SEO";
+import { getToolSEO } from "@/data/toolsData";
 
 export default function MD5Generator() {
+  const toolSEO = getToolSEO("/md5-generator");
   const [text, setText] = useState("");
   const { toast } = useToast();
 
@@ -45,6 +48,7 @@ export default function MD5Generator() {
         </ol>
       }
     >
+      {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-6">
         <Card>
           <CardContent className="p-6">
