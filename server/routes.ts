@@ -15,9 +15,9 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Text is required" });
       }
 
-      const apiKey = process.env.DEEPSEEKR10527;
+      const apiKey = process.env.DEEPSEEK;
       if (!apiKey) {
-        console.error("DEEPSEEKR10527 not found in environment");
+        console.error("DEEPSEEK not found in environment");
         return res.status(500).json({ error: "DeepSeek API key not configured" });
       }
 
