@@ -21,7 +21,9 @@ import {
   Youtube,
   Globe,
   CalendarDays,
-  Percent
+  Percent,
+  Hash,
+  ShieldCheck
 } from "lucide-react";
 
 const textTools = [
@@ -147,6 +149,20 @@ const securityTools = [
     icon: Key,
     path: "/password-generator",
     color: "bg-orange-500 dark:bg-orange-600",
+  },
+  {
+    name: "MD5 Generator",
+    description: "Generate MD5 hash from any text instantly for checksums and verification.",
+    icon: Hash,
+    path: "/md5-generator",
+    color: "bg-slate-500 dark:bg-slate-600",
+  },
+  {
+    name: "Password Strength Checker",
+    description: "Check how strong your password is with real-time analysis and tips.",
+    icon: ShieldCheck,
+    path: "/password-strength-checker",
+    color: "bg-red-500 dark:bg-red-600",
   },
 ];
 
@@ -294,7 +310,7 @@ export default function Home() {
             <section className="mb-12">
               <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2" data-testid="text-section-security-tools">
                 <Key className="w-6 h-6 text-primary" />
-                Security Tools
+                Security & Encryption
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {securityTools.map((tool) => (

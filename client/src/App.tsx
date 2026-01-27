@@ -22,6 +22,8 @@ import YouTubeThumbnailDownloader from "@/pages/YouTubeThumbnailDownloader";
 import WhatIsMyIP from "@/pages/WhatIsMyIP";
 import AgeCalculator from "@/pages/AgeCalculator";
 import PercentageCalculator from "@/pages/PercentageCalculator";
+import MD5Generator from "@/pages/MD5Generator";
+import PasswordStrengthChecker from "@/pages/PasswordStrengthChecker";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -45,6 +47,8 @@ function Router() {
       <Route path="/what-is-my-ip" component={WhatIsMyIP} />
       <Route path="/age-calculator" component={AgeCalculator} />
       <Route path="/percentage-calculator" component={PercentageCalculator} />
+      <Route path="/md5-generator" component={MD5Generator} />
+      <Route path="/password-strength-checker" component={PasswordStrengthChecker} />
       <Route component={NotFound} />
     </Switch>
   );

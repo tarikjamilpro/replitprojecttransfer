@@ -21,6 +21,8 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **What is My IP**: Instantly discover your public IP address using a public API
 - **Age Calculator**: Calculate exact age in years, months, and days from date of birth
 - **Percentage Calculator**: Calculate percentages with two modes - "X% of Y" and "A is what % of B"
+- **MD5 Generator**: Generate MD5 hash from any text for checksums and verification
+- **Password Strength Checker**: Analyze password complexity with real-time strength meter
 
 ## Project Structure
 ```
@@ -74,6 +76,8 @@ server/
 - `/what-is-my-ip` - What is My IP tool
 - `/age-calculator` - Age Calculator tool
 - `/percentage-calculator` - Percentage Calculator tool
+- `/md5-generator` - MD5 Generator tool
+- `/password-strength-checker` - Password Strength Checker tool
 
 ## Design
 - Professional blue and white color scheme

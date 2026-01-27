@@ -22,6 +22,8 @@ const tools = [
   { name: "What is My IP", path: "/what-is-my-ip" },
   { name: "Age Calculator", path: "/age-calculator" },
   { name: "Percentage Calculator", path: "/percentage-calculator" },
+  { name: "MD5 Generator", path: "/md5-generator" },
+  { name: "Password Strength Checker", path: "/password-strength-checker" },
 ];
 
 export function Header() {
