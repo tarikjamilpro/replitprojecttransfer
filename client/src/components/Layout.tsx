@@ -293,16 +293,27 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold text-foreground mb-3">About</h3>
+            <h3 className="font-semibold text-foreground mb-3">Legal</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <span className="text-muted-foreground">Privacy Policy</span>
+                <Link href="/privacy-policy" className="text-muted-foreground hover:text-foreground" data-testid="link-privacy-policy">
+                  Privacy Policy
+                </Link>
               </li>
               <li>
-                <span className="text-muted-foreground">Terms of Service</span>
+                <Link href="/disclaimer" className="text-muted-foreground hover:text-foreground" data-testid="link-disclaimer">
+                  Disclaimer
+                </Link>
               </li>
               <li>
-                <span className="text-muted-foreground">Contact Us</span>
+                <Link href="/terms" className="text-muted-foreground hover:text-foreground" data-testid="link-terms">
+                  Terms of Use
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="text-muted-foreground hover:text-foreground" data-testid="link-contact">
+                  Contact Us
+                </Link>
               </li>
             </ul>
           </div>
