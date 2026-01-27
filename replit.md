@@ -40,6 +40,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Color Palette Generator**: Generate harmonious color palettes with HSL algorithms, lock colors, and export options
 - **CSS Gradient Generator**: Create beautiful CSS gradients with real-time preview, presets, and code generation
 - **Text Cleaner**: Remove duplicate lines and convert text to SEO-friendly slugs
+- **Wheel of Decision**: Random picker with spin animation and confetti celebration effects
 
 ## Project Structure
 ```
@@ -108,6 +109,7 @@ server/
 - `/color-palette` - Color Palette Generator tool
 - `/gradient-generator` - CSS Gradient Generator tool
 - `/text-cleaner` - Text Cleaner (Remove Duplicates & Slug Converter) tool
+- `/wheel-of-decision` - Wheel of Decision (Random Picker) tool
 
 ## Design
 - Professional blue and white color scheme

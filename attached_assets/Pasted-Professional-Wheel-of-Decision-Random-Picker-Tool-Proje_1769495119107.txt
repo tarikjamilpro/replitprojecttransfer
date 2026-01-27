@@ -1,0 +1,295 @@
+Professional Wheel of Decision - Random Picker Tool
+Project Overview
+Build a modern, engaging Wheel of Decision (Random Picker) web application using Next.js 16, React 19, and TypeScript. This fun and interactive tool helps users make decisions by randomly selecting from a list of options with exciting animations and celebratory effects.
+
+Core Features
+1. Options Input System
+Input Text Area:
+
+Large textarea for entering options
+Placeholder: "Enter your options here... (one per line)\n\nExample:\nPizza\nBurger\nBiryani\nSushi\nPasta"
+Minimum height: 200px
+Auto-expanding based on content
+Line counter: "X options entered"
+Clear all button
+Input Validation:
+
+Minimum 2 options required to spin
+Maximum 50 options (configurable)
+Remove empty lines automatically
+Trim whitespace from each option
+Show error if insufficient options
+Quick Actions:
+
+"Add Option" button (alternative to typing)
+"Clear All" button
+Pre-filled example options (demo mode)
+Import from file option (advanced)
+2. Spin Animation System
+Spin Button:
+
+Large, prominent button
+Text: "Spin the Wheel!" or "Pick for Me!"
+Icon: Shuffle, dice, or wheel icon (lucide-react)
+Disabled states:
+
+When spinning (prevent multiple spins)
+When less than 2 options
+Loading animation while spinning
+Animation Behavior:
+
+Phase 1: Preparation (200ms)
+
+Show all options in a grid or list
+Brief highlight effect on all options
+Phase 2: Rapid Selection (2000-3000ms)
+
+Rapidly cycle through options with highlighting
+Speed starts fast, gradually slows down
+Each option highlights for 50-100ms initially
+Slow down to 200-300ms near the end
+Visual: Scale, color change, or glow effect
+Phase 3: Final Selection (500ms)
+
+Slow down dramatically
+Highlight winner with emphasis
+Hold on winner for dramatic effect
+Animation Patterns:
+
+Option A: Sequential Highlighting
+
+
+Code Project
+Option B: Wheel Rotation (if visual wheel implemented)
+
+
+Code Project
+Option C: Card Shuffle
+
+
+Code Project
+3. Winner Display & Celebration
+Winner Announcement:
+
+Large, prominent text (text-5xl or text-6xl)
+Animation: Scale in, fade in, or slide up
+Color: Bright, celebratory color (gold, green, vibrant)
+Trophy or star icon
+Display format: "🎉 Winner: [OPTION] 🎉"
+Confetti Effect:
+
+Use canvas-confetti library
+Trigger when winner is displayed
+Multiple confetti bursts
+Colorful, celebratory particles
+Duration: 3-5 seconds
+Different confetti patterns (optional):
+
+Standard burst
+Side cannons
+Realistic fall
+Fireworks style
+Implementation:
+
+
+Code Project
+4. Result Actions
+Post-Selection Options:
+
+"Spin Again" button - Reset and spin with same options
+"Remove Winner" button - Eliminate winner and spin from remaining
+"Reset All" button - Start fresh with new options
+"Share Result" button - Copy result text to clipboard
+History of picks (optional - show last 5 winners)
+5. Visual Display Options
+Option Display Styles:
+
+Style A: List View (Simplest)
+
+Vertical list of options
+Highlight current option during spin
+Clean, minimal design
+Style B: Grid View
+
+Cards in responsive grid
+2-4 columns based on screen size
+Each card highlights during spin
+Style C: Circular Wheel (Advanced)
+
+Options arranged in circle
+Rotate the wheel visually
+Pointer indicates selection
+Style D: Slot Machine
+
+Options scroll vertically like slot machine
+Multiple "reels" spinning
+Stop on winner
+Technical Requirements
+Tech Stack:
+
+Next.js 16 (App Router)
+React 19 with TypeScript
+Tailwind CSS v4
+shadcn/ui components (Button, Textarea, Card, Badge)
+lucide-react icons (Shuffle, Trophy, Sparkles, Dice)
+canvas-confetti library for celebration effects
+Required Dependencies:
+
+
+Code Project
+File Structure:
+
+
+Code Project
+State Management:
+
+
+Code Project
+Design Guidelines
+Color Scheme
+Vibrant, fun colors (avoid dull grays)
+Primary: Energetic color (blue, purple, or green)
+Accent: Bright, celebratory (gold, yellow, orange)
+Winner text: Gold or bright green
+Use gradient backgrounds (optional)
+Typography
+Page title: Bold, playful (text-4xl)
+Options: Clear, readable (text-lg)
+Winner: Extra large, bold (text-6xl)
+Use fun, friendly font (but maintain readability)
+Layout Structure
+Desktop Layout:
+
+
+Code Project
+Mobile Layout:
+
+Stack vertically
+Full-width components
+Larger touch targets
+Single column option display
+Animations
+Smooth transitions (200-300ms)
+Easing functions for natural motion
+Scale effects on highlight (scale: 1.1)
+Pulse animation on winner
+Confetti particles (canvas-confetti)
+Fade in/out effects
+Implementation Priority
+Phase 1: Core Functionality (MVP)
+Setup Next.js project structure
+Create options input textarea
+Parse and validate options (minimum 2)
+Display options in list/grid
+Implement basic random selection
+Show winner prominently
+Phase 2: Animation System
+Add spin button with disabled states
+Implement rapid highlight animation
+Cycle through options with timing
+Slow down effect near end
+Smooth transition to winner
+Phase 3: Celebration Effects
+Install canvas-confetti library
+Trigger confetti on winner selection
+Winner announcement animation
+Multiple confetti bursts
+Phase 4: Enhanced UX
+Add "Spin Again" functionality
+Implement "Remove Winner" feature
+Add history tracking
+Copy/share result feature
+Sound effects (optional)
+Phase 5: Polish
+Responsive design for all devices
+Keyboard shortcuts (Enter to spin)
+Loading states and transitions
+Accessibility improvements
+Example options for demo
+Key Implementation Details
+Random Selection Logic
+
+Code Project
+Spin Animation Controller
+
+Code Project
+Main Picker Component
+
+Code Project
+Success Criteria
+✅ Accept multiple options (one per line) via textarea
+✅ Validate minimum 2 options before spinning
+✅ Spin button triggers animation sequence
+✅ Options highlight rapidly during spin (2-3 seconds)
+✅ Animation slows down gradually near end
+✅ Random winner selected fairly
+✅ Winner displayed prominently with large text
+✅ Confetti celebration effect triggers on winner
+✅ Multiple confetti bursts for extra celebration
+✅ Spin Again functionality works correctly
+✅ Responsive design on all devices
+✅ Smooth animations throughout
+
+User Experience Enhancements
+Instructions Display:
+
+
+Code Project
+Quick Start Options:
+
+
+Code Project
+Additional Features (Optional)
+Advanced Options:
+
+Weighted selection (some options more likely)
+Exclude options temporarily
+Duplicate winners prevention
+Best of 3/5 mode
+Team/group picker mode
+Save favorite option lists
+Custom spin duration slider
+Different animation styles selector
+Sound Effects:
+
+Tick sound during spin
+Drum roll buildup
+Victory fanfare on winner
+Toggle sound on/off
+Visual Themes:
+
+Casino/slot machine theme
+Game show theme
+Carnival/fair theme
+Minimal/professional theme
+Social Features:
+
+Generate shareable link with options
+Screenshot winner result
+Save decision history
+Statistics (most picked option)
+Important Notes
+Performance:
+
+Optimize animation frame rate
+Use requestAnimationFrame for smooth animations
+Debounce option parsing
+Limit maximum options for performance
+Randomness:
+
+Use Math.random() for selection
+Truly random, no bias
+Each option has equal probability
+Clear communication about fairness
+Accessibility:
+
+Keyboard navigation (Enter to spin)
+Screen reader announcements for winner
+High contrast for highlighted options
+Focus visible states
+Browser Compatibility:
+
+Test confetti library across browsers
+Fallback animations if canvas not supported
+Ensure smooth performance on mobile
+Expected Deliverable: A production-ready, highly engaging Wheel of Decision application that randomly selects from user-provided options with exciting spin animations, celebratory confetti effects, and a delightful user experience that makes decision-making fun and interactive.

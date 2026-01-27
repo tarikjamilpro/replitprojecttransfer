@@ -35,7 +35,8 @@ import {
   MousePointerClick,
   Palette,
   PaintBucket,
-  ListFilter
+  ListFilter,
+  Dices
 } from "lucide-react";
 
 const textTools = [
@@ -190,6 +191,13 @@ const developerTools = [
     icon: PaintBucket,
     path: "/gradient-generator",
     color: "bg-gradient-to-r from-orange-500 to-pink-500",
+  },
+  {
+    name: "Wheel of Decision",
+    description: "Can't decide? Let the wheel randomly pick an option for you!",
+    icon: Dices,
+    path: "/wheel-of-decision",
+    color: "bg-gradient-to-r from-purple-500 to-blue-500",
   },
 ];
 

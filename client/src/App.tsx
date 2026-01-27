@@ -37,6 +37,7 @@ import CPSTest from "@/pages/CPSTest";
 import ColorPalette from "@/pages/ColorPalette";
 import GradientGenerator from "@/pages/GradientGenerator";
 import TextCleaner from "@/pages/TextCleaner";
+import WheelOfDecision from "@/pages/WheelOfDecision";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -75,6 +76,7 @@ function Router() {
       <Route path="/color-palette" component={ColorPalette} />
       <Route path="/gradient-generator" component={GradientGenerator} />
       <Route path="/text-cleaner" component={TextCleaner} />
+      <Route path="/wheel-of-decision" component={WheelOfDecision} />
       <Route component={NotFound} />
     </Switch>
   );
