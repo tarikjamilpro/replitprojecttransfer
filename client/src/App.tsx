@@ -28,6 +28,7 @@ import ImageToPDF from "@/pages/ImageToPDF";
 import MergePDF from "@/pages/MergePDF";
 import ResumeBuilder from "@/pages/ResumeBuilder";
 import UniversalImageProcessor from "@/pages/UniversalImageProcessor";
+import BMICalculator from "@/pages/BMICalculator";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -57,6 +58,7 @@ function Router() {
       <Route path="/merge-pdf" component={MergePDF} />
       <Route path="/resume-builder" component={ResumeBuilder} />
       <Route path="/image-processor" component={UniversalImageProcessor} />
+      <Route path="/bmi-calculator" component={BMICalculator} />
       <Route component={NotFound} />
     </Switch>
   );

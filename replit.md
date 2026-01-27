@@ -31,6 +31,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
   - Profile photo upload with circular preview
   - Digital signature upload support
   - All images converted to Base64 for PDF compatibility
+- **BMI Calculator**: Calculate Body Mass Index with visual gauge and health advice
 
 ## Project Structure
 ```
@@ -90,6 +91,7 @@ server/
 - `/image-to-pdf` - JPG/PNG to PDF Converter tool
 - `/merge-pdf` - Merge PDF Files tool
 - `/resume-builder` - Resume Builder tool
+- `/bmi-calculator` - BMI Calculator tool
 
 ## Design
 - Professional blue and white color scheme

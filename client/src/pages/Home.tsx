@@ -26,7 +26,8 @@ import {
   ShieldCheck,
   FileUp,
   Combine,
-  FileUser
+  FileUser,
+  Activity
 } from "lucide-react";
 
 const textTools = [
@@ -220,6 +221,16 @@ const careerTools = [
   },
 ];
 
+const healthFitnessTools = [
+  {
+    name: "BMI Calculator",
+    description: "Calculate your Body Mass Index to check if you're at a healthy weight.",
+    icon: Activity,
+    path: "/bmi-calculator",
+    color: "bg-emerald-500 dark:bg-emerald-600",
+  },
+];
+
 function ToolCard({
   name,
   description,
@@ -387,6 +398,18 @@ export default function Home() {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {careerTools.map((tool) => (
+                  <ToolCard key={tool.path} {...tool} />
+                ))}
+              </div>
+            </section>
+
+            <section className="mb-12">
+              <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2" data-testid="text-section-health-fitness">
+                <Activity className="w-6 h-6 text-primary" />
+                Health & Fitness
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {healthFitnessTools.map((tool) => (
                   <ToolCard key={tool.path} {...tool} />
                 ))}
               </div>
