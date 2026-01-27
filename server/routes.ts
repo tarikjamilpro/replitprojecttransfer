@@ -15,10 +15,10 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Text is required" });
       }
 
-      const apiKey = process.env.OPENAI_API_KEY;
+      const apiKey = process.env.DEEPSEEKR10528;
       if (!apiKey) {
-        console.error("OPENAI_API_KEY not found in environment");
-        return res.status(500).json({ error: "OPENAI_API_KEY not configured" });
+        console.error("DEEPSEEKR10528 not found in environment");
+        return res.status(500).json({ error: "DeepSeek API key not configured" });
       }
 
       const wordCount = text.trim().split(/\s+/).length;
@@ -44,13 +44,16 @@ export async function registerRoutes(
       res.setHeader("Cache-Control", "no-cache");
       res.setHeader("Connection", "keep-alive");
 
-      const openai = new OpenAI({ apiKey });
+      const client = new OpenAI({
+        apiKey,
+        baseURL: "https://api.deepseek.com",
+      });
 
-      const stream = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+      const stream = await client.chat.completions.create({
+        model: "deepseek-reasoner",
         messages: [
           {
-            role: "system",
+            role: "user",
             content: `You are an expert writing assistant that transforms AI-generated text into natural, human-like content. Your task is to:
 
 1. Rewrite the text to sound more natural and conversational
@@ -61,11 +64,11 @@ export async function registerRoutes(
 6. Avoid overly formal or robotic phrasing
 7. Add a human touch with slight imperfections that feel natural
 
-Output the humanized text in ${targetLanguage}. Do not include any explanations or meta-commentary - just output the humanized version of the text.`,
-          },
-          {
-            role: "user",
-            content: `Please humanize the following text:\n\n${text}`,
+Output the humanized text in ${targetLanguage}. Do not include any explanations or meta-commentary - just output the humanized version of the text.
+
+Please humanize the following text:
+
+${text}`,
           },
         ],
         stream: true,
