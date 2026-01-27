@@ -10,6 +10,8 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Lorem Ipsum Generator**: Generate placeholder text by paragraphs, sentences, or words
 - **Image Compressor**: Compress images directly in the browser using Canvas API - no server upload required
 - **Speed Test**: Test internet connection speed including download, upload, and latency measurements
+- **PNG/JPG Converter**: Convert images between PNG and JPG formats directly in the browser
+- **Image Resizer**: Resize images to any dimensions with aspect ratio lock and preset sizes
 
 ## Project Structure
 ```
@@ -26,6 +28,8 @@ client/
 │   │   ├── LoremIpsum.tsx   # Lorem ipsum generator
 │   │   ├── ImageCompressor.tsx # Image compression tool
 │   │   ├── SpeedTest.tsx    # Internet speed test tool
+│   │   ├── ImageConverter.tsx # PNG/JPG converter tool
+│   │   ├── ImageResizer.tsx # Image resizing tool
 │   │   └── not-found.tsx    # 404 page
 │   ├── App.tsx              # Main app with routing
 │   ├── index.css            # Theme colors (blue/white scheme)
@@ -44,6 +48,8 @@ server/
 - `/lorem-ipsum` - Lorem Ipsum Generator tool
 - `/image-compressor` - Image Compressor tool
 - `/speed-test` - Internet Speed Test tool
+- `/image-converter` - PNG/JPG Converter tool
+- `/image-resizer` - Image Resizer tool
 
 ## Design
 - Professional blue and white color scheme

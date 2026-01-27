@@ -11,6 +11,8 @@ import PasswordGenerator from "@/pages/PasswordGenerator";
 import LoremIpsum from "@/pages/LoremIpsum";
 import ImageCompressor from "@/pages/ImageCompressor";
 import SpeedTest from "@/pages/SpeedTest";
+import ImageConverter from "@/pages/ImageConverter";
+import ImageResizer from "@/pages/ImageResizer";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -23,6 +25,8 @@ function Router() {
       <Route path="/lorem-ipsum" component={LoremIpsum} />
       <Route path="/image-compressor" component={ImageCompressor} />
       <Route path="/speed-test" component={SpeedTest} />
+      <Route path="/image-converter" component={ImageConverter} />
+      <Route path="/image-resizer" component={ImageResizer} />
       <Route component={NotFound} />
     </Switch>
   );

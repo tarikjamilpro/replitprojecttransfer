@@ -8,7 +8,9 @@ import {
   AlignLeft,
   ArrowRight,
   Image as ImageIcon,
-  Wifi
+  Wifi,
+  RefreshCw,
+  Maximize2
 } from "lucide-react";
 
 const textTools = [
@@ -42,6 +44,23 @@ const imageTools = [
     icon: ImageIcon,
     path: "/image-compressor",
     color: "bg-pink-500 dark:bg-pink-600",
+  },
+];
+
+const imageEditingTools = [
+  {
+    name: "PNG/JPG Converter",
+    description: "Convert images between PNG and JPG formats instantly in your browser.",
+    icon: RefreshCw,
+    path: "/image-converter",
+    color: "bg-indigo-500 dark:bg-indigo-600",
+  },
+  {
+    name: "Image Resizer",
+    description: "Resize images to any dimensions with aspect ratio lock and preset sizes.",
+    icon: Maximize2,
+    path: "/image-resizer",
+    color: "bg-teal-500 dark:bg-teal-600",
   },
 ];
 
@@ -136,6 +155,18 @@ export default function Home() {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {imageTools.map((tool) => (
+                  <ToolCard key={tool.path} {...tool} />
+                ))}
+              </div>
+            </section>
+
+            <section className="mb-12">
+              <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2" data-testid="text-section-image-editing-tools">
+                <RefreshCw className="w-6 h-6 text-primary" />
+                Image Editing Tools
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {imageEditingTools.map((tool) => (
                   <ToolCard key={tool.path} {...tool} />
                 ))}
               </div>

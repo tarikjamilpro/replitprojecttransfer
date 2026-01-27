@@ -11,6 +11,8 @@ const tools = [
   { name: "Lorem Ipsum Generator", path: "/lorem-ipsum" },
   { name: "Image Compressor", path: "/image-compressor" },
   { name: "Speed Test", path: "/speed-test" },
+  { name: "Image Converter", path: "/image-converter" },
+  { name: "Image Resizer", path: "/image-resizer" },
 ];
 
 export function Header() {
@@ -165,6 +167,19 @@ export function Footer() {
               <li>
                 <Link href="/image-compressor" className="text-muted-foreground hover:text-foreground">
                   Image Compressor
+                </Link>
+              </li>
+            </ul>
+            <h3 className="font-semibold text-foreground mb-3 mt-4">Image Editing Tools</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link href="/image-converter" className="text-muted-foreground hover:text-foreground">
+                  PNG/JPG Converter
+                </Link>
+              </li>
+              <li>
+                <Link href="/image-resizer" className="text-muted-foreground hover:text-foreground">
+                  Image Resizer
                 </Link>
               </li>
             </ul>
