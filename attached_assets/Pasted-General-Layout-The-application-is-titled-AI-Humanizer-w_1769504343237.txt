@@ -1,0 +1,53 @@
+General Layout:
+
+The application is titled "AI Humanizer" with a subtitle:
+"Transform your AI-generated text into human-like content with ease. Simply use our AI humanizer and wait for its magic."
+
+The interface is designed with a clean, modern aesthetic featuring a light gradient background with subtle network/tech pattern overlays.
+
+2. Navigation and Tools:
+
+At the top of the content area, there are three selectable buttons for related tools:
+
+Plagiarism Checker (purple 'P' icon)
+Grammar Checker (purple 'G' icon)
+Paraphrasing Tool (black 'P' icon)
+Users can switch between these tools easily.
+
+3. Input and Output Areas:
+
+The main interface is split into two panels horizontally:
+
+Left Panel (Input Area):
+
+When empty:
+Displays a prompt:
+"Please your content here and click ‘Humanize’ below."
+Two buttons available:
+Sample Text (to autofill example content)
+Paste Text (to paste clipboard content)
+When filled:
+Shows the user input text with a word count indicator ("Words Count: X / 2000").
+Also shows upload options for local, Dropbox, and Google Drive files.
+Right Panel (Output Area):
+
+When no output yet:
+Displays an illustration of a robot with a laptop and text "Humanized Content Would Appear Here".
+When output generated:
+Shows the humanized (rephrased and improved) version of the input text side-by-side with the original text.
+4. Additional Controls:
+
+Language selection dropdown available (default: English - EN).
+
+Upload buttons for adding text files.
+
+Buttons below output:
+
+Check Plagiarism
+Copy (copies output text to clipboard)
+Download (download output content)
+Large Generate button centered below both panels to submit text for humanizing.
+
+Summary:
+
+This UI design for the AI Humanizer tool on Replit is polished, user-friendly, and professional. It clearly separates input and output for easy comparison, allows quick switching between related text tools, supports multiple input methods and file uploads, and provides convenient options for managing the output text.

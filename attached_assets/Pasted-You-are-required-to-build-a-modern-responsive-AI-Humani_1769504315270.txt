@@ -1,0 +1,41 @@
+You are required to build a modern, responsive AI Humanizer web application with a professional and clean UI design.
+
+**Core Features to Implement:**
+1. **Input Section:**  
+   - Text area where users can type, paste, or upload content (with support for file uploads via local storage, Google Drive, and Dropbox).  
+   - Buttons for "Sample Text" insertion and "Paste Text" functionality.  
+   - Display a real-time word count with a limit of 2000 words.
+
+2. **Output Section:**  
+   - Show the humanized version of the input text side-by-side for easy comparison.  
+   - Display a placeholder graphic or animation when no output is generated.  
+   - Provide options to copy, download, or further process the output.
+
+3. **Additional Tool Navigation:**  
+   - Tabs or buttons for easy navigation between AI Humanizer, Plagiarism Checker, Grammar Checker, and Paraphrasing Tool functionalities.
+
+4. **Generate Button:**  
+   - A prominent "Generate" button to trigger the AI humanization process.
+
+5. **Language Support:**  
+   - Dropdown to select language for processing the text (default English).
+
+6. **User Experience:**  
+   - Responsive layout suitable for desktops, tablets, and mobile devices.  
+   - Clear instructions guiding users to input their content and click "Generate".  
+   - Error handling for issues such as empty input or exceeded word count.
+
+**Technical Stack Suggestions:**
+- Frontend: React.js or similar modern JavaScript framework for interactive UI elements and state management.  
+- Styling: CSS modules, Styled-Components, or Tailwind CSS for a professional look and responsiveness.  
+- Backend / AI Integration: Connect with an NLP API capable of transforming AI-generated text into human-like content (e.g., OpenAI GPT, Hugging Face models).  
+- File Handling: Integrate APIs for Google Drive and Dropbox uploads.  
+- Accessibility: Ensure the app conforms to accessibility standards (ARIA roles, keyboard navigation).
+
+**Deliverables:**
+- Complete Replit project with clean code and well-organized folder structure.  
+- Descriptive comments in code for maintainability.  
+- Live demo link provided by Replit.  
+- README file containing usage instructions and feature explanation.
+
+Please build this AI Humanizer tool with professional coding practices, efficient performance, and an intuitive user interface for seamless content humanization.
