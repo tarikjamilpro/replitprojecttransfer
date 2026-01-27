@@ -1,0 +1,291 @@
+Professional Text Cleaner Utility Tools
+Project Overview
+Build a modern, user-friendly Text Cleaner web application using Next.js 16, React 19, and TypeScript. This application features two essential text processing tools: Remove Duplicate Lines and Text to Slug Converter - perfect for content creators, developers, and SEO professionals.
+
+Core Features
+Tool 1: Remove Duplicate Lines
+Input Section
+Text Area Specifications:
+
+Large textarea for pasting content (minimum 300px height)
+Placeholder: "Paste your list here... (one item per line)"
+Auto-expanding height based on content (optional)
+Character/line counter display
+Clear button to reset input
+Design Elements:
+
+Label: "Input Text"
+Monospace font for better line visibility
+Line numbers display (optional)
+Scroll support for long lists
+Paste detection with visual feedback
+Processing Logic
+Duplicate Detection Algorithm:
+
+
+Code Project
+Processing Options (Enhanced):
+
+Case sensitivity toggle (treat "Apple" and "apple" as same/different)
+Trim whitespace before comparison
+Ignore empty lines option
+Sort output alphabetically (optional)
+Preserve original order or sort
+Output Section
+Display Results:
+
+Cleaned Text: Textarea with deduplicated content
+Statistics Card:
+
+Original lines: [X]
+Unique lines: [Y]
+Duplicates removed: [X - Y]
+Percentage reduced: [%]
+Action Buttons:
+
+Copy cleaned text to clipboard
+Download as .txt file
+Reset/clear all
+Visual Feedback:
+
+Highlight statistics with color coding
+Success message after processing
+Smooth transition animations
+Tool 2: Text to Slug Converter
+Input Section
+Text Input Field:
+
+Large input field or textarea
+Placeholder: "Enter text to convert... (e.g., How to Make Money Online)"
+Real-time conversion (optional) or button-triggered
+Character limit indicator (optional: 100-200 chars)
+Clear button
+Example Display:
+
+Show examples: "Product Title 2024!" → "product-title-2024"
+Help text explaining slug usage
+Conversion Logic
+Slug Generation Algorithm:
+
+
+Code Project
+Conversion Rules:
+
+Convert to lowercase
+Replace spaces with hyphens (-)
+Remove special characters (keep only: a-z, 0-9, -)
+Remove multiple consecutive hyphens
+Remove leading/trailing hyphens
+Handle accented characters (café → cafe)
+Handle numbers appropriately
+Advanced Options (Optional)
+Customization Settings:
+
+Separator character (hyphen, underscore, dot)
+Maximum slug length
+Remove or keep numbers
+Custom replacement rules
+Prefix/suffix options
+Output Section
+Slug Display:
+
+Large, prominent output field (read-only)
+Monospace font for clarity
+Copy button with one-click functionality
+Visual feedback on copy (checkmark, color change)
+Additional Information:
+
+Character count of slug
+URL preview: https://example.com/blog/[generated-slug]
+Validation status (valid slug indicator)
+Action Buttons:
+
+Copy slug to clipboard
+Generate new slug (if random elements added)
+Reset input
+Technical Requirements
+Tech Stack:
+
+Next.js 16 (App Router)
+React 19 with TypeScript
+Tailwind CSS v4
+shadcn/ui components (Button, Textarea, Card, Badge, Tabs, Label)
+lucide-react icons (Copy, Check, Trash, Download, X)
+File Structure:
+
+
+Code Project
+State Management:
+
+
+Code Project
+Design Guidelines
+Color Scheme
+Clean, professional interface
+3-5 colors: 1 primary + 2-3 neutrals + 1 accent
+Use green for success states (duplicates removed, slug generated)
+Use blue/purple for primary actions
+High contrast for readability
+Typography
+Maximum 2 font families
+Monospace font for code/text inputs (font-mono)
+Sans-serif for UI elements (font-sans)
+Clear hierarchy: h1 (page title), h2 (tool names), h3 (sections)
+Layout Structure
+Desktop Layout:
+
+
+Code Project
+Mobile Layout:
+
+Stack all sections vertically
+Full-width inputs and outputs
+Touch-friendly buttons (min 44px height)
+Collapsible options (accordion)
+Visual Elements
+Card-based sections for each tool
+Subtle shadows and borders
+Clear visual separation between input/output
+Icon support (copy, download, clear icons)
+Loading states for processing (if needed)
+Success animations (checkmark, color flash)
+Implementation Priority
+Phase 1: Remove Duplicate Lines (MVP)
+Setup Next.js project structure
+Create Remove Duplicates page/component
+Add large textarea for input
+Implement duplicate removal logic
+Display statistics (original, unique, removed)
+Show cleaned output in textarea
+Add copy to clipboard button
+Phase 2: Text to Slug Converter
+Create Slug Converter page/component
+Add input field for text
+Implement slug generation algorithm
+Display generated slug
+Add copy to clipboard functionality
+Show URL preview
+Phase 3: Enhanced Features
+Add options for duplicate remover (case sensitivity, trim)
+Add download functionality for cleaned text
+Real-time slug generation (as user types)
+Add slug customization options (separator, length)
+Input validation and error handling
+Phase 4: Polish & Enhancement
+Responsive design for all devices
+Add smooth animations and transitions
+Toast notifications for copy/download actions
+Keyboard shortcuts (Ctrl+Enter to process)
+Accessibility improvements (ARIA labels, keyboard nav)
+Add examples and help text
+Navigation between tools (tabs or links)
+Key Implementation Details
+Remove Duplicates Logic
+
+Code Project
+Slug Converter Logic
+
+Code Project
+Copy to Clipboard Utility
+
+Code Project
+Download Text File
+
+Code Project
+Success Criteria
+Remove Duplicate Lines:
+✅ Accept multi-line text input
+✅ Accurately remove duplicate lines
+✅ Display correct statistics (original, unique, duplicates)
+✅ Case sensitivity option works correctly
+✅ Trim whitespace option functions properly
+✅ Copy cleaned text to clipboard
+✅ Download cleaned text as file
+✅ Handle empty input gracefully
+
+Text to Slug Converter:
+✅ Convert text to lowercase
+✅ Replace spaces with hyphens
+✅ Remove special characters
+✅ Handle accented characters (café → cafe)
+✅ Remove multiple consecutive hyphens
+✅ Remove leading/trailing hyphens
+✅ Copy slug to clipboard
+✅ Show URL preview with generated slug
+✅ Validate slug format
+
+Overall:
+✅ Responsive design on all devices
+✅ Smooth animations and transitions
+✅ Toast notifications for actions
+✅ Keyboard shortcuts work
+✅ Accessible to all users
+✅ Fast, instant processing
+
+User Experience Enhancements
+Tool Instructions:
+
+Remove Duplicate Lines:
+
+
+Code Project
+Text to Slug Converter:
+
+
+Code Project
+Additional Features (Optional)
+Remove Duplicates Enhancements:
+
+Keep first or last occurrence
+Highlight duplicates before removal
+Comparison mode (side-by-side before/after)
+Merge similar lines (fuzzy matching)
+Remove lines containing specific text
+Extract only duplicates (inverse operation)
+Regex-based duplicate detection
+Slug Converter Enhancements:
+
+Batch slug generation (multiple titles at once)
+Slug history/saved slugs
+Custom replacement dictionary
+SEO score indicator
+Length recommendations
+Reserved words check (avoid "admin", "api", etc.)
+Uniqueness checker (if database available)
+Slug preview in different contexts
+Additional Tools (Future):
+
+Remove extra spaces/line breaks
+Text case converter (UPPERCASE, lowercase, Title Case)
+Remove numbers/special characters
+Word counter
+Character frequency analyzer
+Important Notes
+Text Processing:
+
+Handle large text inputs efficiently
+Provide feedback for long operations
+Set reasonable limits (e.g., 100,000 lines max)
+Stream processing for very large files
+Edge Cases:
+
+Empty input
+Single line input
+All duplicate lines
+No duplicates
+Special characters in text
+Very long lines
+Unicode characters
+Performance:
+
+Process small inputs instantly
+Show loading state for large inputs (>10,000 lines)
+Use Web Workers for heavy processing (optional)
+Debounce real-time conversion
+Validation:
+
+Validate slug format
+Check for empty results
+Handle invalid characters
+Provide helpful error messages
+Expected Deliverable: A production-ready Text Cleaner application with two fully functional tools: Remove Duplicate Lines for cleaning and deduplicating text lists, and Text to Slug Converter for generating SEO-friendly URL slugs. The application should feature clean design, instant processing, clipboard integration, and excellent user experience across all devices.

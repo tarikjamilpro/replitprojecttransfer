@@ -36,6 +36,7 @@ import KeyboardTester from "@/pages/KeyboardTester";
 import CPSTest from "@/pages/CPSTest";
 import ColorPalette from "@/pages/ColorPalette";
 import GradientGenerator from "@/pages/GradientGenerator";
+import TextCleaner from "@/pages/TextCleaner";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -73,6 +74,7 @@ function Router() {
       <Route path="/cps-test" component={CPSTest} />
       <Route path="/color-palette" component={ColorPalette} />
       <Route path="/gradient-generator" component={GradientGenerator} />
+      <Route path="/text-cleaner" component={TextCleaner} />
       <Route component={NotFound} />
     </Switch>
   );

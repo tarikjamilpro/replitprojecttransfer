@@ -39,6 +39,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **CPS Test**: Click speed test with multiple durations and ranking system
 - **Color Palette Generator**: Generate harmonious color palettes with HSL algorithms, lock colors, and export options
 - **CSS Gradient Generator**: Create beautiful CSS gradients with real-time preview, presets, and code generation
+- **Text Cleaner**: Remove duplicate lines and convert text to SEO-friendly slugs
 
 ## Project Structure
 ```
@@ -106,6 +107,7 @@ server/
 - `/cps-test` - CPS Test (Click Speed Test) tool
 - `/color-palette` - Color Palette Generator tool
 - `/gradient-generator` - CSS Gradient Generator tool
+- `/text-cleaner` - Text Cleaner (Remove Duplicates & Slug Converter) tool
 
 ## Design
 - Professional blue and white color scheme

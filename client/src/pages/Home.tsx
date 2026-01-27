@@ -34,7 +34,8 @@ import {
   KeyboardIcon,
   MousePointerClick,
   Palette,
-  PaintBucket
+  PaintBucket,
+  ListFilter
 } from "lucide-react";
 
 const textTools = [
@@ -65,6 +66,13 @@ const textTools = [
     icon: Sparkles,
     path: "/fancy-font-generator",
     color: "bg-fuchsia-500 dark:bg-fuchsia-600",
+  },
+  {
+    name: "Text Cleaner",
+    description: "Remove duplicate lines and convert text to SEO-friendly slugs.",
+    icon: ListFilter,
+    path: "/text-cleaner",
+    color: "bg-teal-500 dark:bg-teal-600",
   },
 ];
 
