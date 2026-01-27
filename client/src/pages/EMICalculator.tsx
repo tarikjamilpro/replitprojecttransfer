@@ -5,28 +5,100 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calculator, IndianRupee, Percent, Calendar, RotateCcw, TrendingUp, Wallet, PiggyBank } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Calculator, Percent, Calendar, RotateCcw, TrendingUp, Wallet, PiggyBank, Coins } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 
 type TenureUnit = "years" | "months";
 
-const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(amount);
-};
+interface Currency {
+  code: string;
+  symbol: string;
+  name: string;
+  locale: string;
+}
 
-const formatNumber = (num: number): string => {
-  return new Intl.NumberFormat("en-IN").format(Math.round(num));
-};
+const CURRENCIES: Currency[] = [
+  { code: "USD", symbol: "$", name: "US Dollar", locale: "en-US" },
+  { code: "EUR", symbol: "€", name: "Euro", locale: "de-DE" },
+  { code: "GBP", symbol: "£", name: "British Pound", locale: "en-GB" },
+  { code: "INR", symbol: "₹", name: "Indian Rupee", locale: "en-IN" },
+  { code: "BDT", symbol: "৳", name: "Bangladeshi Taka", locale: "bn-BD" },
+  { code: "JPY", symbol: "¥", name: "Japanese Yen", locale: "ja-JP" },
+  { code: "CNY", symbol: "¥", name: "Chinese Yuan", locale: "zh-CN" },
+  { code: "AUD", symbol: "A$", name: "Australian Dollar", locale: "en-AU" },
+  { code: "CAD", symbol: "C$", name: "Canadian Dollar", locale: "en-CA" },
+  { code: "CHF", symbol: "CHF", name: "Swiss Franc", locale: "de-CH" },
+  { code: "HKD", symbol: "HK$", name: "Hong Kong Dollar", locale: "zh-HK" },
+  { code: "SGD", symbol: "S$", name: "Singapore Dollar", locale: "en-SG" },
+  { code: "SEK", symbol: "kr", name: "Swedish Krona", locale: "sv-SE" },
+  { code: "KRW", symbol: "₩", name: "South Korean Won", locale: "ko-KR" },
+  { code: "NOK", symbol: "kr", name: "Norwegian Krone", locale: "nb-NO" },
+  { code: "NZD", symbol: "NZ$", name: "New Zealand Dollar", locale: "en-NZ" },
+  { code: "MXN", symbol: "$", name: "Mexican Peso", locale: "es-MX" },
+  { code: "ZAR", symbol: "R", name: "South African Rand", locale: "en-ZA" },
+  { code: "BRL", symbol: "R$", name: "Brazilian Real", locale: "pt-BR" },
+  { code: "RUB", symbol: "₽", name: "Russian Ruble", locale: "ru-RU" },
+  { code: "TRY", symbol: "₺", name: "Turkish Lira", locale: "tr-TR" },
+  { code: "PLN", symbol: "zł", name: "Polish Zloty", locale: "pl-PL" },
+  { code: "THB", symbol: "฿", name: "Thai Baht", locale: "th-TH" },
+  { code: "IDR", symbol: "Rp", name: "Indonesian Rupiah", locale: "id-ID" },
+  { code: "MYR", symbol: "RM", name: "Malaysian Ringgit", locale: "ms-MY" },
+  { code: "PHP", symbol: "₱", name: "Philippine Peso", locale: "en-PH" },
+  { code: "VND", symbol: "₫", name: "Vietnamese Dong", locale: "vi-VN" },
+  { code: "PKR", symbol: "₨", name: "Pakistani Rupee", locale: "ur-PK" },
+  { code: "EGP", symbol: "E£", name: "Egyptian Pound", locale: "ar-EG" },
+  { code: "NGN", symbol: "₦", name: "Nigerian Naira", locale: "en-NG" },
+  { code: "AED", symbol: "د.إ", name: "UAE Dirham", locale: "ar-AE" },
+  { code: "SAR", symbol: "﷼", name: "Saudi Riyal", locale: "ar-SA" },
+  { code: "QAR", symbol: "﷼", name: "Qatari Riyal", locale: "ar-QA" },
+  { code: "KWD", symbol: "د.ك", name: "Kuwaiti Dinar", locale: "ar-KW" },
+  { code: "ILS", symbol: "₪", name: "Israeli Shekel", locale: "he-IL" },
+  { code: "CZK", symbol: "Kč", name: "Czech Koruna", locale: "cs-CZ" },
+  { code: "HUF", symbol: "Ft", name: "Hungarian Forint", locale: "hu-HU" },
+  { code: "RON", symbol: "lei", name: "Romanian Leu", locale: "ro-RO" },
+  { code: "DKK", symbol: "kr", name: "Danish Krone", locale: "da-DK" },
+  { code: "CLP", symbol: "$", name: "Chilean Peso", locale: "es-CL" },
+  { code: "COP", symbol: "$", name: "Colombian Peso", locale: "es-CO" },
+  { code: "PEN", symbol: "S/", name: "Peruvian Sol", locale: "es-PE" },
+  { code: "ARS", symbol: "$", name: "Argentine Peso", locale: "es-AR" },
+  { code: "UAH", symbol: "₴", name: "Ukrainian Hryvnia", locale: "uk-UA" },
+  { code: "BGN", symbol: "лв", name: "Bulgarian Lev", locale: "bg-BG" },
+  { code: "HRK", symbol: "kn", name: "Croatian Kuna", locale: "hr-HR" },
+  { code: "LKR", symbol: "Rs", name: "Sri Lankan Rupee", locale: "si-LK" },
+  { code: "NPR", symbol: "Rs", name: "Nepalese Rupee", locale: "ne-NP" },
+  { code: "KES", symbol: "KSh", name: "Kenyan Shilling", locale: "sw-KE" },
+  { code: "GHS", symbol: "₵", name: "Ghanaian Cedi", locale: "en-GH" },
+];
 
 export default function EMICalculator() {
-  const [loanAmount, setLoanAmount] = useState<number>(500000);
+  const [currency, setCurrency] = useState<string>("USD");
+  const [loanAmount, setLoanAmount] = useState<number>(50000);
   const [interestRate, setInterestRate] = useState<number>(8.5);
   const [tenure, setTenure] = useState<number>(5);
   const [tenureUnit, setTenureUnit] = useState<TenureUnit>("years");
+
+  const selectedCurrency = CURRENCIES.find(c => c.code === currency) || CURRENCIES[0];
+
+  const formatCurrency = (amount: number): string => {
+    try {
+      return new Intl.NumberFormat(selectedCurrency.locale, {
+        style: "currency",
+        currency: selectedCurrency.code,
+        maximumFractionDigits: 0,
+      }).format(amount);
+    } catch {
+      return `${selectedCurrency.symbol}${formatNumber(amount)}`;
+    }
+  };
+
+  const formatNumber = (num: number): string => {
+    try {
+      return new Intl.NumberFormat(selectedCurrency.locale).format(Math.round(num));
+    } catch {
+      return Math.round(num).toLocaleString();
+    }
+  };
 
   const tenureInMonths = tenureUnit === "years" ? tenure * 12 : tenure;
 
@@ -64,15 +136,15 @@ export default function EMICalculator() {
     : "0";
 
   const handleReset = () => {
-    setLoanAmount(500000);
+    setLoanAmount(50000);
     setInterestRate(8.5);
     setTenure(5);
     setTenureUnit("years");
   };
 
   const handleLoanAmountChange = (value: string) => {
-    const num = parseInt(value.replace(/,/g, "")) || 0;
-    setLoanAmount(Math.min(Math.max(num, 0), 10000000));
+    const num = parseInt(value.replace(/[^0-9]/g, "")) || 0;
+    setLoanAmount(Math.min(Math.max(num, 0), 100000000));
   };
 
   const handleInterestChange = (value: string) => {
@@ -103,21 +175,47 @@ export default function EMICalculator() {
               <CardContent className="p-6 space-y-6">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
+                    <Label htmlFor="currency" className="flex items-center gap-2 text-base">
+                      <Coins className="w-4 h-4" />
+                      Currency
+                    </Label>
+                  </div>
+                  <Select value={currency} onValueChange={setCurrency}>
+                    <SelectTrigger data-testid="select-currency">
+                      <SelectValue placeholder="Select currency" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-64">
+                      {CURRENCIES.map((curr) => (
+                        <SelectItem key={curr.code} value={curr.code}>
+                          <span className="flex items-center gap-2">
+                            <span className="font-mono w-6">{curr.symbol}</span>
+                            <span>{curr.code}</span>
+                            <span className="text-muted-foreground">- {curr.name}</span>
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
                     <Label htmlFor="loan-amount" className="flex items-center gap-2 text-base">
-                      <IndianRupee className="w-4 h-4" />
+                      <Wallet className="w-4 h-4" />
                       Loan Amount
                     </Label>
-                    <span className="text-sm text-muted-foreground">Max: ₹1 Crore</span>
                   </div>
                   <div className="flex gap-3">
                     <div className="relative flex-1">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">₹</span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-mono">
+                        {selectedCurrency.symbol}
+                      </span>
                       <Input
                         id="loan-amount"
                         type="text"
                         value={formatNumber(loanAmount)}
                         onChange={(e) => handleLoanAmountChange(e.target.value)}
-                        className="pl-8"
+                        className="pl-10"
                         data-testid="input-loan-amount"
                       />
                     </div>
@@ -125,14 +223,14 @@ export default function EMICalculator() {
                   <Slider
                     value={[loanAmount]}
                     onValueChange={(val) => setLoanAmount(val[0])}
-                    min={10000}
+                    min={1000}
                     max={10000000}
-                    step={10000}
+                    step={1000}
                     data-testid="slider-loan-amount"
                   />
                   <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>₹10K</span>
-                    <span>₹1 Cr</span>
+                    <span>{selectedCurrency.symbol}1K</span>
+                    <span>{selectedCurrency.symbol}10M</span>
                   </div>
                 </div>
 
@@ -234,9 +332,8 @@ export default function EMICalculator() {
               <CardContent className="p-6 text-center">
                 <p className="text-sm text-muted-foreground mb-2">Your Monthly EMI</p>
                 <div className="flex items-center justify-center gap-2">
-                  <IndianRupee className="w-8 h-8 text-primary" />
-                  <span className="text-5xl font-bold text-primary" data-testid="text-emi">
-                    {formatNumber(calculations.emi)}
+                  <span className="text-4xl sm:text-5xl font-bold text-primary" data-testid="text-emi">
+                    {formatCurrency(calculations.emi)}
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">
@@ -254,7 +351,7 @@ export default function EMICalculator() {
                     </div>
                     <span className="text-sm text-muted-foreground">Principal</span>
                   </div>
-                  <p className="text-xl font-semibold" data-testid="text-principal">{formatCurrency(loanAmount)}</p>
+                  <p className="text-lg sm:text-xl font-semibold" data-testid="text-principal">{formatCurrency(loanAmount)}</p>
                   <p className="text-xs text-blue-600">{principalPercentage}% of total</p>
                 </CardContent>
               </Card>
@@ -267,7 +364,7 @@ export default function EMICalculator() {
                     </div>
                     <span className="text-sm text-muted-foreground">Total Interest</span>
                   </div>
-                  <p className="text-xl font-semibold" data-testid="text-interest">{formatCurrency(calculations.totalInterest)}</p>
+                  <p className="text-lg sm:text-xl font-semibold" data-testid="text-interest">{formatCurrency(calculations.totalInterest)}</p>
                   <p className="text-xs text-orange-600">{interestPercentage}% of total</p>
                 </CardContent>
               </Card>
@@ -280,7 +377,7 @@ export default function EMICalculator() {
                     </div>
                     <span className="text-sm text-muted-foreground">Total Amount Payable</span>
                   </div>
-                  <p className="text-2xl font-semibold" data-testid="text-total">{formatCurrency(calculations.totalPayment)}</p>
+                  <p className="text-xl sm:text-2xl font-semibold" data-testid="text-total">{formatCurrency(calculations.totalPayment)}</p>
                 </CardContent>
               </Card>
             </div>
