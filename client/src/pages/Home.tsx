@@ -30,7 +30,8 @@ import {
   Activity,
   Smile,
   Calculator,
-  WifiIcon
+  WifiIcon,
+  KeyboardIcon
 } from "lucide-react";
 
 const textTools = [
@@ -150,6 +151,13 @@ const developerTools = [
     icon: WifiIcon,
     path: "/wifi-qr-generator",
     color: "bg-cyan-500 dark:bg-cyan-600",
+  },
+  {
+    name: "Keyboard & Mouse Tester",
+    description: "Test your keyboard keys and mouse buttons for proper functionality.",
+    icon: KeyboardIcon,
+    path: "/keyboard-tester",
+    color: "bg-slate-500 dark:bg-slate-600",
   },
 ];
 

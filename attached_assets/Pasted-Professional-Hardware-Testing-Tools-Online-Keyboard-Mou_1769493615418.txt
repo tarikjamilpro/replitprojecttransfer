@@ -1,0 +1,317 @@
+Professional Hardware Testing Tools - Online Keyboard & Mouse Tester
+Project Overview
+Build a modern, interactive Hardware Testing Tools web application using Next.js 16, React 19, and TypeScript. The primary feature is a fully functional Online Keyboard Tester with visual feedback and a Mouse Button Tester to help users diagnose hardware issues.
+
+Core Requirements
+1. Visual Keyboard Layout
+Create a full-size QWERTY keyboard representation with accurate key positioning:
+
+Layout Specifications:
+
+Row 1 - Function Keys:
+
+ESC, F1-F12, Print Screen, Scroll Lock, Pause Break
+Row 2 - Number Row:
+
+` (backtick), 1-0, -, =, Backspace
+Row 3 - Tab Row:
+
+Tab, Q, W, E, R, T, Y, U, I, O, P, [, ], \ (backslash)
+Row 4 - Caps Lock Row:
+
+Caps Lock, A, S, D, F, G, H, J, K, L, ;, ', Enter
+Row 5 - Shift Row:
+
+Left Shift, Z, X, C, V, B, N, M, ,, ., /, Right Shift
+Row 6 - Bottom Row:
+
+Ctrl, Win/Cmd, Alt, Spacebar, Alt, Win/Cmd, Menu, Ctrl
+Additional Keys (Navigation Cluster):
+
+Insert, Home, Page Up
+Delete, End, Page Down
+Arrow Keys:
+
+Up, Down, Left, Right
+Numpad (Optional but recommended):
+
+Num Lock, /, *, -
+7, 8, 9, +
+4, 5, 6
+1, 2, 3, Enter
+0, .
+Implementation Options:
+
+Option A (Recommended): HTML/CSS Grid layout with individual <div> elements for each key
+Option B: SVG-based keyboard (more complex but scalable)
+Option C: Canvas-based rendering (highest performance)
+Key Visual Design:
+
+Default state: Light gray background (#E5E7EB), dark text
+Hover state: Slightly darker gray
+Pressed state: Bright green background (#10B981), white text
+Border: 1-2px solid border with slight shadow
+Border radius: 4-6px (rounded corners)
+Key labels: Clear, centered text
+Key size: Proportional (spacebar wider, shift keys wider, etc.)
+2. Keyboard Event Detection
+Global Event Listener:
+
+
+Code Project
+Key Mapping:
+
+Use event.code (e.g., "KeyA", "Digit1", "Space") NOT event.key
+Map all 104 standard keyboard keys
+Handle modifier keys: Shift, Ctrl, Alt, Meta/Win
+Differentiate left/right modifiers (ShiftLeft vs ShiftRight)
+Key State Management:
+
+Use React state (Set or Map) to track pressed keys
+Keys stay highlighted once pressed (persistent green state)
+Track unique key count for progress counter
+3. Visual Feedback System
+Key Color States:
+
+Untested (Default): Gray (#E5E7EB or bg-gray-200)
+Tested (Pressed): Green (#10B981 or bg-green-500)
+Currently Pressing (Optional): Darker green with scale animation
+Animations:
+
+Smooth color transition (150-200ms)
+Optional: Scale effect on key press (scale: 0.95)
+Ripple effect or glow animation (optional enhancement)
+Accessibility:
+
+High contrast between states
+Color-blind friendly (use icons/checkmarks in addition to color)
+Keyboard focus visible for navigation
+4. Progress Tracking
+Counter Display:
+
+Show: "Keys Tested: [X]/104"
+Update in real-time as keys are pressed
+Display prominently at top of keyboard
+Large, bold typography (text-2xl or text-3xl)
+Progress percentage: "72% Complete"
+Progress Bar (Optional):
+
+Visual progress bar showing completion
+Animated width transition
+Color gradient (gray → green as progress increases)
+Key Categories (Advanced):
+
+Track by section:
+
+Alphanumeric: 47 keys
+Function keys: 12 keys
+Navigation: 9 keys
+Numpad: 17 keys
+Modifiers: 8 keys
+Special: 11 keys
+Show breakdown: "Alphanumeric: 35/47 | Function: 8/12"
+5. Reset Functionality
+Reset Button:
+
+Text: "Reset Test" or "Clear All"
+Icon: Rotating arrow (lucide-react RotateCcw)
+Position: Top right corner or below counter
+Action: Clear all pressed keys state
+Confirmation dialog (optional): "Are you sure?"
+Auto-save (Optional):
+
+Save test state to localStorage
+Resume on page reload
+Show "Continue Previous Test" option
+6. Mouse Button Tester
+Create a dedicated section below/beside keyboard for mouse testing:
+
+UI Layout:
+
+Card/box with mouse icon illustration
+Three distinct test areas/buttons:
+A. Left Click Test:
+
+Area label: "Left Click"
+Initial state: Gray
+On left click: Turn green
+Display: "Left Click Detected ✓"
+B. Right Click Test:
+
+Area label: "Right Click"
+Initial state: Gray
+On right click (context menu): Turn green
+Prevent context menu: event.preventDefault()
+Display: "Right Click Detected ✓"
+C. Middle Click / Scroll Test:
+
+Area label: "Middle Click / Scroll Wheel"
+Initial state: Gray
+On middle click: Turn green
+On scroll wheel: Detect scroll direction (up/down)
+Display: "Middle Click ✓" or "Scroll Detected ↑↓"
+Additional Mouse Tests (Optional):
+
+Mouse movement tracker
+Double-click speed test
+Click accuracy test
+Scroll speed indicator
+Implementation:
+
+
+Code Project
+Technical Stack
+Framework & Libraries:
+
+Next.js 16 (App Router)
+React 19 with TypeScript
+Tailwind CSS v4 for styling
+shadcn/ui components (Card, Button, Progress, Badge)
+lucide-react for icons
+No external keyboard library needed (use native events)
+File Structure
+
+Code Project
+Key Implementation Details
+1. Keyboard Layout Data Structure
+
+Code Project
+2. Key Component
+
+Code Project
+3. Mouse Button Detection
+
+Code Project
+Key Features to Implement
+✅ Full QWERTY Layout: All 104 keys represented visually
+✅ Real-time Detection: Keys highlight immediately on press
+✅ Persistent State: Keys stay green once pressed
+✅ Progress Tracking: Counter showing X/104 keys tested
+✅ Reset Functionality: Clear all test data
+✅ Mouse Testing: Left, right, middle click + scroll detection
+✅ Responsive Design: Works on desktop (primary), tablet
+✅ Visual Feedback: Smooth animations and color transitions
+✅ Keyboard Shortcuts:
+
+Press 'R' to reset
+ESC to exit fullscreen (if implemented) ✅ Accessibility: Keyboard-only navigation possible
+Design Guidelines
+Color Scheme
+Background: Light neutral (white or light gray)
+Untested Keys: Light gray (#E5E7EB, bg-gray-200)
+Tested Keys: Bright green (#10B981, bg-green-500)
+Text on Gray Keys: Dark gray/black
+Text on Green Keys: White
+Borders: Medium gray with subtle shadow
+Layout Structure
+Desktop Layout:
+
+
+Code Project
+Mobile Layout:
+
+Scale down keyboard (may require horizontal scroll)
+Stack mouse tester below keyboard
+Consider landscape orientation for better fit
+Typography
+Page Title: Bold, large (text-3xl or text-4xl)
+Counter: Prominent, bold (text-2xl)
+Key Labels: Clear, readable (text-sm or text-base)
+Instructions: Helpful text (text-sm, muted color)
+Spacing & Proportions
+Keys should have realistic proportions:
+
+Standard keys: 1 unit width
+Tab, Caps Lock, Backslash: 1.5 units
+Backspace: 2 units
+Shift keys: 2.25 units
+Spacebar: 6-7 units
+Enter: 2.25 units
+Gap between keys: 0.25-0.5rem
+Larger gap between key groups (function row, numpad)
+Implementation Priority
+Phase 1: Core Keyboard (MVP)
+Setup Next.js project structure
+Create keyboard layout data (all 104 keys with codes)
+Build KeyboardKey component
+Create keyboard grid layout with CSS Grid
+Implement keydown event listener
+Add pressed state management
+Visual feedback (gray → green)
+Phase 2: Progress & Reset
+Add counter component (X/104)
+Calculate percentage
+Implement reset button
+Add confirmation dialog (optional)
+localStorage persistence (optional)
+Phase 3: Mouse Tester
+Create mouse tester component
+Implement left/right/middle click detection
+Add scroll wheel detection
+Visual feedback for mouse buttons
+Prevent context menu on right click
+Phase 4: Polish & Enhancement
+Add animations and transitions
+Responsive design for different screens
+Add helpful instructions/tutorial
+Keyboard shortcuts (R for reset)
+Accessibility improvements
+Add statistics (time elapsed, keys per minute)
+Export test results (optional)
+Success Criteria
+✔️ All 104 standard keyboard keys are represented visually
+✔️ Keys respond immediately to physical key presses
+✔️ Pressed keys turn green and stay green
+✔️ Counter accurately tracks unique keys pressed
+✔️ Reset button clears all states correctly
+✔️ Mouse left/right/middle clicks are detected accurately
+✔️ Right-click doesn't show browser context menu
+✔️ Scroll wheel detection works properly
+✔️ Layout is visually accurate to real keyboard proportions
+✔️ Responsive design works on desktop and tablet
+✔️ Smooth animations and transitions
+✔️ No false positives or missed key presses
+
+Important Notes
+Event Handling
+Use event.code not event.key:
+
+event.code represents physical key location (KeyA, Digit1)
+event.key represents character produced (changes with Shift, Caps)
+Prevent default behavior: Especially for Tab, Backspace, etc.
+Handle modifier keys: Left/Right Shift, Ctrl, Alt, Meta separately
+Key Code Mapping Examples
+
+Code Project
+Browser Compatibility
+Test in Chrome, Firefox, Safari, Edge
+Some keys may not work in all browsers (Print Screen, etc.)
+Show note: "Some special keys may not be detectable"
+Performance
+Optimize re-renders (use React.memo for keys)
+Debounce scroll events if needed
+Use CSS transforms for animations (better performance)
+Additional Enhancements (Optional)
+Advanced Features:
+Key Latency Test: Measure response time
+Key Repeat Test: Hold key to test repeat rate
+Gaming Mode: Test rapid key presses (WASD cluster)
+Dead Key Detection: Show keys that don't respond
+Heatmap: Show most/least tested keys
+Sound Effects: Audio feedback on key press
+Fullscreen Mode: Maximize keyboard view
+Export Report: Generate PDF test results
+Multi-language Layouts: AZERTY, QWERTZ, etc.
+Mechanical Keyboard Sounds: Play click sounds
+Mouse Enhancements:
+Click Speed Test: Measure clicks per second
+Double-Click Test: Test double-click timing
+Drag Test: Test click-and-drag functionality
+Cursor Tracking: Visualize mouse movement path
+Scroll Speed Meter: Measure scroll velocity
+User Instructions to Display
+Include helpful text on the page:
+
+
+Code Project
+Expected Deliverable: A production-ready, interactive Hardware Testing Tools application with a fully functional Online Keyboard Tester and Mouse Button Tester. The application should provide accurate real-time feedback, beautiful visual design, smooth animations, and work flawlessly across all major browsers and devices.

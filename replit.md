@@ -35,6 +35,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Meme Generator**: Create memes with custom text from templates or uploaded images
 - **Loan EMI Calculator**: Calculate monthly loan EMI with interactive sliders and pie chart breakdown
 - **WiFi QR Generator**: Generate QR codes for WiFi network sharing with print support
+- **Keyboard & Mouse Tester**: Test keyboard keys and mouse buttons for hardware diagnostics
 
 ## Project Structure
 ```
@@ -98,6 +99,7 @@ server/
 - `/meme-generator` - Meme Generator tool
 - `/emi-calculator` - Loan EMI Calculator tool
 - `/wifi-qr-generator` - WiFi QR Generator tool
+- `/keyboard-tester` - Keyboard & Mouse Tester tool
 
 ## Design
 - Professional blue and white color scheme
