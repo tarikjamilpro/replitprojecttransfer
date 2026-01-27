@@ -39,6 +39,7 @@ import GradientGenerator from "@/pages/GradientGenerator";
 import TextCleaner from "@/pages/TextCleaner";
 import WheelOfDecision from "@/pages/WheelOfDecision";
 import GrammarChecker from "@/pages/GrammarChecker";
+import AIHumanizer from "@/pages/AIHumanizer";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -79,6 +80,7 @@ function Router() {
       <Route path="/text-cleaner" component={TextCleaner} />
       <Route path="/wheel-of-decision" component={WheelOfDecision} />
       <Route path="/grammar-checker" component={GrammarChecker} />
+      <Route path="/ai-humanizer" component={AIHumanizer} />
       <Route component={NotFound} />
     </Switch>
   );

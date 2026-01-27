@@ -37,7 +37,8 @@ import {
   PaintBucket,
   ListFilter,
   Dices,
-  SpellCheck
+  SpellCheck,
+  Wand2
 } from "lucide-react";
 
 const textTools = [
@@ -82,6 +83,13 @@ const textTools = [
     icon: SpellCheck,
     path: "/grammar-checker",
     color: "bg-emerald-500 dark:bg-emerald-600",
+  },
+  {
+    name: "AI Humanizer",
+    description: "Transform AI-generated text into natural, human-like content instantly.",
+    icon: Wand2,
+    path: "/ai-humanizer",
+    color: "bg-violet-500 dark:bg-violet-600",
   },
 ];
 
