@@ -115,12 +115,26 @@ server/
 - `/grammar-checker` - Grammar Checker tool
 - `/ai-humanizer` - AI Humanizer tool
 
+### Legal Pages (AdSense/GDPR Compliance)
+- `/privacy-policy` - Privacy Policy page with cookie disclosure and GDPR information
+- `/disclaimer` - Disclaimer page with "as is" warranty and liability limitations
+- `/terms` - Terms of Use page with acceptable use policy
+- `/contact` - Contact Us page with contact form
+
 ## Design
 - Professional blue and white color scheme
 - Sticky header with search functionality
 - Responsive grid layout for tool cards
 - Ad space placeholders for future monetization
 - Mobile-friendly with hamburger menu
+- Footer with legal page links (Privacy Policy, Disclaimer, Terms of Use, Contact Us)
+- Related Tools section on each tool page for SEO internal linking
+
+## Constants
+Site constants are stored in `client/src/lib/constants.ts`:
+- `SITE_NAME`: "Digi Best Tools"
+- `SITE_URL`: "https://digibesttools.site"
+- `SUPPORT_EMAIL`: "support@digibesttools.site"
 
 ## Running the Project
 The application runs on port 5000 using `npm run dev`.
