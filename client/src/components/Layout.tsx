@@ -19,6 +19,7 @@ const tools = [
   { name: "Robots.txt Generator", path: "/robots-txt-generator" },
   { name: "Fancy Font Generator", path: "/fancy-font-generator" },
   { name: "YouTube Thumbnail Downloader", path: "/youtube-thumbnail-downloader" },
+  { name: "What is My IP", path: "/what-is-my-ip" },
 ];
 
 export function Header() {

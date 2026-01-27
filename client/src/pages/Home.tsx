@@ -18,7 +18,8 @@ import {
   Bot,
   Search,
   Sparkles,
-  Youtube
+  Youtube,
+  Globe
 } from "lucide-react";
 
 const textTools = [
@@ -93,6 +94,13 @@ const networkTools = [
     icon: Wifi,
     path: "/speed-test",
     color: "bg-cyan-500 dark:bg-cyan-600",
+  },
+  {
+    name: "What is My IP",
+    description: "Instantly discover your public IP address with one click.",
+    icon: Globe,
+    path: "/what-is-my-ip",
+    color: "bg-sky-500 dark:bg-sky-600",
   },
 ];
 

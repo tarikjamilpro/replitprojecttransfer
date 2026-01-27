@@ -19,6 +19,7 @@ import MetaTagGenerator from "@/pages/MetaTagGenerator";
 import RobotsTxtGenerator from "@/pages/RobotsTxtGenerator";
 import FancyFontGenerator from "@/pages/FancyFontGenerator";
 import YouTubeThumbnailDownloader from "@/pages/YouTubeThumbnailDownloader";
+import WhatIsMyIP from "@/pages/WhatIsMyIP";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -39,6 +40,7 @@ function Router() {
       <Route path="/robots-txt-generator" component={RobotsTxtGenerator} />
       <Route path="/fancy-font-generator" component={FancyFontGenerator} />
       <Route path="/youtube-thumbnail-downloader" component={YouTubeThumbnailDownloader} />
+      <Route path="/what-is-my-ip" component={WhatIsMyIP} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -18,6 +18,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Robots.txt Generator**: Create robots.txt files to control search engine crawling
 - **Fancy Font Generator**: Convert text into stylish Unicode fonts (39 styles including Script, Bold, Upside Down)
 - **YouTube Thumbnail Downloader**: Download high-quality thumbnails from YouTube videos (HD, SD, HQ, MQ)
+- **What is My IP**: Instantly discover your public IP address using a public API
 
 ## Project Structure
 ```
@@ -68,6 +69,7 @@ server/
 - `/robots-txt-generator` - Robots.txt Generator tool
 - `/fancy-font-generator` - Fancy Font Generator tool
 - `/youtube-thumbnail-downloader` - YouTube Thumbnail Downloader tool
+- `/what-is-my-ip` - What is My IP tool
 
 ## Design
 - Professional blue and white color scheme
