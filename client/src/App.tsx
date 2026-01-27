@@ -24,6 +24,8 @@ import AgeCalculator from "@/pages/AgeCalculator";
 import PercentageCalculator from "@/pages/PercentageCalculator";
 import MD5Generator from "@/pages/MD5Generator";
 import PasswordStrengthChecker from "@/pages/PasswordStrengthChecker";
+import ImageToPDF from "@/pages/ImageToPDF";
+import MergePDF from "@/pages/MergePDF";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -49,6 +51,8 @@ function Router() {
       <Route path="/percentage-calculator" component={PercentageCalculator} />
       <Route path="/md5-generator" component={MD5Generator} />
       <Route path="/password-strength-checker" component={PasswordStrengthChecker} />
+      <Route path="/image-to-pdf" component={ImageToPDF} />
+      <Route path="/merge-pdf" component={MergePDF} />
       <Route component={NotFound} />
     </Switch>
   );

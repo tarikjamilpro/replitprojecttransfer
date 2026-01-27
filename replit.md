@@ -23,6 +23,8 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Percentage Calculator**: Calculate percentages with two modes - "X% of Y" and "A is what % of B"
 - **MD5 Generator**: Generate MD5 hash from any text for checksums and verification
 - **Password Strength Checker**: Analyze password complexity with real-time strength meter
+- **JPG/PNG to PDF Converter**: Convert multiple images to PDF with page size and orientation options
+- **Merge PDF Files**: Combine multiple PDFs into one document with reorder support
 
 ## Project Structure
 ```
@@ -78,6 +80,8 @@ server/
 - `/percentage-calculator` - Percentage Calculator tool
 - `/md5-generator` - MD5 Generator tool
 - `/password-strength-checker` - Password Strength Checker tool
+- `/image-to-pdf` - JPG/PNG to PDF Converter tool
+- `/merge-pdf` - Merge PDF Files tool
 
 ## Design
 - Professional blue and white color scheme

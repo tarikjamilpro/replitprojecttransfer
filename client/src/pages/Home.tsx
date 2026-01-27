@@ -23,7 +23,9 @@ import {
   CalendarDays,
   Percent,
   Hash,
-  ShieldCheck
+  ShieldCheck,
+  FileUp,
+  Combine
 } from "lucide-react";
 
 const textTools = [
@@ -183,6 +185,23 @@ const calculatorTools = [
   },
 ];
 
+const pdfTools = [
+  {
+    name: "JPG/PNG to PDF",
+    description: "Convert multiple images to a single PDF file with page size options.",
+    icon: FileUp,
+    path: "/image-to-pdf",
+    color: "bg-red-600 dark:bg-red-700",
+  },
+  {
+    name: "Merge PDF Files",
+    description: "Combine multiple PDF files into one document. Reorder pages easily.",
+    icon: Combine,
+    path: "/merge-pdf",
+    color: "bg-red-500 dark:bg-red-600",
+  },
+];
+
 function ToolCard({
   name,
   description,
@@ -319,13 +338,25 @@ export default function Home() {
               </div>
             </section>
 
-            <section>
+            <section className="mb-12">
               <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2" data-testid="text-section-calculator-tools">
                 <CalendarDays className="w-6 h-6 text-primary" />
                 Calculators
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {calculatorTools.map((tool) => (
+                  <ToolCard key={tool.path} {...tool} />
+                ))}
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2" data-testid="text-section-pdf-tools">
+                <FileUp className="w-6 h-6 text-primary" />
+                PDF Management Tools
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {pdfTools.map((tool) => (
                   <ToolCard key={tool.path} {...tool} />
                 ))}
               </div>

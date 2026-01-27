@@ -24,6 +24,8 @@ const tools = [
   { name: "Percentage Calculator", path: "/percentage-calculator" },
   { name: "MD5 Generator", path: "/md5-generator" },
   { name: "Password Strength Checker", path: "/password-strength-checker" },
+  { name: "JPG/PNG to PDF", path: "/image-to-pdf" },
+  { name: "Merge PDF Files", path: "/merge-pdf" },
 ];
 
 export function Header() {
