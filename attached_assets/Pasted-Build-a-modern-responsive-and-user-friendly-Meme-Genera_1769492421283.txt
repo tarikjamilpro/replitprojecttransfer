@@ -1,0 +1,145 @@
+Build a modern, responsive, and user-friendly Meme Generator web application using Next.js 16 and React 19 with TypeScript.
+
+Core Requirements
+1. Image Handling System
+Provide users with two options:
+
+Option A: Upload custom images (support drag & drop + file picker)
+Option B: Select from 5-10 popular meme templates stored in /public/memes/ folder
+Suggested Templates:
+
+Drake Hotline Bling
+Distracted Boyfriend
+Two Buttons
+Expanding Brain
+Woman Yelling at Cat
+Success Kid
+Change My Mind
+Disaster Girl
+This Is Fine
+Bernie Sanders
+2. Text Input Interface
+Implement two clear, accessible input fields:
+
+"Top Text" input field
+"Bottom Text" input field
+Requirements:
+
+Real-time preview: text appears instantly on image as user types
+Input validation with character limit (max 100 characters per field)
+Responsive and mobile-friendly
+3. Text Styling & Rendering
+Typography specifications:
+
+Font: Impact or similar bold meme-style font
+Color: Pure white (#FFFFFF)
+Outline: 2-3px black (#000000) stroke for readability on any background
+Position:
+
+Top text: Centered in upper portion of image
+Bottom text: Centered in lower portion of image
+Responsive: Text size auto-adjusts based on image dimensions
+4. Canvas-based Image Processing
+Use HTML5 Canvas API to render image + text
+Ensure high-quality output (minimum 800px width)
+Apply proper anti-aliasing for smooth text rendering
+Maintain aspect ratio of original images
+5. Download Functionality
+Implement a prominent "Download Meme" button:
+
+Export format: PNG (lossless quality)
+Filename pattern: meme-${timestamp}.png
+Preserve original image quality
+Handle download errors gracefully
+Technical Implementation
+Tech Stack:
+
+Next.js 16 (App Router)
+React 19 with TypeScript
+Tailwind CSS v4
+shadcn/ui components (Button, Card, Input, Label, Tabs)
+HTML5 Canvas API
+lucide-react for icons
+Suggested File Structure:
+
+
+Code Project
+Key Features
+✅ Responsive Design: Works perfectly on mobile, tablet, and desktop
+✅ Accessibility: ARIA labels, keyboard navigation, screen reader support
+✅ Performance Optimized: Image lazy loading, debounced input updates
+✅ Excellent UX:
+
+Loading states during image processing
+Error handling for invalid uploads
+Clear "Reset" button to start over
+Live preview before download
+Toast notifications for success/error feedback
+✅ Optional Enhancements:
+
+Font size adjustment slider
+Text position fine-tuning controls
+Color picker for text and outline
+Recent memes history (localStorage)
+Design Guidelines
+UI/UX Preferences:
+
+Clean, modern interface with generous whitespace
+Color scheme: Choose 3-5 colors (1 primary brand color + 2-3 neutrals + 1-2 accents)
+Card-based layout for the meme canvas
+Grid layout for templates (responsive: 2/3/5 columns)
+Smooth transitions and hover effects
+Clear visual hierarchy
+Layout:
+
+Use Flexbox for most layouts
+CSS Grid only for template gallery
+Mobile-first approach
+Typography:
+
+Limit to 2 font families maximum
+Use proper heading hierarchy (h1, h2, h3)
+Line-height: 1.5-1.6 for body text
+Ensure good contrast ratios (WCAG AA compliance)
+Implementation Priority
+Phase 1 (MVP):
+
+Setup Next.js project with proper structure
+Canvas setup and image rendering system
+Template selector with 5-10 placeholder templates
+Text input fields with real-time preview
+Text rendering with white fill + black stroke
+Download functionality
+Phase 2 (Enhancement):
+
+Image upload feature with drag & drop
+Advanced text controls (size, position)
+UI polish, animations, transitions
+Mobile optimization and touch gestures
+Error boundaries and loading states
+Technical Implementation Details
+Canvas Text Rendering:
+
+
+Code Project
+Download Implementation:
+
+
+Code Project
+Success Criteria
+✔️ User can select template and see it instantly on canvas
+✔️ Text input updates appear in real-time on the image
+✔️ Downloaded meme is high-quality with perfectly positioned text
+✔️ Application runs error-free across all major browsers
+✔️ Fully responsive and touch-friendly interface
+✔️ Accessible to keyboard and screen reader users
+
+Important Notes
+Use localStorage to save user preferences and recent memes (optional)
+Implement proper error boundaries around canvas operations
+Debounce text input updates (300ms) for performance
+For placeholder meme templates, use https://placehold.co/800x600?text=Meme+Template+Name
+Ensure proper image loading states and error handling
+Add loading spinner when processing images
+Use semantic HTML for better SEO
+Expected Deliverable: A fully functional, production-ready Meme Generator that follows modern web development best practices, provides an excellent user experience, and is visually appealing with a professional design.

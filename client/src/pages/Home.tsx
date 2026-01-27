@@ -27,7 +27,8 @@ import {
   FileUp,
   Combine,
   FileUser,
-  Activity
+  Activity,
+  Smile
 } from "lucide-react";
 
 const textTools = [
@@ -82,6 +83,13 @@ const imageTools = [
     icon: ImageIcon,
     path: "/image-processor",
     color: "bg-indigo-500 dark:bg-indigo-600",
+  },
+  {
+    name: "Meme Generator",
+    description: "Create hilarious memes with custom text. Choose from popular templates or upload your own.",
+    icon: Smile,
+    path: "/meme-generator",
+    color: "bg-yellow-500 dark:bg-yellow-600",
   },
 ];
 

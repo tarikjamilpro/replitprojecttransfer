@@ -29,6 +29,7 @@ import MergePDF from "@/pages/MergePDF";
 import ResumeBuilder from "@/pages/ResumeBuilder";
 import UniversalImageProcessor from "@/pages/UniversalImageProcessor";
 import BMICalculator from "@/pages/BMICalculator";
+import MemeGenerator from "@/pages/MemeGenerator";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -59,6 +60,7 @@ function Router() {
       <Route path="/resume-builder" component={ResumeBuilder} />
       <Route path="/image-processor" component={UniversalImageProcessor} />
       <Route path="/bmi-calculator" component={BMICalculator} />
+      <Route path="/meme-generator" component={MemeGenerator} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -32,6 +32,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
   - Digital signature upload support
   - All images converted to Base64 for PDF compatibility
 - **BMI Calculator**: Calculate Body Mass Index with visual gauge and health advice
+- **Meme Generator**: Create memes with custom text from templates or uploaded images
 
 ## Project Structure
 ```
@@ -92,6 +93,7 @@ server/
 - `/merge-pdf` - Merge PDF Files tool
 - `/resume-builder` - Resume Builder tool
 - `/bmi-calculator` - BMI Calculator tool
+- `/meme-generator` - Meme Generator tool
 
 ## Design
 - Professional blue and white color scheme
