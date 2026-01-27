@@ -90,10 +90,80 @@ const emptyData: ResumeData = {
   activeTemplate: "modern",
 };
 
+const TemplateThumbnail = ({ type }: { type: "modern" | "classic" | "creative" }) => {
+  if (type === "modern") {
+    return (
+      <div className="h-20 rounded border border-gray-200 overflow-hidden flex">
+        <div className="w-1/3 bg-slate-800 p-1">
+          <div className="w-3 h-3 rounded-full bg-slate-600 mx-auto mb-1" />
+          <div className="space-y-0.5">
+            <div className="h-0.5 bg-slate-600 rounded" />
+            <div className="h-0.5 bg-slate-600 rounded w-3/4" />
+          </div>
+        </div>
+        <div className="w-2/3 bg-white p-1.5">
+          <div className="h-1.5 bg-slate-300 rounded w-3/4 mb-1" />
+          <div className="h-0.5 bg-slate-200 rounded mb-0.5" />
+          <div className="h-0.5 bg-slate-200 rounded w-5/6 mb-1" />
+          <div className="h-0.5 bg-blue-400 rounded w-1/2 mb-0.5" />
+          <div className="h-0.5 bg-slate-200 rounded" />
+          <div className="h-0.5 bg-slate-200 rounded w-4/5 mt-0.5" />
+        </div>
+      </div>
+    );
+  }
+  
+  if (type === "classic") {
+    return (
+      <div className="h-20 rounded border border-gray-200 overflow-hidden bg-white p-2">
+        <div className="text-center mb-1">
+          <div className="h-1.5 bg-slate-400 rounded w-1/2 mx-auto mb-0.5" />
+          <div className="h-0.5 bg-slate-300 rounded w-1/3 mx-auto" />
+        </div>
+        <div className="h-px bg-gray-300 my-1" />
+        <div className="space-y-0.5">
+          <div className="h-0.5 bg-slate-200 rounded" />
+          <div className="h-0.5 bg-slate-200 rounded w-5/6" />
+          <div className="h-0.5 bg-slate-200 rounded w-4/5" />
+        </div>
+        <div className="h-px bg-gray-300 my-1" />
+        <div className="space-y-0.5">
+          <div className="h-0.5 bg-slate-200 rounded w-3/4" />
+          <div className="h-0.5 bg-slate-200 rounded w-2/3" />
+        </div>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="h-20 rounded border border-gray-200 overflow-hidden bg-white">
+      <div className="h-5 bg-emerald-500 flex items-center justify-center">
+        <div className="h-1 bg-white/60 rounded w-1/3" />
+      </div>
+      <div className="w-4 h-4 rounded-full bg-emerald-200 border-2 border-white mx-auto -mt-2 relative z-10" />
+      <div className="grid grid-cols-2 gap-1 p-1.5 pt-1">
+        <div className="space-y-0.5">
+          <div className="h-0.5 bg-slate-200 rounded" />
+          <div className="h-0.5 bg-slate-200 rounded w-3/4" />
+          <div className="h-0.5 bg-slate-200 rounded w-5/6" />
+        </div>
+        <div className="space-y-0.5">
+          <div className="flex gap-0.5">
+            <div className="h-1.5 w-3 bg-gray-200 rounded-full" />
+            <div className="h-1.5 w-3 bg-gray-200 rounded-full" />
+          </div>
+          <div className="h-0.5 bg-slate-200 rounded w-2/3" />
+          <div className="h-0.5 bg-slate-200 rounded w-1/2" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const templates = [
-  { id: "modern" as const, name: "Modern", description: "Clean, Blue accents, Left sidebar", color: "from-blue-500 to-blue-700" },
-  { id: "classic" as const, name: "Classic", description: "Traditional, Centered header", color: "from-gray-600 to-gray-800" },
-  { id: "creative" as const, name: "Creative", description: "Bold header, Two columns", color: "from-purple-500 to-indigo-600" },
+  { id: "modern" as const, name: "Modern", description: "Dark sidebar layout" },
+  { id: "classic" as const, name: "Classic", description: "Traditional centered" },
+  { id: "creative" as const, name: "Creative", description: "Bold header design" },
 ];
 
 export default function ResumeBuilder() {
@@ -292,19 +362,19 @@ export default function ResumeBuilder() {
                         <button
                           key={template.id}
                           onClick={() => setActiveTemplate(template.id)}
-                          className={`relative p-3 rounded-lg border-2 transition-all ${
+                          className={`relative p-2 rounded-lg border-2 transition-all ${
                             activeTemplate === template.id
-                              ? "border-primary ring-2 ring-primary/20"
-                              : "border-border hover:border-primary/50"
+                              ? "border-blue-500 ring-2 ring-blue-500"
+                              : "border-border hover:border-blue-300"
                           }`}
                           data-testid={`button-template-${template.id}`}
                         >
-                          <div className={`h-16 rounded bg-gradient-to-br ${template.color} mb-2`} />
-                          <p className="text-sm font-medium">{template.name}</p>
+                          <TemplateThumbnail type={template.id} />
+                          <p className="text-sm font-medium mt-2">{template.name}</p>
                           <p className="text-xs text-muted-foreground">{template.description}</p>
                           {activeTemplate === template.id && (
-                            <div className="absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-                              <Check className="w-3 h-3 text-primary-foreground" />
+                            <div className="absolute top-1 right-1 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                              <Check className="w-3 h-3 text-white" />
                             </div>
                           )}
                         </button>
