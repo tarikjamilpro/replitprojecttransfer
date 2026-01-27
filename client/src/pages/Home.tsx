@@ -36,7 +36,8 @@ import {
   Palette,
   PaintBucket,
   ListFilter,
-  Dices
+  Dices,
+  SpellCheck
 } from "lucide-react";
 
 const textTools = [
@@ -74,6 +75,13 @@ const textTools = [
     icon: ListFilter,
     path: "/text-cleaner",
     color: "bg-teal-500 dark:bg-teal-600",
+  },
+  {
+    name: "Grammar Checker",
+    description: "Check grammar, spelling, and style with multi-language support and suggestions.",
+    icon: SpellCheck,
+    path: "/grammar-checker",
+    color: "bg-emerald-500 dark:bg-emerald-600",
   },
 ];
 

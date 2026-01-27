@@ -38,6 +38,7 @@ import ColorPalette from "@/pages/ColorPalette";
 import GradientGenerator from "@/pages/GradientGenerator";
 import TextCleaner from "@/pages/TextCleaner";
 import WheelOfDecision from "@/pages/WheelOfDecision";
+import GrammarChecker from "@/pages/GrammarChecker";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -77,6 +78,7 @@ function Router() {
       <Route path="/gradient-generator" component={GradientGenerator} />
       <Route path="/text-cleaner" component={TextCleaner} />
       <Route path="/wheel-of-decision" component={WheelOfDecision} />
+      <Route path="/grammar-checker" component={GrammarChecker} />
       <Route component={NotFound} />
     </Switch>
   );

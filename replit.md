@@ -41,6 +41,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **CSS Gradient Generator**: Create beautiful CSS gradients with real-time preview, presets, and code generation
 - **Text Cleaner**: Remove duplicate lines and convert text to SEO-friendly slugs
 - **Wheel of Decision**: Random picker with spin animation and confetti celebration effects
+- **Grammar Checker**: Check grammar, spelling, and style with LanguageTool API, multi-language support, file upload, and 5000-word limit
 
 ## Project Structure
 ```
@@ -110,6 +111,7 @@ server/
 - `/gradient-generator` - CSS Gradient Generator tool
 - `/text-cleaner` - Text Cleaner (Remove Duplicates & Slug Converter) tool
 - `/wheel-of-decision` - Wheel of Decision (Random Picker) tool
+- `/grammar-checker` - Grammar Checker tool
 
 ## Design
 - Professional blue and white color scheme
