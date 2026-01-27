@@ -26,6 +26,7 @@ const tools = [
   { name: "Password Strength Checker", path: "/password-strength-checker" },
   { name: "JPG/PNG to PDF", path: "/image-to-pdf" },
   { name: "Merge PDF Files", path: "/merge-pdf" },
+  { name: "Resume Builder", path: "/resume-builder" },
 ];
 
 export function Header() {

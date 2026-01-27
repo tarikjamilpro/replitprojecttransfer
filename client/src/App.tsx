@@ -26,6 +26,7 @@ import MD5Generator from "@/pages/MD5Generator";
 import PasswordStrengthChecker from "@/pages/PasswordStrengthChecker";
 import ImageToPDF from "@/pages/ImageToPDF";
 import MergePDF from "@/pages/MergePDF";
+import ResumeBuilder from "@/pages/ResumeBuilder";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -53,6 +54,7 @@ function Router() {
       <Route path="/password-strength-checker" component={PasswordStrengthChecker} />
       <Route path="/image-to-pdf" component={ImageToPDF} />
       <Route path="/merge-pdf" component={MergePDF} />
+      <Route path="/resume-builder" component={ResumeBuilder} />
       <Route component={NotFound} />
     </Switch>
   );

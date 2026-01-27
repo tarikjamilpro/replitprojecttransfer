@@ -25,6 +25,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Password Strength Checker**: Analyze password complexity with real-time strength meter
 - **JPG/PNG to PDF Converter**: Convert multiple images to PDF with page size and orientation options
 - **Merge PDF Files**: Combine multiple PDFs into one document with reorder support
+- **Resume Builder**: Create professional resumes with live preview, collapsible sections, and PDF download
 
 ## Project Structure
 ```
@@ -82,6 +83,7 @@ server/
 - `/password-strength-checker` - Password Strength Checker tool
 - `/image-to-pdf` - JPG/PNG to PDF Converter tool
 - `/merge-pdf` - Merge PDF Files tool
+- `/resume-builder` - Resume Builder tool
 
 ## Design
 - Professional blue and white color scheme

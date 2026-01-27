@@ -1,0 +1,54 @@
+Build a professional "Resume Builder" module under the "Career Tools" category using **React** and **Tailwind CSS**.
+
+**1. Data Structure (State Management):**
+Create a central state object `resumeData` to hold the user's input. The structure must be:
+```javascript
+const [resumeData, setResumeData] = useState({
+  personal: { name: '', title: '', email: '', phone: '', location: '', summary: '' },
+  education: [], // Array of objects: { id, school, degree, year }
+  experience: [], // Array of objects: { id, company, role, year, description }
+  skills: [] // Array of strings or objects
+});
+2. Layout Architecture (Split Screen): Create a responsive split-view layout:
+
+Left Panel (Editor): Scrollable sidebar containing the input forms. Use Accordion/Collapsible sections for "Personal", "Education", "Experience", and "Skills" to keep the UI clean.
+
+Dynamic Inputs: For Education and Experience, add "+ Add Item" and "Remove" buttons to handle multiple entries dynamically.
+
+Right Panel (Live Preview): A sticky container displaying the resume.
+
+Crucial: Create a div with ID resume-preview that mimics an A4 Paper size (Aspect Ratio: 1:1.414). Use Tailwind class aspect-[1/1.414] or fixed width 210mm to ensure it looks exactly like a document.
+
+3. Resume Design (The Template): Design a "Minimalist Professional" template inside the Preview panel:
+
+Header: Name (Large Bold), Title (Medium), Contact Info (Small, centered).
+
+Body: Use a standard clean layout. Section headers (e.g., "Experience") should have a bottom border.
+
+Typography: Use a professional font (Inter or Serif) for the preview text.
+
+4. PDF Generation Feature:
+
+Install/Use html2pdf.js library.
+
+Create a function handleDownloadPDF:
+
+Target the DOM element #resume-preview.
+
+Configuration:
+
+JavaScript
+const opt = {
+  margin: 0,
+  filename: 'my-resume.pdf',
+  image: { type: 'jpeg', quality: 0.98 },
+  html2canvas: { scale: 2 },
+  jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+};
+Place the "Download PDF" button prominently in the Editor panel.
+
+5. UI/UX Details:
+
+Add real-time binding: As the user types in the Left Panel, the Right Panel updates instantly.
+
+Add a "Load Demo Data" button to fill the form with dummy text so the user can see how it looks immediately.

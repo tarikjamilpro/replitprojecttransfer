@@ -25,7 +25,8 @@ import {
   Hash,
   ShieldCheck,
   FileUp,
-  Combine
+  Combine,
+  FileUser
 } from "lucide-react";
 
 const textTools = [
@@ -202,6 +203,16 @@ const pdfTools = [
   },
 ];
 
+const careerTools = [
+  {
+    name: "Resume Builder",
+    description: "Create a professional resume with live preview and PDF download.",
+    icon: FileUser,
+    path: "/resume-builder",
+    color: "bg-indigo-500 dark:bg-indigo-600",
+  },
+];
+
 function ToolCard({
   name,
   description,
@@ -350,13 +361,25 @@ export default function Home() {
               </div>
             </section>
 
-            <section>
+            <section className="mb-12">
               <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2" data-testid="text-section-pdf-tools">
                 <FileUp className="w-6 h-6 text-primary" />
                 PDF Management Tools
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {pdfTools.map((tool) => (
+                  <ToolCard key={tool.path} {...tool} />
+                ))}
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2" data-testid="text-section-career-tools">
+                <FileUser className="w-6 h-6 text-primary" />
+                Career Tools
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {careerTools.map((tool) => (
                   <ToolCard key={tool.path} {...tool} />
                 ))}
               </div>
