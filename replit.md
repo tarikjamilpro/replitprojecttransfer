@@ -8,6 +8,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Case Converter**: Convert text between UPPERCASE, lowercase, Sentence case, Title Case, and Capitalized Case
 - **Password Generator**: Generate secure passwords with adjustable length (8-64 characters) and character types
 - **Lorem Ipsum Generator**: Generate placeholder text by paragraphs, sentences, or words
+- **Image Compressor**: Compress images directly in the browser using Canvas API - no server upload required
 
 ## Project Structure
 ```
@@ -22,6 +23,7 @@ client/
 │   │   ├── CaseConverter.tsx # Case conversion tool
 │   │   ├── PasswordGenerator.tsx # Password generation tool
 │   │   ├── LoremIpsum.tsx   # Lorem ipsum generator
+│   │   ├── ImageCompressor.tsx # Image compression tool
 │   │   └── not-found.tsx    # 404 page
 │   ├── App.tsx              # Main app with routing
 │   ├── index.css            # Theme colors (blue/white scheme)
@@ -38,6 +40,7 @@ server/
 - `/case-converter` - Case Converter tool
 - `/password-generator` - Password Generator tool
 - `/lorem-ipsum` - Lorem Ipsum Generator tool
+- `/image-compressor` - Image Compressor tool
 
 ## Design
 - Professional blue and white color scheme

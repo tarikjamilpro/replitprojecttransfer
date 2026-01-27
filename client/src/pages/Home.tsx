@@ -6,7 +6,8 @@ import {
   Type, 
   Key, 
   AlignLeft,
-  ArrowRight
+  ArrowRight,
+  Image as ImageIcon
 } from "lucide-react";
 
 const textTools = [
@@ -30,6 +31,16 @@ const textTools = [
     icon: AlignLeft,
     path: "/lorem-ipsum",
     color: "bg-purple-500 dark:bg-purple-600",
+  },
+];
+
+const imageTools = [
+  {
+    name: "Image Compressor",
+    description: "Compress images in your browser without uploading to any server. Fast and private.",
+    icon: ImageIcon,
+    path: "/image-compressor",
+    color: "bg-pink-500 dark:bg-pink-600",
   },
 ];
 
@@ -102,6 +113,18 @@ export default function Home() {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {textTools.map((tool) => (
+                  <ToolCard key={tool.path} {...tool} />
+                ))}
+              </div>
+            </section>
+
+            <section className="mb-12">
+              <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2" data-testid="text-section-image-tools">
+                <ImageIcon className="w-6 h-6 text-primary" />
+                Image Tools
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {imageTools.map((tool) => (
                   <ToolCard key={tool.path} {...tool} />
                 ))}
               </div>

@@ -9,6 +9,7 @@ const tools = [
   { name: "Case Converter", path: "/case-converter" },
   { name: "Password Generator", path: "/password-generator" },
   { name: "Lorem Ipsum Generator", path: "/lorem-ipsum" },
+  { name: "Image Compressor", path: "/image-compressor" },
 ];
 
 export function Header() {
@@ -158,7 +159,15 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold text-foreground mb-3">Security Tools</h3>
+            <h3 className="font-semibold text-foreground mb-3">Image Tools</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link href="/image-compressor" className="text-muted-foreground hover:text-foreground">
+                  Image Compressor
+                </Link>
+              </li>
+            </ul>
+            <h3 className="font-semibold text-foreground mb-3 mt-4">Security Tools</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/password-generator" className="text-muted-foreground hover:text-foreground">
