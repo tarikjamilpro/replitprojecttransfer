@@ -1,12 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-});
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -18,6 +13,12 @@ export async function registerRoutes(
 
       if (!text || typeof text !== "string") {
         return res.status(400).json({ error: "Text is required" });
+      }
+
+      const apiKey = process.env.GOOGLE_API_KEY;
+      if (!apiKey) {
+        console.error("GOOGLE_API_KEY not found in environment");
+        return res.status(500).json({ error: "GOOGLE_API_KEY not configured" });
       }
 
       const wordCount = text.trim().split(/\s+/).length;
@@ -43,12 +44,10 @@ export async function registerRoutes(
       res.setHeader("Cache-Control", "no-cache");
       res.setHeader("Connection", "keep-alive");
 
-      const stream = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content: `You are an expert writing assistant that transforms AI-generated text into natural, human-like content. Your task is to:
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+      const prompt = `You are an expert writing assistant that transforms AI-generated text into natural, human-like content. Your task is to:
 
 1. Rewrite the text to sound more natural and conversational
 2. Add subtle variations in sentence structure and length
@@ -58,19 +57,16 @@ export async function registerRoutes(
 6. Avoid overly formal or robotic phrasing
 7. Add a human touch with slight imperfections that feel natural
 
-Output the humanized text in ${targetLanguage}. Do not include any explanations or meta-commentary - just output the humanized version of the text.`,
-          },
-          {
-            role: "user",
-            content: `Please humanize the following text:\n\n${text}`,
-          },
-        ],
-        stream: true,
-        max_tokens: 4096,
-      });
+Output the humanized text in ${targetLanguage}. Do not include any explanations or meta-commentary - just output the humanized version of the text.
 
-      for await (const chunk of stream) {
-        const content = chunk.choices[0]?.delta?.content || "";
+Please humanize the following text:
+
+${text}`;
+
+      const result = await model.generateContentStream(prompt);
+
+      for await (const chunk of result.stream) {
+        const content = chunk.text();
         if (content) {
           res.write(`data: ${JSON.stringify({ content })}\n\n`);
         }
@@ -78,13 +74,13 @@ Output the humanized text in ${targetLanguage}. Do not include any explanations 
 
       res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
       res.end();
-    } catch (error) {
-      console.error("Error humanizing text:", error);
+    } catch (error: any) {
+      console.error("Error humanizing text:", error?.message || error);
       if (res.headersSent) {
         res.write(`data: ${JSON.stringify({ error: "Failed to humanize text" })}\n\n`);
         res.end();
       } else {
-        res.status(500).json({ error: "Failed to humanize text" });
+        res.status(500).json({ error: error?.message || "Failed to humanize text" });
       }
     }
   });
