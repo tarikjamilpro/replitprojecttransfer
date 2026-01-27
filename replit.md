@@ -36,6 +36,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Loan EMI Calculator**: Calculate monthly loan EMI with interactive sliders and pie chart breakdown
 - **WiFi QR Generator**: Generate QR codes for WiFi network sharing with print support
 - **Keyboard & Mouse Tester**: Test keyboard keys and mouse buttons for hardware diagnostics
+- **CPS Test**: Click speed test with multiple durations and ranking system
 
 ## Project Structure
 ```
@@ -100,6 +101,7 @@ server/
 - `/emi-calculator` - Loan EMI Calculator tool
 - `/wifi-qr-generator` - WiFi QR Generator tool
 - `/keyboard-tester` - Keyboard & Mouse Tester tool
+- `/cps-test` - CPS Test (Click Speed Test) tool
 
 ## Design
 - Professional blue and white color scheme

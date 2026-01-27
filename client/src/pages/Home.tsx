@@ -31,7 +31,8 @@ import {
   Smile,
   Calculator,
   WifiIcon,
-  KeyboardIcon
+  KeyboardIcon,
+  MousePointerClick
 } from "lucide-react";
 
 const textTools = [
@@ -158,6 +159,13 @@ const developerTools = [
     icon: KeyboardIcon,
     path: "/keyboard-tester",
     color: "bg-slate-500 dark:bg-slate-600",
+  },
+  {
+    name: "CPS Test",
+    description: "Test your clicking speed with multiple durations and ranking system.",
+    icon: MousePointerClick,
+    path: "/cps-test",
+    color: "bg-rose-500 dark:bg-rose-600",
   },
 ];
 

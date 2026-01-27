@@ -33,6 +33,7 @@ import MemeGenerator from "@/pages/MemeGenerator";
 import EMICalculator from "@/pages/EMICalculator";
 import WifiQRGenerator from "@/pages/WifiQRGenerator";
 import KeyboardTester from "@/pages/KeyboardTester";
+import CPSTest from "@/pages/CPSTest";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -67,6 +68,7 @@ function Router() {
       <Route path="/emi-calculator" component={EMICalculator} />
       <Route path="/wifi-qr-generator" component={WifiQRGenerator} />
       <Route path="/keyboard-tester" component={KeyboardTester} />
+      <Route path="/cps-test" component={CPSTest} />
       <Route component={NotFound} />
     </Switch>
   );
