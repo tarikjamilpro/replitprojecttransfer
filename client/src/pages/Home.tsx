@@ -28,7 +28,8 @@ import {
   Combine,
   FileUser,
   Activity,
-  Smile
+  Smile,
+  Calculator
 } from "lucide-react";
 
 const textTools = [
@@ -199,6 +200,13 @@ const calculatorTools = [
     icon: Percent,
     path: "/percentage-calculator",
     color: "bg-yellow-500 dark:bg-yellow-600",
+  },
+  {
+    name: "Loan EMI Calculator",
+    description: "Calculate monthly loan EMI with interest breakdown and visual charts.",
+    icon: Calculator,
+    path: "/emi-calculator",
+    color: "bg-cyan-500 dark:bg-cyan-600",
   },
 ];
 

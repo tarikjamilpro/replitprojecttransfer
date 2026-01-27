@@ -30,6 +30,7 @@ import ResumeBuilder from "@/pages/ResumeBuilder";
 import UniversalImageProcessor from "@/pages/UniversalImageProcessor";
 import BMICalculator from "@/pages/BMICalculator";
 import MemeGenerator from "@/pages/MemeGenerator";
+import EMICalculator from "@/pages/EMICalculator";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -61,6 +62,7 @@ function Router() {
       <Route path="/image-processor" component={UniversalImageProcessor} />
       <Route path="/bmi-calculator" component={BMICalculator} />
       <Route path="/meme-generator" component={MemeGenerator} />
+      <Route path="/emi-calculator" component={EMICalculator} />
       <Route component={NotFound} />
     </Switch>
   );

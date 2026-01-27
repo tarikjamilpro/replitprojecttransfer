@@ -33,6 +33,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
   - All images converted to Base64 for PDF compatibility
 - **BMI Calculator**: Calculate Body Mass Index with visual gauge and health advice
 - **Meme Generator**: Create memes with custom text from templates or uploaded images
+- **Loan EMI Calculator**: Calculate monthly loan EMI with interactive sliders and pie chart breakdown
 
 ## Project Structure
 ```
@@ -94,6 +95,7 @@ server/
 - `/resume-builder` - Resume Builder tool
 - `/bmi-calculator` - BMI Calculator tool
 - `/meme-generator` - Meme Generator tool
+- `/emi-calculator` - Loan EMI Calculator tool
 
 ## Design
 - Professional blue and white color scheme
