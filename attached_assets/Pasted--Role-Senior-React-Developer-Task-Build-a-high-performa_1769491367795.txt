@@ -1,0 +1,46 @@
+**Role:** Senior React Developer
+**Task:** Build a high-performance "Universal Image Processor" (Converter + Resizer) under the "Image Tools" category.
+**Tech Stack:** React, Tailwind CSS, Lucide React (Icons).
+
+**1. Core Dependencies:**
+* `react-dropzone` (for Drag & Drop).
+* `jszip` (for batch downloading).
+* `file-saver` (for triggering downloads).
+* **Constraint:** All processing must be Client-Side using HTML5 Canvas API.
+
+**2. UI Layout (Professional Dashboard):**
+Create a clean, 3-section layout:
+* **Top: Upload Zone:** Large dashed area. "Drag & Drop images or Click to Browse".
+* **Middle: Settings Panel (Sticky Header):** A control bar containing two groups of settings:
+    * *Group A (Resize Options):* Toggle Switch ("Resize Image"), Inputs for Width & Height, "Lock Aspect Ratio" Checkbox.
+    * *Group B (Convert Options):* Format Dropdown (JPG, PNG, WEBP, BMP, ICO), Quality Slider (0-100% for JPG/WEBP), and a big "Process All Images" button.
+* **Bottom: Image Queue (Grid):** Cards showing thumbnails, Original Size vs. Target Size, Status Spinner, and individual Download buttons.
+
+**3. Functional Logic (The Pipeline):**
+Create a central `processImage` function that runs when the user clicks "Process/Convert".
+
+* **Step 1: Resizing Logic (Calculations):**
+    * If "Resize" is OFF: Use original image dimensions.
+    * If "Resize" is ON:
+        * Check "Lock Aspect Ratio".
+        * If Locked & User changes Width: `NewHeight = (OriginalHeight / OriginalWidth) * TargetWidth`.
+        * If Locked & User changes Height: `NewWidth = (OriginalWidth / OriginalHeight) * TargetHeight`.
+        * If Unlocked: Use exact user inputs.
+
+* **Step 2: Drawing to Canvas:**
+    * Create a canvas with the calculated dimensions.
+    * Draw the image onto the canvas (`ctx.drawImage`).
+    * **Crucial for JPG:** If converting to JPG (which doesn't support transparency), fill the canvas with `white` background BEFORE drawing the image. For PNG/WEBP, keep it transparent.
+
+* **Step 3: Export & Conversion:**
+    * Convert canvas to Blob/DataURL based on selected format (e.g., `image/jpeg`, `image/webp`).
+    * Apply the Quality setting from the slider.
+
+**4. Batch Features:**
+* **Batch ZIP:** If more than 1 image is processed, show a "Download All as ZIP" button using `jszip`.
+* **File Naming:** Renamed files should be `[original_name]_converted.[ext]`.
+
+**5. Error Handling & State:**
+* Show a Loading Spinner on each card while processing.
+* If a file fails (corrupt), show a Red Error Badge but do not stop the queue.
+* Display the final file size after conversion (e.g., "2MB → 150KB").
