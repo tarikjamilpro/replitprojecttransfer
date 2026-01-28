@@ -208,7 +208,7 @@ Only output the paraphrased text, nothing else.`
         return res.status(500).json({ error: "Bytez API key not configured" });
       }
 
-      const response = await fetch("https://api.bytez.com/model/v1/dreamlike-art/dreamlike-photoreal-2.0/infer", {
+      const response = await fetch("https://api.bytez.com/model/v1/black-forest-labs/FLUX.1-dev/infer", {
         method: "POST",
         headers: {
           "Authorization": apiKey,
