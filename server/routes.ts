@@ -208,38 +208,52 @@ Only output the paraphrased text, nothing else.`
         return res.status(500).json({ error: "Bytez API key not configured" });
       }
 
-      const response = await fetch("https://api.bytez.com/model/v1/black-forest-labs/FLUX.1-dev/infer", {
-        method: "POST",
-        headers: {
-          "Authorization": apiKey,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          input: trimmedPrompt,
-          debug: false
-        })
-      });
+      const sdk = new Bytez(apiKey);
+      const model = sdk.model("black-forest-labs/FLUX.1-dev");
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Bytez API error:", response.status, errorText);
-        return res.status(500).json({ error: "Failed to generate image. The model may be unavailable." });
+      console.log("Calling FLUX.1-dev model with prompt:", trimmedPrompt);
+      const result = await model.run(trimmedPrompt);
+
+      console.log("Result keys:", Object.keys(result));
+      console.log("Result error:", result.error);
+      console.log("Result output type:", typeof result.output);
+      
+      if (result.error) {
+        console.error("Bytez image generation error:", result.error);
+        return res.status(500).json({ error: "Failed to generate image. Please try again." });
       }
 
-      const contentType = response.headers.get("content-type") || "";
-      console.log("Response content-type:", contentType);
+      if (result.output) {
+        let base64Image: string;
+        
+        if (typeof result.output === "string") {
+          console.log("Output is string, length:", result.output.length);
+          base64Image = result.output.startsWith("data:") ? result.output.split(",")[1] : result.output;
+        } else if (Array.isArray(result.output) && result.output.length > 0) {
+          const imageData = result.output[0];
+          console.log("Output[0] type:", typeof imageData);
+          if (typeof imageData === "string") {
+            base64Image = imageData.startsWith("data:") ? imageData.split(",")[1] : imageData;
+          } else if (Buffer.isBuffer(imageData)) {
+            base64Image = imageData.toString("base64");
+          } else {
+            base64Image = Buffer.from(imageData).toString("base64");
+          }
+        } else if (Buffer.isBuffer(result.output)) {
+          base64Image = result.output.toString("base64");
+        } else {
+          console.log("Unknown output format, trying Buffer.from");
+          base64Image = Buffer.from(result.output as any).toString("base64");
+        }
 
-      if (contentType.includes("image")) {
-        const arrayBuffer = await response.arrayBuffer();
-        const base64Image = Buffer.from(arrayBuffer).toString("base64");
-        const mimeType = contentType.split(";")[0] || "image/png";
-        const imageDataUrl = `data:${mimeType};base64,${base64Image}`;
-        
-        console.log("Image base64 length:", base64Image.length);
-        
+        console.log("Base64 image length:", base64Image.length);
+
         if (base64Image.length < 100) {
+          console.error("Base64 image too small:", base64Image);
           return res.status(500).json({ error: "Image generation returned invalid data. Please try again." });
         }
+
+        const imageDataUrl = `data:image/png;base64,${base64Image}`;
         
         res.json({ 
           success: true, 
@@ -247,47 +261,8 @@ Only output the paraphrased text, nothing else.`
           prompt: trimmedPrompt
         });
       } else {
-        const result = await response.json();
-        console.log("Bytez JSON result:", JSON.stringify(result).substring(0, 500));
-        
-        if (result.error) {
-          console.error("Bytez image generation error:", result.error);
-          return res.status(500).json({ error: result.error || "Failed to generate image." });
-        }
-
-        if (result.output) {
-          let base64Image: string;
-          
-          if (Array.isArray(result.output) && result.output.length > 0) {
-            const imageData = result.output[0];
-            if (typeof imageData === "string") {
-              base64Image = imageData.startsWith("data:") ? imageData.split(",")[1] : imageData;
-            } else {
-              base64Image = Buffer.from(imageData).toString("base64");
-            }
-          } else if (typeof result.output === "string") {
-            base64Image = result.output.startsWith("data:") ? result.output.split(",")[1] : result.output;
-          } else {
-            console.log("Unexpected output format:", typeof result.output);
-            return res.status(500).json({ error: "Unexpected image format received." });
-          }
-
-          if (base64Image.length < 100) {
-            console.error("Base64 image too small:", base64Image.length);
-            return res.status(500).json({ error: "Image generation returned invalid data. Please try again." });
-          }
-
-          const imageDataUrl = `data:image/png;base64,${base64Image}`;
-          
-          res.json({ 
-            success: true, 
-            image: imageDataUrl,
-            prompt: trimmedPrompt
-          });
-        } else {
-          console.log("No output in result");
-          res.status(500).json({ error: "No image was generated. Please try a different prompt." });
-        }
+        console.log("No output in result");
+        res.status(500).json({ error: "No image was generated. Please try a different prompt." });
       }
     } catch (error: any) {
       console.error("Error generating image:", error?.message || error);
