@@ -185,6 +185,58 @@ Only output the paraphrased text, nothing else.`
     }
   });
 
+  app.post("/api/generate-image", async (req, res) => {
+    try {
+      const { prompt } = req.body;
+
+      if (!prompt || typeof prompt !== "string") {
+        return res.status(400).json({ error: "Prompt is required" });
+      }
+
+      const trimmedPrompt = prompt.trim();
+      if (trimmedPrompt.length < 3) {
+        return res.status(400).json({ error: "Prompt is too short. Please provide a more detailed description." });
+      }
+
+      if (trimmedPrompt.length > 500) {
+        return res.status(400).json({ error: "Prompt is too long. Maximum 500 characters allowed." });
+      }
+
+      const apiKey = process.env.BYTEZ_API_KEY;
+      if (!apiKey) {
+        console.error("BYTEZ_API_KEY not found in environment");
+        return res.status(500).json({ error: "Bytez API key not configured" });
+      }
+
+      const sdk = new Bytez(apiKey);
+      const model = sdk.model("dreamlike-art/dreamlike-photoreal-2.0");
+
+      const result = await model.run(trimmedPrompt);
+
+      if (result.error) {
+        console.error("Bytez image generation error:", result.error);
+        return res.status(500).json({ error: "Failed to generate image. Please try again." });
+      }
+
+      if (result.output && result.output.length > 0) {
+        const imageBuffer = result.output[0];
+        const base64Image = Buffer.from(imageBuffer).toString("base64");
+        const imageDataUrl = `data:image/png;base64,${base64Image}`;
+        
+        res.json({ 
+          success: true, 
+          image: imageDataUrl,
+          prompt: trimmedPrompt
+        });
+      } else {
+        res.status(500).json({ error: "No image was generated. Please try a different prompt." });
+      }
+    } catch (error: any) {
+      console.error("Error generating image:", error?.message || error);
+      res.status(500).json({ error: "Failed to generate image. Please try again later." });
+    }
+  });
+
   app.post("/api/humanize", async (req, res) => {
     try {
       const { text, language = "en" } = req.body;

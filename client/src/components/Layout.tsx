@@ -25,6 +25,7 @@ const toolCategories = {
     { name: "Image Processor", path: "/image-processor" },
     { name: "JPG/PNG to PDF", path: "/image-to-pdf" },
     { name: "Meme Generator", path: "/meme-generator" },
+    { name: "AI Image Generator", path: "/ai-image-generator" },
   ],
   "Developer Tools": [
     { name: "QR Code Generator", path: "/qr-code-generator" },
