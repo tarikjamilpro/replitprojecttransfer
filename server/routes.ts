@@ -202,66 +202,82 @@ Only output the paraphrased text, nothing else.`
         return res.status(400).json({ error: "Prompt is too long. Maximum 500 characters allowed." });
       }
 
-      const apiKey = process.env.BYTEZ_API_KEY;
+      const apiKey = process.env.MODELSLAB_API_KEY;
       if (!apiKey) {
-        console.error("BYTEZ_API_KEY not found in environment");
-        return res.status(500).json({ error: "Bytez API key not configured" });
+        console.error("MODELSLAB_API_KEY not found in environment");
+        return res.status(500).json({ error: "ModelsLab API key not configured" });
       }
 
-      const sdk = new Bytez(apiKey);
-      const model = sdk.model("black-forest-labs/FLUX.1-schnell");
+      console.log("Calling ModelsLab API with prompt:", trimmedPrompt);
 
-      console.log("Calling FLUX.1-schnell model with prompt:", trimmedPrompt);
-      const result = await model.run(trimmedPrompt);
+      const response = await fetch("https://modelslab.com/api/v7/images/text-to-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model_id: "flux-2-max",
+          prompt: trimmedPrompt,
+          width: "1024",
+          height: "1024",
+          key: apiKey
+        })
+      });
 
-      console.log("Result keys:", Object.keys(result));
-      console.log("Result error:", result.error);
-      console.log("Result output type:", typeof result.output);
-      
-      if (result.error) {
-        console.error("Bytez image generation error:", result.error);
-        return res.status(500).json({ error: "Failed to generate image. Please try again." });
+      const result = await response.json();
+      console.log("ModelsLab result:", JSON.stringify(result).substring(0, 500));
+
+      if (result.status === "error" || result.error) {
+        console.error("ModelsLab error:", result.message || result.error);
+        return res.status(500).json({ error: result.message || "Failed to generate image. Please try again." });
       }
 
-      if (result.output) {
-        let base64Image: string;
+      // Handle processing status (async generation)
+      if (result.status === "processing" && result.fetch_result) {
+        // Poll for result
+        let attempts = 0;
+        const maxAttempts = 30;
         
-        if (typeof result.output === "string") {
-          console.log("Output is string, length:", result.output.length);
-          base64Image = result.output.startsWith("data:") ? result.output.split(",")[1] : result.output;
-        } else if (Array.isArray(result.output) && result.output.length > 0) {
-          const imageData = result.output[0];
-          console.log("Output[0] type:", typeof imageData);
-          if (typeof imageData === "string") {
-            base64Image = imageData.startsWith("data:") ? imageData.split(",")[1] : imageData;
-          } else if (Buffer.isBuffer(imageData)) {
-            base64Image = imageData.toString("base64");
-          } else {
-            base64Image = Buffer.from(imageData).toString("base64");
+        while (attempts < maxAttempts) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          
+          const fetchResponse = await fetch(result.fetch_result, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ key: apiKey })
+          });
+          
+          const fetchResult = await fetchResponse.json();
+          console.log("Fetch attempt", attempts + 1, ":", fetchResult.status);
+          
+          if (fetchResult.status === "success" && fetchResult.output && fetchResult.output.length > 0) {
+            const imageUrl = fetchResult.output[0];
+            res.json({ 
+              success: true, 
+              image: imageUrl,
+              prompt: trimmedPrompt
+            });
+            return;
+          } else if (fetchResult.status === "error") {
+            return res.status(500).json({ error: fetchResult.message || "Image generation failed." });
           }
-        } else if (Buffer.isBuffer(result.output)) {
-          base64Image = result.output.toString("base64");
-        } else {
-          console.log("Unknown output format, trying Buffer.from");
-          base64Image = Buffer.from(result.output as any).toString("base64");
+          
+          attempts++;
         }
-
-        console.log("Base64 image length:", base64Image.length);
-
-        if (base64Image.length < 100) {
-          console.error("Base64 image too small:", base64Image);
-          return res.status(500).json({ error: "Image generation returned invalid data. Please try again." });
-        }
-
-        const imageDataUrl = `data:image/png;base64,${base64Image}`;
         
+        return res.status(500).json({ error: "Image generation timed out. Please try again." });
+      }
+
+      // Handle immediate success
+      if (result.status === "success" && result.output && result.output.length > 0) {
+        const imageUrl = result.output[0];
         res.json({ 
           success: true, 
-          image: imageDataUrl,
+          image: imageUrl,
           prompt: trimmedPrompt
         });
       } else {
-        console.log("No output in result");
+        console.log("Unexpected result format:", result);
         res.status(500).json({ error: "No image was generated. Please try a different prompt." });
       }
     } catch (error: any) {
