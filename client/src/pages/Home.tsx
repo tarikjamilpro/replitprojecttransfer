@@ -130,13 +130,6 @@ const imageTools = [
     path: "/meme-generator",
     color: "bg-yellow-500 dark:bg-yellow-600",
   },
-  {
-    name: "AI Image Generator",
-    description: "Create stunning photorealistic images from text descriptions using AI.",
-    icon: Sparkles,
-    path: "/ai-image-generator",
-    color: "bg-gradient-to-r from-purple-500 to-pink-500",
-  },
 ];
 
 const imageEditingTools = [
