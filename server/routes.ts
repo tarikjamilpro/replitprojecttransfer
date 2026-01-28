@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import OpenAI from "openai";
+import Bytez from "bytez.js";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -15,10 +15,10 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Text is required" });
       }
 
-      const apiKey = process.env.DEEPSEEK;
+      const apiKey = process.env.BYTEZ_API_KEY;
       if (!apiKey) {
-        console.error("DEEPSEEK not found in environment");
-        return res.status(500).json({ error: "DeepSeek API key not configured" });
+        console.error("BYTEZ_API_KEY not found in environment");
+        return res.status(500).json({ error: "Bytez API key not configured" });
       }
 
       const wordCount = text.trim().split(/\s+/).length;
@@ -44,17 +44,10 @@ export async function registerRoutes(
       res.setHeader("Cache-Control", "no-cache");
       res.setHeader("Connection", "keep-alive");
 
-      const client = new OpenAI({
-        apiKey,
-        baseURL: "https://api.deepseek.com",
-      });
+      const sdk = new Bytez(apiKey);
+      const model = sdk.model("zai-org/GLM-4.5-Air");
 
-      const stream = await client.chat.completions.create({
-        model: "deepseek-reasoner",
-        messages: [
-          {
-            role: "user",
-            content: `You are an expert writing assistant that transforms AI-generated text into natural, human-like content. Your task is to:
+      const prompt = `You are an expert writing assistant that transforms AI-generated text into natural, human-like content. Your task is to:
 
 1. Rewrite the text to sound more natural and conversational
 2. Add subtle variations in sentence structure and length
@@ -68,18 +61,22 @@ Output the humanized text in ${targetLanguage}. Do not include any explanations 
 
 Please humanize the following text:
 
-${text}`,
-          },
-        ],
-        stream: true,
-        max_tokens: 4096,
-      });
+${text}`;
 
-      for await (const chunk of stream) {
-        const content = chunk.choices[0]?.delta?.content || "";
-        if (content) {
-          res.write(`data: ${JSON.stringify({ content })}\n\n`);
-        }
+      const result = await model.run([
+        {
+          role: "user",
+          content: prompt,
+        },
+      ]);
+
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
+      const output = result.output;
+      if (output) {
+        res.write(`data: ${JSON.stringify({ content: output })}\n\n`);
       }
 
       res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
