@@ -42,7 +42,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Text Cleaner**: Remove duplicate lines and convert text to SEO-friendly slugs
 - **Wheel of Decision**: Random picker with spin animation and confetti celebration effects
 - **Grammar Checker**: Check grammar, spelling, and style with LanguageTool API, multi-language support, file upload, and 5000-word limit
-- **AI Humanizer**: Transform AI-generated text into natural, human-like content using DeepSeek API
+- **AI Humanizer**: Transform AI-generated text into natural, human-like content using GLM-4.5-Air via Bytez API
 
 ## Project Structure
 ```

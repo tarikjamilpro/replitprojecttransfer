@@ -74,9 +74,23 @@ ${text}`;
         throw new Error(result.error);
       }
 
+      // Extract text content from the response
+      let outputText = "";
       const output = result.output;
-      if (output) {
-        res.write(`data: ${JSON.stringify({ content: output })}\n\n`);
+      
+      if (typeof output === "string") {
+        outputText = output;
+      } else if (Array.isArray(output)) {
+        // If it's an array of messages, extract the assistant's content
+        const assistantMessage = output.find((msg: any) => msg.role === "assistant");
+        outputText = assistantMessage?.content || JSON.stringify(output);
+      } else if (output && typeof output === "object") {
+        // If it's an object, try to get content or message
+        outputText = output.content || output.message || output.text || JSON.stringify(output);
+      }
+      
+      if (outputText) {
+        res.write(`data: ${JSON.stringify({ content: outputText })}\n\n`);
       }
 
       res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
