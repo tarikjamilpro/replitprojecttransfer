@@ -209,9 +209,9 @@ Only output the paraphrased text, nothing else.`
       }
 
       const sdk = new Bytez(apiKey);
-      const model = sdk.model("black-forest-labs/FLUX.1-dev");
+      const model = sdk.model("Qwen/Qwen-Image");
 
-      console.log("Calling FLUX.1-dev model with prompt:", trimmedPrompt);
+      console.log("Calling Qwen-Image model with prompt:", trimmedPrompt);
       const result = await model.run(trimmedPrompt);
 
       console.log("Result keys:", Object.keys(result));
