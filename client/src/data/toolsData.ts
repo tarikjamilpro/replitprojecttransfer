@@ -389,16 +389,6 @@ export const toolsData: ToolData[] = [
     category: "Text Tools",
     icon: "ShieldCheck",
   },
-  {
-    id: "ai-image-generator",
-    path: "/ai-image-generator",
-    name: "AI Image Generator",
-    description: "Create images from text descriptions",
-    seoTitle: "Free AI Image Generator - Text to Image",
-    seoDescription: "Generate stunning photorealistic images from text descriptions using AI. Powered by Dreamlike Photoreal 2.0 model. Free online text-to-image generator.",
-    category: "Image Tools",
-    icon: "Sparkles",
-  },
 ];
 
 export const getToolSEO = (path: string): ToolData | undefined => {
