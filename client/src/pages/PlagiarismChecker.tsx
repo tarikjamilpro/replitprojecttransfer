@@ -25,14 +25,12 @@ import {
   SpellCheck,
   Wand2,
   ShieldCheck,
-  Star,
   MessageSquare,
   ThumbsUp,
   ThumbsDown,
   HardDrive,
   Cloud,
   Droplet,
-  DollarSign,
   Info
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
@@ -730,56 +728,6 @@ export default function PlagiarismChecker() {
             </Card>
           </div>
         </Tabs>
-
-        <Card className="mt-6">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <DollarSign className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold">Premium Features</h3>
-            </div>
-            <div className="grid sm:grid-cols-3 gap-4">
-              <div className="p-4 border rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <Star className="w-4 h-4 text-yellow-500" />
-                  <span className="font-medium">Basic</span>
-                </div>
-                <div className="text-2xl font-bold mb-2">Free</div>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>Up to 2,000 words</li>
-                  <li>AI detection</li>
-                  <li>Grammar check</li>
-                </ul>
-              </div>
-              <div className="p-4 border rounded-lg border-primary bg-primary/5">
-                <div className="flex items-center gap-2 mb-2">
-                  <Star className="w-4 h-4 text-primary" />
-                  <span className="font-medium">Pro</span>
-                  <Badge variant="secondary">Popular</Badge>
-                </div>
-                <div className="text-2xl font-bold mb-2">$9.80<span className="text-sm font-normal">/mo</span></div>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>Up to 10,000 words</li>
-                  <li>Deep plagiarism scan</li>
-                  <li>Unlimited paraphrasing</li>
-                  <li>Priority support</li>
-                </ul>
-              </div>
-              <div className="p-4 border rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <Star className="w-4 h-4 text-purple-500" />
-                  <span className="font-medium">Enterprise</span>
-                </div>
-                <div className="text-2xl font-bold mb-2">Custom</div>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>Unlimited words</li>
-                  <li>API access</li>
-                  <li>Team accounts</li>
-                  <li>Custom integrations</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         <Card className="mt-6">
           <CardContent className="p-6">
