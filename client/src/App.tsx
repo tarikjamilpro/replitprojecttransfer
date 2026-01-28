@@ -43,6 +43,7 @@ const TextCleaner = lazy(() => import("@/pages/TextCleaner"));
 const WheelOfDecision = lazy(() => import("@/pages/WheelOfDecision"));
 const GrammarChecker = lazy(() => import("@/pages/GrammarChecker"));
 const AIHumanizer = lazy(() => import("@/pages/AIHumanizer"));
+const PlagiarismChecker = lazy(() => import("@/pages/PlagiarismChecker"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const Disclaimer = lazy(() => import("@/pages/Disclaimer"));
 const TermsOfUse = lazy(() => import("@/pages/TermsOfUse"));
@@ -89,6 +90,7 @@ function Router() {
         <Route path="/wheel-of-decision" component={WheelOfDecision} />
         <Route path="/grammar-checker" component={GrammarChecker} />
         <Route path="/ai-humanizer" component={AIHumanizer} />
+        <Route path="/plagiarism-checker" component={PlagiarismChecker} />
         <Route path="/privacy-policy" component={PrivacyPolicy} />
         <Route path="/disclaimer" component={Disclaimer} />
         <Route path="/terms" component={TermsOfUse} />

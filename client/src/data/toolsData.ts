@@ -3,7 +3,7 @@ import {
   Lock, Shuffle, Gauge, Palette, QrCode, Wand2, Download,
   Scale, Smile, Wallet, Wifi, Keyboard, MousePointer, Paintbrush,
   FileJson, Tags, Bot, PenTool, Clock, Percent, Hash, Shield,
-  FileImage, Files, Briefcase, Dices, Languages, Sparkles
+  FileImage, Files, Briefcase, Dices, Languages, Sparkles, ShieldCheck
 } from "lucide-react";
 
 export type ToolCategory = 
@@ -379,6 +379,16 @@ export const toolsData: ToolData[] = [
     category: "Text Tools",
     icon: "Sparkles",
   },
+  {
+    id: "plagiarism-checker",
+    path: "/plagiarism-checker",
+    name: "Plagiarism Checker",
+    description: "Detect AI content and check grammar",
+    seoTitle: "Free Plagiarism Checker & AI Content Detector",
+    seoDescription: "Advanced plagiarism detection and AI content analysis tool. Check for AI-generated text, grammar errors, and paraphrase content. GDPR compliant with up to 2000 words free.",
+    category: "Text Tools",
+    icon: "ShieldCheck",
+  },
 ];
 
 export const getToolSEO = (path: string): ToolData | undefined => {
@@ -448,4 +458,5 @@ export const iconMap: Record<string, any> = {
   Dices,
   Languages,
   Sparkles,
+  ShieldCheck,
 };

@@ -43,6 +43,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Wheel of Decision**: Random picker with spin animation and confetti celebration effects
 - **Grammar Checker**: Check grammar, spelling, and style with LanguageTool API, multi-language support, file upload, and 5000-word limit
 - **AI Humanizer**: Transform AI-generated text into natural, human-like content using GLM-4.5-Air via Bytez API
+- **Plagiarism Checker**: Multi-tool platform with AI content detection, grammar checking, and paraphrasing with captcha verification
 
 ## Project Structure
 ```
@@ -114,6 +115,7 @@ server/
 - `/wheel-of-decision` - Wheel of Decision (Random Picker) tool
 - `/grammar-checker` - Grammar Checker tool
 - `/ai-humanizer` - AI Humanizer tool
+- `/plagiarism-checker` - Plagiarism Checker & AI Detector tool
 
 ### Legal Pages (AdSense/GDPR Compliance)
 - `/privacy-policy` - Privacy Policy page with cookie disclosure and GDPR information

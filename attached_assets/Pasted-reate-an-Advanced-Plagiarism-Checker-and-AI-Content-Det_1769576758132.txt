@@ -1,0 +1,38 @@
+reate an Advanced Plagiarism Checker and AI Content Detector Web Application
+
+Prompt Description:
+Develop a fully functional, professional-level web application that performs plagiarism detection along with AI-generated content detection. This tool should integrate various features such as plagiarism checking via API, AI-written content detection, grammar checking, paraphrasing, and plagiarism verification using URLs or text input. The UI should be clean, user-friendly, and professional, with clear sections for different functionalities.
+
+Detailed Requirements:
+
+Main Features:
+
+A text input area where users can paste or type their content (limit up to 2000 words).
+Buttons to upload files from local storage, Google Drive, or Dropbox.
+A plagiarism checker that detects copied content through an API.
+A human vs AI written content detector with visual indicators showing the likelihood of an AI-generated text or human-written text.
+A grammar checker, paraphrasing tool, and ChatGPT content detector integrated as additional tools.
+Ability to check plagiarism by URL or pasted content.
+Display human content scores with clear percentages for AI-written and human-written content.
+CAPTCHA integration (“I’m not a robot”) before performing content analysis.
+Responsive design for desktop and mobile.
+User Experience:
+
+Include toggles or tabs to switch between different tools such as plagiarism checking, grammar checking, and AI content detection.
+Show user feedback options for improvements.
+Display success or error messages clearly.
+Buttons should be visually distinct and easy to interact with.
+Provide disclaimers for word limits and pricing for advanced features (e.g., starting price: $9.80).
+Visual & UI Elements:
+
+Clean layout with sections clearly divided for different functionalities.
+Use consistent and professional color schemes similar to plagiarism checker tools with green (success) and orange/red (alerts).
+Include ratings/reviews section and subscription info subtly below the main input area.
+Show progress bars or loading indicators while checking content.
+Technical Specifications:
+
+Use modern frameworks (preferably React.js or similar).
+Integrate third-party APIs for plagiarism detection and grammar checking.
+Implement backend services for content processing securely.
+Ensure GDPR and privacy compliance.
+Use reCAPTCHA v2 or v3 for bot prevention.
