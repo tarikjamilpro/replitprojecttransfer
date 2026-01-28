@@ -92,6 +92,13 @@ const textTools = [
     path: "/ai-humanizer",
     color: "bg-violet-500 dark:bg-violet-600",
   },
+  {
+    name: "Plagiarism Checker",
+    description: "Detect AI content, check grammar, and paraphrase text with our advanced tool.",
+    icon: ShieldCheck,
+    path: "/plagiarism-checker",
+    color: "bg-cyan-500 dark:bg-cyan-600",
+  },
 ];
 
 const imageTools = [

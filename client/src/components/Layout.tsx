@@ -16,6 +16,7 @@ const toolCategories = {
     { name: "Text Cleaner", path: "/text-cleaner" },
     { name: "Grammar Checker", path: "/grammar-checker" },
     { name: "AI Humanizer", path: "/ai-humanizer" },
+    { name: "Plagiarism Checker", path: "/plagiarism-checker" },
   ],
   "Image Tools": [
     { name: "Image Compressor", path: "/image-compressor" },
