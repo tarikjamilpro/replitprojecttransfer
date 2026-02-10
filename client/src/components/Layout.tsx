@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Menu, X, Wrench, ChevronDown, ChevronRight } from "lucide-react";
+import { Search, Menu, X, Wrench, ChevronDown, ChevronRight, Shield } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
@@ -396,6 +396,39 @@ export function AdPlaceholder({ position }: { position: "top" | "sidebar" }) {
   );
 }
 
+function SponsoredInterstitial({ onContinue }: { onContinue: () => void }) {
+  return (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4" data-testid="sponsored-interstitial">
+      <div className="bg-white dark:bg-gray-900 rounded-md shadow-2xl max-w-md w-full p-8 text-center">
+        <div className="mx-auto w-14 h-14 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center mb-5">
+          <Shield className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+        </div>
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+          Free Tool Access
+        </h2>
+        <p className="text-gray-600 dark:text-gray-400 text-sm mb-6 leading-relaxed">
+          This free tool is supported by ads. Click the button below to continue to the tool.
+        </p>
+        <button
+          onClick={() => {
+            if (typeof (window as any).openRandomAd === "function") {
+              (window as any).openRandomAd();
+            }
+            onContinue();
+          }}
+          className="w-full bg-green-500 hover:bg-green-600 text-white font-bold text-base py-3.5 px-6 rounded-md shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer"
+          data-testid="button-continue-to-tool"
+        >
+          Continue to Tool
+        </button>
+        <p className="text-gray-400 dark:text-gray-500 text-xs mt-4">
+          A sponsor page will open in a new tab
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export function ToolPageLayout({
   title,
   description,
@@ -423,10 +456,30 @@ export function ToolPageLayout({
   const finalToolId = toolId || toolSEO?.id;
   const finalCategory = category || toolSEO?.category;
 
+  const [showInterstitial, setShowInterstitial] = useState(false);
+  const [toolUnlocked, setToolUnlocked] = useState(false);
+
+  useEffect(() => {
+    const dismissed = sessionStorage.getItem("interstitial_dismissed");
+    if (dismissed) {
+      setToolUnlocked(true);
+    } else {
+      setShowInterstitial(true);
+    }
+  }, []);
+
+  const handleContinue = () => {
+    sessionStorage.setItem("interstitial_dismissed", "1");
+    setShowInterstitial(false);
+    setToolUnlocked(true);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <SEO title={finalSeoTitle} description={finalSeoDescription} />
       <AdPlaceholder position="top" />
+
+      {showInterstitial && <SponsoredInterstitial onContinue={handleContinue} />}
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-4 gap-8">
         <div className="lg:col-span-3">
@@ -439,9 +492,17 @@ export function ToolPageLayout({
             </p>
           </div>
 
-          <div className="bg-card border border-border rounded-md p-6 shadow-sm">
-            {children}
-          </div>
+          {toolUnlocked ? (
+            <div className="bg-card border border-border rounded-md p-6 shadow-sm">
+              {children}
+            </div>
+          ) : (
+            <div className="bg-card border border-border rounded-md p-6 shadow-sm opacity-50 pointer-events-none select-none" aria-hidden="true">
+              <div className="h-48 flex items-center justify-center text-muted-foreground">
+                Click "Continue to Tool" above to access this tool
+              </div>
+            </div>
+          )}
 
           <div className="mt-8 bg-card border border-border rounded-md p-6 shadow-sm">
             <h2 className="text-xl font-semibold text-foreground mb-4">How to Use</h2>
