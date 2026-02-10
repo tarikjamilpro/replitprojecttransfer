@@ -328,15 +328,70 @@ export function Footer() {
   );
 }
 
+const topCTAs = [
+  "Download Now",
+  "Watch Video",
+  "Click to Continue",
+  "Get Started Free",
+  "Claim Your Offer",
+];
+
+const sidebarCTAs = [
+  "Download Now",
+  "Start Free Trial",
+  "Watch Video",
+  "Click to Continue",
+  "Get Your Gift",
+];
+
+function getRandomCTA(list: string[]) {
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+function handleAdClick() {
+  if (typeof (window as any).openRandomAd === "function") {
+    (window as any).openRandomAd();
+  }
+}
+
 export function AdPlaceholder({ position }: { position: "top" | "sidebar" }) {
+  if (position === "top") {
+    return (
+      <div
+        className="ad-spot w-full rounded-md bg-gradient-to-r from-blue-600 to-blue-500 flex items-center justify-center py-4 px-6 gap-4"
+        data-testid={`ad-placeholder-${position}`}
+      >
+        <button
+          onClick={handleAdClick}
+          className="ad-cta-btn inline-flex items-center gap-2 bg-white text-blue-700 font-bold text-sm px-6 py-2.5 rounded-md shadow-md hover:bg-blue-50 hover:shadow-lg transition-all duration-200 cursor-pointer"
+          data-testid="ad-button-top"
+        >
+          {getRandomCTA(topCTAs)}
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div
-      className={`bg-muted/50 border border-dashed border-border rounded-md flex items-center justify-center text-muted-foreground text-sm ${
-        position === "top" ? "h-24 w-full" : "h-64 w-full"
-      }`}
+      className="ad-spot w-full rounded-md bg-gradient-to-b from-blue-600 to-blue-700 flex flex-col items-center justify-center gap-4 p-6"
       data-testid={`ad-placeholder-${position}`}
     >
-      <span>Ad Space</span>
+      <p className="text-white/90 text-xs font-medium uppercase tracking-wider">Sponsored</p>
+      <button
+        onClick={handleAdClick}
+        className="ad-cta-btn w-full bg-white text-blue-700 font-bold text-sm px-6 py-3 rounded-md shadow-md hover:bg-blue-50 hover:shadow-lg transition-all duration-200 cursor-pointer text-center"
+        data-testid="ad-button-sidebar-1"
+      >
+        {getRandomCTA(sidebarCTAs)}
+      </button>
+      <button
+        onClick={handleAdClick}
+        className="ad-cta-btn w-full bg-yellow-400 text-gray-900 font-bold text-sm px-6 py-3 rounded-md shadow-md hover:bg-yellow-300 hover:shadow-lg transition-all duration-200 cursor-pointer text-center"
+        data-testid="ad-button-sidebar-2"
+      >
+        {getRandomCTA(sidebarCTAs)}
+      </button>
     </div>
   );
 }
