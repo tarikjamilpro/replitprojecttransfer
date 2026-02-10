@@ -17,19 +17,32 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
+      var adLinks = [
+        'https://pl28685678.effectivegatecpm.com/28/39/31/2839311f7eebefb36dab99aa0e5423a4.js',
+        'https://otieu.com/4/10591868'
+      ];
+
+      function getRandomAd() {
+        return adLinks[Math.random() < 0.5 ? 0 : 1];
+      }
+
+      function openRandomAd() {
+        var link = getRandomAd();
+        if (link.endsWith('.js')) {
+          var s = document.createElement('script');
+          s.src = link;
+          document.body.appendChild(s);
+        } else {
+          window.open(link, '_blank');
+        }
+      }
+
       (function() {
         if (sessionStorage.getItem('popunder_shown')) return;
         function handleFirstClick() {
           sessionStorage.setItem('popunder_shown', '1');
           document.removeEventListener('click', handleFirstClick);
-          var w = window.open('about:blank', '_blank');
-          if (w) {
-            w.blur();
-            window.focus();
-          }
-          var s = document.createElement('script');
-          s.src = 'https://pl28685678.effectivegatecpm.com/28/39/31/2839311f7eebefb36dab99aa0e5423a4.js';
-          document.body.appendChild(s);
+          openRandomAd();
         }
         document.addEventListener('click', handleFirstClick);
       })();
