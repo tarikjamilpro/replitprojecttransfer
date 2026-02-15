@@ -368,6 +368,13 @@ const careerTools = [
     path: "/bio-link-builder",
     color: "bg-purple-500 dark:bg-purple-600",
   },
+  {
+    name: "Holiday Calendar",
+    description: "Plan social media content around 60+ holidays with calendar view, tips, and export.",
+    icon: CalendarDays,
+    path: "/holiday-calendar",
+    color: "bg-rose-500 dark:bg-rose-600",
+  },
 ];
 
 const healthFitnessTools = [
