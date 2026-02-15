@@ -1,0 +1,34 @@
+Act as a Senior Python Developer. Create a modern, clean Streamlit application named "Social Media AI Content Generator".
+
+### 1. Technical Setup
+- **Framework:** Streamlit (Python)
+- **Environment:** Replit
+- **Secrets:** I have a `BYTEZ_API_KEY` stored in my Replit Secrets. Please fetch this key using `os.environ.get('BYTEZ_API_KEY')` and store it in a variable for future use, but for now, we will use MOCK logic for the generation.
+
+### 2. UI/UX Design
+- Use `st.set_page_config` to set the title "SocialAI" and a robot emoji 🤖.
+- **Sidebar:**
+  - Title: "⚙️ Configuration".
+  - **Platform Selector:** A radio button or selectbox for ['YouTube Script', 'Instagram Caption', 'Facebook Post', 'Twitter Thread'].
+  - **Tone Selector:** A selectbox for ['Professional', 'Funny', 'Inspirational', 'Controversial', 'Educational'].
+  - Add a small "About" section in the sidebar with a divider.
+- **Main Area:**
+  - **Header:** Large, bold title "Generate Viral Content 🚀".
+  - **Input:** A large text area (`st.text_area`) with the label "What is your post about?" and a helpful placeholder.
+  - **Action:** A primary button (`type="primary"`) labeled "✨ Generate Content".
+
+### 3. Functionality & Logic
+- **Mock Generation:**
+  - When the "Generate" button is clicked, show a spinner (`with st.spinner('Crafting your viral post...'):`).
+  - Wait 1.5 seconds (using `time.sleep`) to simulate API latency.
+  - **Logic:** Generate a placeholder string based on the user's selection.
+    - *Example:* If 'Instagram' + 'Funny', output: "Here is a funny caption about [Topic]... 😂 #fun #viral".
+    - *Example:* If 'YouTube' + 'Professional', output: "TITLE: The Future of [Topic]... \n\nINTRO: In this video, we discuss..."
+- **Output Display:**
+  - Display the result in a `st.code` block. *Crucial:* Set `language='markdown'` or `text` for the code block. This effectively gives the user a built-in "Copy to Clipboard" button (Streamlit's native feature).
+  - Show a success toast message (`st.toast`) saying "Content generated successfully!".
+
+### 4. Code Structure
+- Put the app logic in a `main()` function.
+- Include comments explaining where to swap the Mock Logic with the actual `BYTEZ_API_KEY` call later.
+- Use clean, modular code.
