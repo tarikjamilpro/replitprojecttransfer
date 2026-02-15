@@ -56,6 +56,9 @@ const toolCategories = {
     { name: "YouTube Thumbnail Downloader", path: "/youtube-thumbnail-downloader" },
     { name: "YouTube Tag Extractor", path: "/youtube-tag-extractor" },
   ],
+  "Content Creator Tools": [
+    { name: "Viral Hook Generator", path: "/viral-hooks-generator" },
+  ],
   "Other Tools": [
     { name: "Merge PDF Files", path: "/merge-pdf" },
     { name: "Resume Builder", path: "/resume-builder" },

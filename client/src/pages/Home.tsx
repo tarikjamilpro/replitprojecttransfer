@@ -41,7 +41,8 @@ import {
   SpellCheck,
   Wand2,
   BarChart3,
-  Tag
+  Tag,
+  Zap
 } from "lucide-react";
 
 const textTools = [
@@ -121,6 +122,13 @@ const textTools = [
     icon: FileText,
     path: "/ai-content-generator",
     color: "bg-indigo-500 dark:bg-indigo-600",
+  },
+  {
+    name: "Viral Hook Generator",
+    description: "Generate scroll-stopping hooks for videos and posts in 4 styles.",
+    icon: Zap,
+    path: "/viral-hooks-generator",
+    color: "bg-purple-500 dark:bg-purple-600",
   },
 ];
 

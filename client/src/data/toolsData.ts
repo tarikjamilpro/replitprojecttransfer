@@ -439,6 +439,16 @@ export const toolsData: ToolData[] = [
     category: "YouTube Tools",
     icon: "Youtube",
   },
+  {
+    id: "viral-hooks-generator",
+    path: "/viral-hooks-generator",
+    name: "Viral Hook Generator",
+    description: "Generate attention-grabbing hooks for videos and social media posts",
+    seoTitle: "Free Viral Hook Generator - Create Scroll-Stopping Content Hooks",
+    seoDescription: "Generate viral hooks for your videos and social media content. Choose from Controversial, Educational, Listicle, and Storytelling styles. Free hook generator for creators.",
+    category: "Text Tools",
+    icon: "Sparkles",
+  },
 ];
 
 export const getToolSEO = (path: string): ToolData | undefined => {

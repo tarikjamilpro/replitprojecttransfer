@@ -1,0 +1,46 @@
+Act as a Senior React Developer. I need a new component named "ViralHooksGenerator" for my Social Media Creator Toolkit.
+
+### 1. Technical Context
+- **Framework:** React.js (Vite)
+- **Styling:** Tailwind CSS
+- **Icons:** Lucide React (Use `Sparkles`, `Copy`, `Check`, `Info`, `List`)
+- **File Path:** `src/pages/tools/ViralHooksGenerator.jsx`
+
+### 2. Core Logic (The "Brain")
+You need a predefined object `hookTemplates` containing arrays of strings for different styles. 
+**Logic:**
+- **Templates:**
+  - *Controversial:* e.g., "Stop doing [Topic] immediately!", "Why [Topic] is a scam...", "Unpopular opinion about [Topic]..."
+  - *Educational:* e.g., "The comprehensive guide to [Topic]...", "3 secrets about [Topic] nobody tells you...", "How to master [Topic] in 5 steps..."
+  - *Listicle:* e.g., "Top 5 tools for [Topic]...", "7 mistakes you're making with [Topic]...", "Best resources for [Topic]..."
+  - *Storytelling:* e.g., "I tried [Topic] for 30 days and here's what happened...", "How [Topic] changed my life...", "The day I learned the truth about [Topic]..."
+- **Action:** When the user clicks "Generate", randomly select 5-7 templates from the chosen category.
+- **Replacement:** Replace the substring `[Topic]` in the template with the User's Input Text.
+
+### 3. UI Layout & Requirements
+**A. Header & Info:**
+- **Title:** "Viral Hook Generator" with a `Sparkles` icon.
+- **"What is a Hook?" Section:** Create a collapsible or small info card (styled in light blue/gray) that explains: "A hook is the first 3 seconds of your video that grabs attention."
+
+**B. Input Section:**
+- **Topic Input:** Large text field (placeholder: "e.g., Digital Marketing, Weight Loss").
+- **Style Selector:** A dropdown menu for ["Controversial", "Educational", "Listicle/Tips", "Storytelling"].
+- **Button:** "Generate Hooks" (Primary Color, Full Width).
+
+**C. Results Section:**
+- Display the generated hooks in a clean, vertical list.
+- **Row Design:** Each hook should be in a card or row with:
+  - The Hook Text (Large, readable font).
+  - A "Copy" button on the right. 
+  - *Interaction:* When clicked, copy the text to clipboard and change icon to `Check` for 2 seconds.
+- **"Copy All" Feature:**
+  - A text area at the bottom containing all generated hooks separated by newlines.
+  - A button to "Copy All Hooks".
+
+### 4. Aesthetic Guidelines
+- **Typography:** Use a clean sans-serif font. Make the generated hooks stand out (maybe bold specific keywords if possible, otherwise just standard bold).
+- **Colors:** Use a gradient for the Generate button (e.g., `bg-gradient-to-r from-purple-600 to-blue-600`).
+- **Responsive:** Ensure the input and results stack correctly on mobile.
+
+### 5. Deliverable
+Provide the full, working React code for this component.
