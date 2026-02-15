@@ -45,6 +45,7 @@ const GrammarChecker = lazy(() => import("@/pages/GrammarChecker"));
 const AIHumanizer = lazy(() => import("@/pages/AIHumanizer"));
 const PlagiarismChecker = lazy(() => import("@/pages/PlagiarismChecker"));
 const AIPostGenerator = lazy(() => import("@/pages/AIPostGenerator"));
+const AIHashtagGenerator = lazy(() => import("@/pages/AIHashtagGenerator"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const Disclaimer = lazy(() => import("@/pages/Disclaimer"));
 const TermsOfUse = lazy(() => import("@/pages/TermsOfUse"));
@@ -93,6 +94,7 @@ function Router() {
         <Route path="/ai-humanizer" component={AIHumanizer} />
         <Route path="/plagiarism-checker" component={PlagiarismChecker} />
         <Route path="/ai-post-generator" component={AIPostGenerator} />
+        <Route path="/ai-hashtag-generator" component={AIHashtagGenerator} />
         <Route path="/privacy-policy" component={PrivacyPolicy} />
         <Route path="/disclaimer" component={Disclaimer} />
         <Route path="/terms" component={TermsOfUse} />

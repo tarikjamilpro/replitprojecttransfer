@@ -106,6 +106,13 @@ const textTools = [
     path: "/ai-post-generator",
     color: "bg-blue-600 dark:bg-blue-700",
   },
+  {
+    name: "AI Hashtag Generator",
+    description: "Generate optimized hashtags for Instagram, TikTok, and Twitter/X with smart categorization.",
+    icon: Hash,
+    path: "/ai-hashtag-generator",
+    color: "bg-pink-500 dark:bg-pink-600",
+  },
 ];
 
 const imageTools = [

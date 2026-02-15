@@ -399,6 +399,16 @@ export const toolsData: ToolData[] = [
     category: "Text Tools",
     icon: "Sparkles",
   },
+  {
+    id: "ai-hashtag-generator",
+    path: "/ai-hashtag-generator",
+    name: "AI Hashtag Generator",
+    description: "Generate optimized hashtags for Instagram, TikTok, and Twitter/X",
+    seoTitle: "Free AI Hashtag Generator - Get Trending Hashtags for Instagram, TikTok & Twitter",
+    seoDescription: "Generate optimized hashtags categorized by High Reach, Niche Specific, and Trending. Boost your social media engagement on Instagram, TikTok, and Twitter/X. Free tool, no sign-up.",
+    category: "Text Tools",
+    icon: "Hash",
+  },
 ];
 
 export const getToolSEO = (path: string): ToolData | undefined => {

@@ -45,6 +45,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **AI Humanizer**: Transform AI-generated text into natural, human-like content using GLM-4.5-Air via Bytez API
 - **Plagiarism Checker**: Multi-tool platform with AI content detection, grammar checking, and paraphrasing with captcha verification
 - **AI Post Generator**: Generate engaging social media posts with tone selection (Professional, Funny, Inspirational, Urgent, Empathetic) and platform targeting (LinkedIn, Twitter/X, Instagram, Facebook)
+- **AI Hashtag Generator**: Generate optimized hashtags for Instagram, TikTok, and Twitter/X categorized by High Reach, Niche Specific, and Trending Now
 
 ## Project Structure
 ```
@@ -118,6 +119,7 @@ server/
 - `/ai-humanizer` - AI Humanizer tool
 - `/plagiarism-checker` - Plagiarism Checker & AI Detector tool
 - `/ai-post-generator` - AI Post Generator tool
+- `/ai-hashtag-generator` - AI Hashtag Generator tool
 
 ### Legal Pages (AdSense/GDPR Compliance)
 - `/privacy-policy` - Privacy Policy page with cookie disclosure and GDPR information
