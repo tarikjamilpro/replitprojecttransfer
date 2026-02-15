@@ -3,7 +3,8 @@ import {
   Lock, Shuffle, Gauge, Palette, QrCode, Wand2, Download,
   Scale, Smile, Wallet, Wifi, Keyboard, MousePointer, Paintbrush,
   FileJson, Tags, Bot, PenTool, Clock, Percent, Hash, Shield,
-  FileImage, Files, Briefcase, Dices, Languages, Sparkles, ShieldCheck
+  FileImage, Files, Briefcase, Dices, Languages, Sparkles, ShieldCheck,
+  CalendarDays
 } from "lucide-react";
 
 export type ToolCategory = 
@@ -459,6 +460,16 @@ export const toolsData: ToolData[] = [
     category: "Utility Tools",
     icon: "Smartphone",
   },
+  {
+    id: "holiday-calendar",
+    path: "/holiday-calendar",
+    name: "Social Media Holiday Calendar",
+    description: "Plan content around holidays with calendar and list views",
+    seoTitle: "Free Social Media Holiday Calendar - Plan Posts Around Holidays",
+    seoDescription: "Browse 60+ holidays by month with social media content tips. Calendar and list views, custom holidays, search, and JSON export. Perfect for content creators and social media managers.",
+    category: "Utility Tools",
+    icon: "CalendarDays",
+  },
 ];
 
 export const getToolSEO = (path: string): ToolData | undefined => {
@@ -529,4 +540,5 @@ export const iconMap: Record<string, any> = {
   Languages,
   Sparkles,
   ShieldCheck,
+  CalendarDays,
 };

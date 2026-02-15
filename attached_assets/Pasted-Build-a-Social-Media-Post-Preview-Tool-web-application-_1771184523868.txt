@@ -1,0 +1,59 @@
+Build a Social Media Post Preview Tool web application using React and Tailwind CSS. This tool allows users to create and preview social media posts by inputting an image, caption, and selecting a platform (Facebook, Instagram, LinkedIn, X/Twitter, Pinterest, YouTube, TikTok, or Story). The preview updates live in a card format that mimics the selected platform's style, helping content creators visualize their posts before publishing. The app should be intuitive, responsive, and optimized for quick iterations.
+
+Core Requirements:
+Main Features:
+
+Input Section: A form panel on the left or top (depending on screen size) with the following inputs:
+Image Upload: A file input or drag-and-drop area for uploading images (support common formats like JPG, PNG, GIF). Display a preview thumbnail of the uploaded image. Include validation for file size (e.g., max 5MB) and type. If no image is uploaded, show a placeholder (e.g., a generic icon or "No image selected").
+Caption Input: A textarea for entering the post caption (e.g., up to 280 characters for Twitter/X, but allow flexible length). Include a character counter that updates in real-time and warns if exceeding platform-specific limits (e.g., 2200 for Instagram).
+Platform Selector: A dropdown or button group to choose from platforms: Facebook, Instagram, LinkedIn, X (Twitter), Pinterest, YouTube, TikTok, or Story (e.g., Instagram Story format). Each selection should instantly update the preview card to match the platform's typical layout and styling.
+Live Preview Card: A dedicated preview area (right or bottom) that displays a mockup of the post based on the inputs:
+Dynamically adapts to the selected platform:
+Facebook/LinkedIn: Rectangular card with profile icon, name, image, caption, and action buttons (like, comment, share).
+Instagram: Square or vertical image with overlay caption, profile info, and engagement icons.
+X (Twitter): Compact card with profile avatar, handle, image, caption, and tweet actions (reply, retweet, like).
+Pinterest: Vertical pin-style card with image, title (from caption), and save button.
+YouTube: Thumbnail with play button, title (from caption), channel info, and view/like counts.
+TikTok: Vertical video-style card (even if static image) with profile, caption, music icon, and interaction buttons.
+Story: Full-screen overlay with image, caption text, and story-specific elements like progress bar or swipe indicators.
+Updates live as users type or select options—no need for a "generate" button.
+Include mock elements like profile name/handle (user can input or use defaults), timestamps, and engagement metrics (e.g., "1.2K likes").
+If no image, adjust the preview accordingly (e.g., text-only post for Twitter).
+UI/UX Design:
+
+Layout: Split-screen design: Inputs on one side, preview on the other. On mobile, stack vertically with the preview below inputs. Use a clean, modern aesthetic with plenty of white space.
+Styling with Tailwind CSS:
+Use platform-specific color schemes (e.g., blue for Facebook, purple for Instagram) subtly in the preview borders or accents.
+Inputs: Styled with rounded corners, focus states (e.g., blue outline), and hover effects. Use Tailwind's form utilities for consistency.
+Preview Card: Mimic real platforms with shadows, borders, and icons (use Tailwind's built-in icons or simple SVGs). Ensure high fidelity to actual app designs.
+Animations: Smooth transitions when switching platforms (e.g., fade-in for new preview elements) and typing in the caption.
+Accessibility: Keyboard navigation for all inputs and selectors. ARIA labels for form elements, alt text for images, and screen-reader-friendly descriptions for previews. High-contrast mode support.
+Responsiveness: Preview card scales appropriately on different devices. Image uploads should handle mobile camera inputs.
+Data Management:
+
+State Handling: Use React hooks (useState, useEffect) to manage inputs and update the preview reactively. Store uploaded images as base64 or file objects for preview.
+Validation: Real-time feedback for inputs (e.g., error messages for invalid file types or oversized captions). Platform-specific rules (e.g., square images for Instagram).
+Persistence: Optional session storage to retain inputs if the user refreshes the page.
+Mock Data: Provide default placeholders (e.g., sample profile name: "Your Name", handle: "@yourhandle"). No external APIs needed for MVP.
+Technical Implementation:
+
+React Structure: Functional components with hooks for state management.
+Component Breakdown:
+App: Main container handling overall state and layout.
+InputForm: Panel with image upload, caption textarea, and platform selector.
+PreviewCard: Dynamic component that renders based on selected platform, using conditional rendering.
+PlatformPreview: Sub-components for each platform (e.g., FacebookPreview, InstagramPreview) to keep code modular.
+Dependencies: React and Tailwind CSS only. For image handling, use native File API. Avoid heavy libraries.
+Performance: Optimize re-renders with useMemo for preview updates. Ensure fast image loading.
+Bonus Features (Optional for Enhancement):
+
+Multiple Images: Allow uploading multiple images for carousel-style posts (e.g., Instagram).
+Hashtag Suggestions: Auto-suggest or highlight hashtags in the caption based on platform trends.
+Export/Share: Button to download the preview as an image or share a link to the tool with pre-filled data.
+Themes: Light/dark mode toggle affecting the entire app.
+Scheduling Integration: Add a date/time picker for mock scheduling, with a "Schedule Post" button.
+Real API Integration: Placeholder for connecting to actual social media APIs (e.g., Meta's Graph API) for posting directly.
+Example Mock Data/Defaults:
+Default Profile Info: Name: "John Doe", Handle: "@johndoe", Avatar: A generic placeholder image.
+Sample Caption: "Excited to share this amazing view! #Travel #Adventure"
+Platform Styles: For Instagram, use a square aspect ratio; for Story, full-height vertical layout.

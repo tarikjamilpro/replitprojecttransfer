@@ -50,7 +50,8 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Engagement Rate Calculator**: Calculate social media engagement rate with rating system and visual progress bar
 - **YouTube Tag Extractor**: Extract SEO tags from YouTube videos with tag cloud, individual copy, and copy all functionality
 - **Viral Hook Generator**: Generate scroll-stopping hooks in 4 styles (Controversial, Educational, Listicle/Tips, Storytelling) with copy functionality
-- **Bio Link Builder**: Create Link in Bio pages with live mobile preview, 3 themes (Light, Dark, Gradient), and HTML export
+- **Bio Link Builder**: Create Link in Bio pages with live mobile preview, 9 themes + custom colors, 3 fonts, and HTML export
+- **Social Media Holiday Calendar**: Interactive calendar with 60+ holidays across all 12 months, calendar/list views, month navigation, holiday detail modals with social media tips, custom holiday form with local storage, search, and JSON export
 
 ## Project Structure
 ```
@@ -130,6 +131,7 @@ server/
 - `/youtube-tag-extractor` - YouTube Tag Extractor tool
 - `/viral-hooks-generator` - Viral Hook Generator tool
 - `/bio-link-builder` - Bio Link Builder tool
+- `/holiday-calendar` - Social Media Holiday Calendar tool
 
 ### Legal Pages (AdSense/GDPR Compliance)
 - `/privacy-policy` - Privacy Policy page with cookie disclosure and GDPR information
