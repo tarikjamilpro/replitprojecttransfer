@@ -113,6 +113,13 @@ const textTools = [
     path: "/ai-hashtag-generator",
     color: "bg-pink-500 dark:bg-pink-600",
   },
+  {
+    name: "AI Content Generator",
+    description: "Generate viral YouTube scripts, Instagram captions, Facebook posts, and Twitter threads.",
+    icon: FileText,
+    path: "/ai-content-generator",
+    color: "bg-indigo-500 dark:bg-indigo-600",
+  },
 ];
 
 const imageTools = [

@@ -19,6 +19,7 @@ const toolCategories = {
     { name: "Plagiarism Checker", path: "/plagiarism-checker" },
     { name: "AI Post Generator", path: "/ai-post-generator" },
     { name: "AI Hashtag Generator", path: "/ai-hashtag-generator" },
+    { name: "AI Content Generator", path: "/ai-content-generator" },
   ],
   "Image Tools": [
     { name: "Image Compressor", path: "/image-compressor" },

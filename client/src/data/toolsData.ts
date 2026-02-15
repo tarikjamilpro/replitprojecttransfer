@@ -409,6 +409,16 @@ export const toolsData: ToolData[] = [
     category: "Text Tools",
     icon: "Hash",
   },
+  {
+    id: "ai-content-generator",
+    path: "/ai-content-generator",
+    name: "AI Content Generator",
+    description: "Generate viral content for YouTube, Instagram, Facebook, and Twitter",
+    seoTitle: "Free AI Content Generator - Create Viral Social Media Content",
+    seoDescription: "Generate platform-optimized content for YouTube Scripts, Instagram Captions, Facebook Posts, and Twitter Threads. Choose from 5 tones. Free AI-powered content creator.",
+    category: "Text Tools",
+    icon: "Sparkles",
+  },
 ];
 
 export const getToolSEO = (path: string): ToolData | undefined => {
