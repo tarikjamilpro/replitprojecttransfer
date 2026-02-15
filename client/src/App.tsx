@@ -47,6 +47,7 @@ const PlagiarismChecker = lazy(() => import("@/pages/PlagiarismChecker"));
 const AIPostGenerator = lazy(() => import("@/pages/AIPostGenerator"));
 const AIHashtagGenerator = lazy(() => import("@/pages/AIHashtagGenerator"));
 const AIContentGenerator = lazy(() => import("@/pages/AIContentGenerator"));
+const EngagementCalculator = lazy(() => import("@/pages/EngagementCalculator"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const Disclaimer = lazy(() => import("@/pages/Disclaimer"));
 const TermsOfUse = lazy(() => import("@/pages/TermsOfUse"));
@@ -97,6 +98,7 @@ function Router() {
         <Route path="/ai-post-generator" component={AIPostGenerator} />
         <Route path="/ai-hashtag-generator" component={AIHashtagGenerator} />
         <Route path="/ai-content-generator" component={AIContentGenerator} />
+        <Route path="/engagement-calculator" component={EngagementCalculator} />
         <Route path="/privacy-policy" component={PrivacyPolicy} />
         <Route path="/disclaimer" component={Disclaimer} />
         <Route path="/terms" component={TermsOfUse} />

@@ -39,7 +39,8 @@ import {
   ListFilter,
   Dices,
   SpellCheck,
-  Wand2
+  Wand2,
+  BarChart3
 } from "lucide-react";
 
 const textTools = [
@@ -308,6 +309,13 @@ const calculatorTools = [
     icon: Calculator,
     path: "/emi-calculator",
     color: "bg-cyan-500 dark:bg-cyan-600",
+  },
+  {
+    name: "Engagement Rate Calculator",
+    description: "Calculate your social media engagement rate and get a performance rating.",
+    icon: BarChart3,
+    path: "/engagement-calculator",
+    color: "bg-violet-500 dark:bg-violet-600",
   },
 ];
 

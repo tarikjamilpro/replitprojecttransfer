@@ -50,6 +50,7 @@ const toolCategories = {
     { name: "Percentage Calculator", path: "/percentage-calculator" },
     { name: "BMI Calculator", path: "/bmi-calculator" },
     { name: "EMI Calculator", path: "/emi-calculator" },
+    { name: "Engagement Calculator", path: "/engagement-calculator" },
   ],
   "YouTube Tools": [
     { name: "YouTube Thumbnail Downloader", path: "/youtube-thumbnail-downloader" },

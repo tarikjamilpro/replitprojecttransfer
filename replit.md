@@ -47,6 +47,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **AI Post Generator**: Generate engaging social media posts with tone selection (Professional, Funny, Inspirational, Urgent, Empathetic) and platform targeting (LinkedIn, Twitter/X, Instagram, Facebook)
 - **AI Hashtag Generator**: Generate optimized hashtags for Instagram, TikTok, and Twitter/X categorized by High Reach, Niche Specific, and Trending Now
 - **AI Content Generator**: Generate viral content for YouTube Scripts, Instagram Captions, Facebook Posts, and Twitter Threads with 5 tone options
+- **Engagement Rate Calculator**: Calculate social media engagement rate with rating system and visual progress bar
 
 ## Project Structure
 ```
@@ -122,6 +123,7 @@ server/
 - `/ai-post-generator` - AI Post Generator tool
 - `/ai-hashtag-generator` - AI Hashtag Generator tool
 - `/ai-content-generator` - AI Content Generator tool
+- `/engagement-calculator` - Engagement Rate Calculator tool
 
 ### Legal Pages (AdSense/GDPR Compliance)
 - `/privacy-policy` - Privacy Policy page with cookie disclosure and GDPR information

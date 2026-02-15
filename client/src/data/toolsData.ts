@@ -419,6 +419,16 @@ export const toolsData: ToolData[] = [
     category: "Text Tools",
     icon: "Sparkles",
   },
+  {
+    id: "engagement-calculator",
+    path: "/engagement-calculator",
+    name: "Engagement Rate Calculator",
+    description: "Calculate your social media engagement rate percentage",
+    seoTitle: "Free Engagement Rate Calculator - Measure Social Media Performance",
+    seoDescription: "Calculate your social media engagement rate with our free tool. Enter followers, likes, and comments to get your engagement percentage with a detailed rating and breakdown.",
+    category: "Calculators",
+    icon: "Calculator",
+  },
 ];
 
 export const getToolSEO = (path: string): ToolData | undefined => {
