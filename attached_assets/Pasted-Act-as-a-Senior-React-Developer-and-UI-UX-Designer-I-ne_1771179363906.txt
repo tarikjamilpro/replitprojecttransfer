@@ -1,0 +1,43 @@
+Act as a Senior React Developer and UI/UX Designer. I need you to build a production-ready, highly interactive component named "AIPostGenerator" for my Social Media Creator Toolkit.
+
+### 1. Technical Context
+- **Framework:** React.js (Vite)
+- **Styling:** Tailwind CSS (Modern, clean, "SaaS" aesthetic)
+- **Icons:** Lucide React
+- **File Path:** `src/pages/tools/AIPostGenerator.jsx`
+
+### 2. Core Functionality (The Logic)
+Since we do not have a live backend yet, you must **MOCK** the AI generation process. 
+- Create a `handleGenerate` function that sets a `loading` state to `true`.
+- Use `setTimeout` for 2000ms to simulate network latency.
+- After 2 seconds, set `loading` to `false` and return an array of 3 distinct "generated" posts based on the user's selected **Tone**.
+- **Mock Logic:**
+  - If Tone is "Professional", return posts using formal language, hashtags like #Business #Growth, and professional emojis (e.g., 🚀, 📈).
+  - If Tone is "Funny", return posts with puns, casual language, and fun emojis (e.g., 😂, 🍕).
+  - If Tone is "Inspirational", return quotes, uplifting text, and soft emojis (e.g., ✨, 💪).
+
+### 3. UI Layout & Requirements
+The component should have two main sections:
+
+**A. The Input Section (Left or Top):**
+- **Header:** "AI Post Generator" with a `Sparkles` icon.
+- **Input Field:** A text area labeled "What is your post about?" (Placeholder: "e.g., Launching a new coffee shop in downtown...").
+- **Select Dropdown:** Label "Select Tone" (Options: Professional, Funny, Inspirational, Urgent, Empathetic).
+- **Select Dropdown:** Label "Platform" (Options: LinkedIn, Twitter/X, Instagram, Facebook).
+- **Primary Button:** "Generate Content" (Width: Full).
+  - *State:* Disabled and showing a spinner icon when `isLoading` is true.
+
+**B. The Results Section (Right or Bottom):**
+- **Empty State:** If no results yet, show a placeholder illustration or icon with text "Ready to generate your viral content."
+- **Results List:** Display the 3 generated options in separate Cards.
+- **Card Actions:** Each result card must have a "Copy to Clipboard" button.
+  - *Feedback:* When clicked, the icon changes to a Checkmark for 2 seconds to indicate success.
+
+### 4. Aesthetic Guidelines
+- Use a soft color palette (Slate/Gray for text, Indigo/Blue for primary actions).
+- Add subtle transitions/animations when the results appear (fade-in).
+- Ensure the text area handles multiple lines comfortably.
+- Make it fully responsive (stack inputs and results on mobile).
+
+### 5. Deliverable
+Provide the full, working code for `AIPostGenerator.jsx` including all necessary imports from `react` and `lucide-react`.

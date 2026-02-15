@@ -1,0 +1,39 @@
+Act as a Senior React Developer and UI/UX Designer. I need you to build a production-ready, highly interactive component named "AIHashtagGenerator" for my Social Media Creator Toolkit.
+
+### 1. Technical Context
+- **Framework:** React.js (Vite)
+- **Styling:** Tailwind CSS (Modern, clean, "SaaS" aesthetic)
+- **Icons:** Lucide React (Use icons like `Hash`, `Copy`, `Check`, `RefreshCw`)
+- **File Path:** `src/pages/tools/AIHashtagGenerator.jsx`
+
+### 2. Core Functionality (The Logic)
+Since we do not have a live backend yet, you must **MOCK** the AI generation process. 
+- Create a `handleGenerate` function that simulates an API call (2000ms delay).
+- **Mock Logic:** - Create a simple dictionary/object inside the component that maps keywords to specific hashtag groups.
+  - *Example:* If user types "Gym" or "Fitness", return: `['#fitness', '#gymlife', '#workout', '#gains', '#health']`.
+  - *Example:* If user types "Travel", return: `['#wanderlust', '#travelgram', '#adventure', '#explore', '#vacation']`.
+  - *Fallback:* If the keyword doesn't match your dictionary, return a generic "Trending" list: `['#viral', '#explorepage', '#trending', '#fyp']`.
+- The output should categorize hashtags into three groups: "High Reach", "Niche Specific", and "Trending Now".
+
+### 3. UI Layout & Requirements
+
+**A. Input Section:**
+- **Header:** "AI Hashtag Generator" with a `Hash` icon.
+- **Input Field:** "Enter a keyword or topic" (e.g., "Digital Marketing").
+- **Platform Selector:** A dropdown for "Instagram", "TikTok", or "Twitter/X".
+- **Generate Button:** Large, prominent button. Shows a loading spinner when active.
+
+**B. Results Section (The "Chips" Layout):**
+- **Grouped Display:** Display the generated hashtags in 3 distinct sections (High Reach, Niche, Trending).
+- **Tag Style:** Render each hashtag as a clickable "Chip" or "Pill" (rounded background, light blue/gray color).
+  - *Hover Effect:* Scale up slightly or darken color on hover.
+  - *Click Action:* Clicking a single tag should copy just that tag to the clipboard (show a small tooltip "Copied!").
+- **"Copy All" Action:** A sticky button or clear action bar at the bottom that allows the user to "Copy All Hashtags" to clipboard at once.
+
+### 4. Aesthetic Guidelines
+- **Color Palette:** Use gradients for the "Generate" button (e.g., `bg-gradient-to-r from-pink-500 to-rose-500` to mimic Instagram vibes).
+- **Typography:** Use a monospace font for the actual hashtags so they stand out as code/data.
+- **Responsiveness:** Ensure the chips wrap correctly on mobile screens.
+
+### 5. Deliverable
+Provide the full, working code for `AIHashtagGenerator.jsx` including all necessary state management (`useState`, `useEffect`) and toast/notification logic for the copy actions.

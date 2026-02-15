@@ -389,6 +389,16 @@ export const toolsData: ToolData[] = [
     category: "Text Tools",
     icon: "ShieldCheck",
   },
+  {
+    id: "ai-post-generator",
+    path: "/ai-post-generator",
+    name: "AI Post Generator",
+    description: "Generate engaging social media posts with AI",
+    seoTitle: "Free AI Post Generator - Create Social Media Content Instantly",
+    seoDescription: "Generate engaging social media posts for LinkedIn, Twitter, Instagram, and Facebook. Choose from Professional, Funny, Inspirational tones. Free AI-powered content creator.",
+    category: "Text Tools",
+    icon: "Sparkles",
+  },
 ];
 
 export const getToolSEO = (path: string): ToolData | undefined => {

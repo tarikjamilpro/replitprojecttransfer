@@ -99,6 +99,13 @@ const textTools = [
     path: "/plagiarism-checker",
     color: "bg-cyan-500 dark:bg-cyan-600",
   },
+  {
+    name: "AI Post Generator",
+    description: "Generate engaging social media posts for LinkedIn, Twitter, Instagram & more.",
+    icon: Sparkles,
+    path: "/ai-post-generator",
+    color: "bg-blue-600 dark:bg-blue-700",
+  },
 ];
 
 const imageTools = [
