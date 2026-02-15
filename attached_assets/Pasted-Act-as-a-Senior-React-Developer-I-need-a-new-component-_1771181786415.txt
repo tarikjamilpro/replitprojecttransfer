@@ -1,0 +1,40 @@
+Act as a Senior React Developer. I need a new component named "YouTubeTagExtractor" for my Social Media Creator Toolkit.
+
+### 1. Technical Context
+- **Framework:** React.js (Vite)
+- **Styling:** Tailwind CSS
+- **Icons:** Lucide React (Use `Youtube`, `Search`, `Copy`, `Check`)
+- **File Path:** `src/pages/tools/YouTubeTagExtractor.jsx`
+
+### 2. Core Functionality (The Logic)
+Create a tool that *simulates* extracting SEO tags from a YouTube video.
+*Note: Since we cannot scrape YouTube directly from the browser due to CORS, use mock data for now.*
+
+- **Input:** User pastes a YouTube URL.
+- **Action:** User clicks "Extract Tags".
+- **Loading State:** Show a spinner/loading text for 1.5 seconds.
+- **Mock Result:** After the delay, display a success state with:
+  - **Mock Title:** "How to Build a React App in 2026 (Full Course)"
+  - **Mock Tags:** Generate a list of 10-15 realistic tags (e.g., "ReactJS", "Web Development", "Coding Tutorial", "JavaScript", "Frontend").
+
+### 3. UI Layout & Requirements
+**A. Input Section:**
+- **Header:** "YouTube Tag Extractor" with a red `Youtube` icon.
+- **Input Field:** Large text input with placeholder "Paste YouTube Video Link here...".
+- **Button:** Full-width "Extract Tags" button (Red color theme).
+
+**B. Results Section (Only show after extraction):**
+- **Video Metadata:** Display the mock video title in bold.
+- **Tag Cloud:** Render the tags as "Chips" or "Badges" (Rounded pills with light gray background and dark text).
+  - *Interaction:* Clicking a chip should copy that specific tag to clipboard.
+- **Copy All Area:**
+  - A text area showing all tags separated by commas.
+  - A "Copy All" button that copies the entire list to the clipboard.
+
+### 4. Aesthetic Guidelines
+- Use a clean, modern card layout.
+- Use Red (`bg-red-600`) for the primary actions to match YouTube's branding.
+- Ensure the "Copied!" feedback is visible (e.g., change button text or icon temporarily).
+
+### 5. Deliverable
+Provide the full, working React code for this component.

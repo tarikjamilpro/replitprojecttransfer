@@ -48,6 +48,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **AI Hashtag Generator**: Generate optimized hashtags for Instagram, TikTok, and Twitter/X categorized by High Reach, Niche Specific, and Trending Now
 - **AI Content Generator**: Generate viral content for YouTube Scripts, Instagram Captions, Facebook Posts, and Twitter Threads with 5 tone options
 - **Engagement Rate Calculator**: Calculate social media engagement rate with rating system and visual progress bar
+- **YouTube Tag Extractor**: Extract SEO tags from YouTube videos with tag cloud, individual copy, and copy all functionality
 
 ## Project Structure
 ```
@@ -124,6 +125,7 @@ server/
 - `/ai-hashtag-generator` - AI Hashtag Generator tool
 - `/ai-content-generator` - AI Content Generator tool
 - `/engagement-calculator` - Engagement Rate Calculator tool
+- `/youtube-tag-extractor` - YouTube Tag Extractor tool
 
 ### Legal Pages (AdSense/GDPR Compliance)
 - `/privacy-policy` - Privacy Policy page with cookie disclosure and GDPR information

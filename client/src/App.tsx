@@ -48,6 +48,7 @@ const AIPostGenerator = lazy(() => import("@/pages/AIPostGenerator"));
 const AIHashtagGenerator = lazy(() => import("@/pages/AIHashtagGenerator"));
 const AIContentGenerator = lazy(() => import("@/pages/AIContentGenerator"));
 const EngagementCalculator = lazy(() => import("@/pages/EngagementCalculator"));
+const YouTubeTagExtractor = lazy(() => import("@/pages/YouTubeTagExtractor"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const Disclaimer = lazy(() => import("@/pages/Disclaimer"));
 const TermsOfUse = lazy(() => import("@/pages/TermsOfUse"));
@@ -99,6 +100,7 @@ function Router() {
         <Route path="/ai-hashtag-generator" component={AIHashtagGenerator} />
         <Route path="/ai-content-generator" component={AIContentGenerator} />
         <Route path="/engagement-calculator" component={EngagementCalculator} />
+        <Route path="/youtube-tag-extractor" component={YouTubeTagExtractor} />
         <Route path="/privacy-policy" component={PrivacyPolicy} />
         <Route path="/disclaimer" component={Disclaimer} />
         <Route path="/terms" component={TermsOfUse} />

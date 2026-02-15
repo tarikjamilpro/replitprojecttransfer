@@ -54,6 +54,7 @@ const toolCategories = {
   ],
   "YouTube Tools": [
     { name: "YouTube Thumbnail Downloader", path: "/youtube-thumbnail-downloader" },
+    { name: "YouTube Tag Extractor", path: "/youtube-tag-extractor" },
   ],
   "Other Tools": [
     { name: "Merge PDF Files", path: "/merge-pdf" },

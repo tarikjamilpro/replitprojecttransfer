@@ -429,6 +429,16 @@ export const toolsData: ToolData[] = [
     category: "Calculators",
     icon: "Calculator",
   },
+  {
+    id: "youtube-tag-extractor",
+    path: "/youtube-tag-extractor",
+    name: "YouTube Tag Extractor",
+    description: "Extract SEO tags and keywords from any YouTube video",
+    seoTitle: "Free YouTube Tag Extractor - Discover Video SEO Keywords",
+    seoDescription: "Extract tags and keywords from any YouTube video to improve your SEO strategy. Discover what tags top creators use and copy them instantly.",
+    category: "YouTube Tools",
+    icon: "Youtube",
+  },
 ];
 
 export const getToolSEO = (path: string): ToolData | undefined => {

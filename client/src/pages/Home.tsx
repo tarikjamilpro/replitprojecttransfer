@@ -40,7 +40,8 @@ import {
   Dices,
   SpellCheck,
   Wand2,
-  BarChart3
+  BarChart3,
+  Tag
 } from "lucide-react";
 
 const textTools = [
@@ -137,6 +138,13 @@ const imageTools = [
     icon: Youtube,
     path: "/youtube-thumbnail-downloader",
     color: "bg-red-500 dark:bg-red-600",
+  },
+  {
+    name: "YouTube Tag Extractor",
+    description: "Extract SEO tags and keywords from any YouTube video to boost your search rankings.",
+    icon: Tag,
+    path: "/youtube-tag-extractor",
+    color: "bg-red-600 dark:bg-red-700",
   },
   {
     name: "Universal Image Processor",
