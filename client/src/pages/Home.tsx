@@ -42,7 +42,8 @@ import {
   Wand2,
   BarChart3,
   Tag,
-  Zap
+  Zap,
+  Smartphone
 } from "lucide-react";
 
 const textTools = [
@@ -359,6 +360,13 @@ const careerTools = [
     icon: FileUser,
     path: "/resume-builder",
     color: "bg-indigo-500 dark:bg-indigo-600",
+  },
+  {
+    name: "Bio Link Builder",
+    description: "Create a Link in Bio page with live preview and export as standalone HTML.",
+    icon: Smartphone,
+    path: "/bio-link-builder",
+    color: "bg-purple-500 dark:bg-purple-600",
   },
 ];
 

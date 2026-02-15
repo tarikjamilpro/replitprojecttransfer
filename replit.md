@@ -50,6 +50,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Engagement Rate Calculator**: Calculate social media engagement rate with rating system and visual progress bar
 - **YouTube Tag Extractor**: Extract SEO tags from YouTube videos with tag cloud, individual copy, and copy all functionality
 - **Viral Hook Generator**: Generate scroll-stopping hooks in 4 styles (Controversial, Educational, Listicle/Tips, Storytelling) with copy functionality
+- **Bio Link Builder**: Create Link in Bio pages with live mobile preview, 3 themes (Light, Dark, Gradient), and HTML export
 
 ## Project Structure
 ```
@@ -128,6 +129,7 @@ server/
 - `/engagement-calculator` - Engagement Rate Calculator tool
 - `/youtube-tag-extractor` - YouTube Tag Extractor tool
 - `/viral-hooks-generator` - Viral Hook Generator tool
+- `/bio-link-builder` - Bio Link Builder tool
 
 ### Legal Pages (AdSense/GDPR Compliance)
 - `/privacy-policy` - Privacy Policy page with cookie disclosure and GDPR information

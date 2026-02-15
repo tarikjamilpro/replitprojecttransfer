@@ -449,6 +449,16 @@ export const toolsData: ToolData[] = [
     category: "Text Tools",
     icon: "Sparkles",
   },
+  {
+    id: "bio-link-builder",
+    path: "/bio-link-builder",
+    name: "Bio Link Builder",
+    description: "Create a Link in Bio page with live preview and HTML export",
+    seoTitle: "Free Bio Link Builder - Create Your Link in Bio Page",
+    seoDescription: "Build a beautiful Link in Bio page like Linktree with real-time preview. Choose Light, Dark, or Gradient themes. Export as standalone HTML. Free, no account needed.",
+    category: "Utility Tools",
+    icon: "Smartphone",
+  },
 ];
 
 export const getToolSEO = (path: string): ToolData | undefined => {

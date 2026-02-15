@@ -1,0 +1,42 @@
+Act as a Senior React Developer. I need a powerful new component named "MyBioLinkBuilder" for my Social Media Creator Toolkit.
+
+### 1. Technical Context
+- **Framework:** React.js (Vite)
+- **Styling:** Tailwind CSS
+- **Icons:** Lucide React (Use `Plus`, `Trash2`, `Download`, `Smartphone`, `Layout`, `Moon`, `Sun`)
+- **File Path:** `src/pages/tools/MyBioLinkBuilder.jsx`
+
+### 2. Core Functionality
+Create a "Link in Bio" page builder (similar to Linktree) with a real-time preview and HTML export.
+
+**State Management:**
+- **Profile:** `name` (string), `bio` (string), `imageUrl` (string).
+- **Links:** An array of objects: `[{ id: 1, label: "My Website", url: "https://..." }]`.
+- **Theme:** A string selection: `'light'`, `'dark'`, or `'gradient'`.
+
+**Key Features:**
+- **Dynamic Links:** Users can click "Add Link" to add a new button. Each link has a Label input and a URL input. They can also "Delete" a link.
+- **Export HTML:** Create a function `handleExport` that generates a complete, standalone `index.html` string containing the user's data and necessary CSS (you can use inline styles or a CDN link to Tailwind for the exported file). Trigger a browser download of this file named `my-bio-link.html`.
+
+### 3. UI Layout & Requirements
+**Split Screen Layout (Desktop):**
+- **Left Panel (Editor):**
+  - **Profile Section:** Inputs for Name, Bio, and Image URL.
+  - **Links Section:** List of current links with inputs. "Add New Link" button at the bottom.
+  - **Theme Selector:** 3 Buttons or Cards to choose the look (Light/Dark/Gradient).
+  - **Action:** A large "Export & Download HTML" button.
+- **Right Panel (Preview):**
+  - Render a "Mobile Phone" frame (use a border with rounded corners and a specific width/height like 375x667px).
+  - Inside the frame, render the *actual* bio page based on the current state.
+  - *Theme Styles:*
+    - **Light:** White bg, black text, gray buttons.
+    - **Dark:** Black bg, white text, dark gray buttons.
+    - **Gradient:** Animated gradient bg (e.g., via CSS `animate-gradient`), white text, glassmorphism buttons.
+
+### 4. Aesthetic Guidelines
+- **Editor:** Clean, professional form UI with proper spacing.
+- **Preview:** Must look exactly like a real mobile app.
+- **Responsiveness:** On mobile devices, stack the panels (Editor on top, Preview below).
+
+### 5. Deliverable
+Provide the full, working React code for this component. Ensure the "Export" feature uses a `Blob` to trigger the download.

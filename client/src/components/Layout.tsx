@@ -58,6 +58,7 @@ const toolCategories = {
   ],
   "Content Creator Tools": [
     { name: "Viral Hook Generator", path: "/viral-hooks-generator" },
+    { name: "Bio Link Builder", path: "/bio-link-builder" },
   ],
   "Other Tools": [
     { name: "Merge PDF Files", path: "/merge-pdf" },
