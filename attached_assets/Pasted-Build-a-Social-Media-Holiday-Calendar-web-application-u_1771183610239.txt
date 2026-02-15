@@ -1,0 +1,60 @@
+Build a Social Media Holiday Calendar web application using React and Tailwind CSS. This tool will help social media managers and content creators plan posts around holidays by displaying mock holidays for the current month in an interactive calendar or list view. The app should be user-friendly, visually appealing, and optimized for quick reference, with features to toggle views, highlight holidays, and provide details for planning social media content.
+
+Core Requirements:
+Main Features:
+
+View Modes: Provide two primary views for displaying holidays:
+Calendar View: A full-month grid calendar (similar to a standard calendar widget) where each day is a cell. Holidays are visually marked with icons, colored dots, or background highlights. Include navigation to switch months (though focus on the current month initially).
+List View: A vertical, scrollable list of holidays sorted by date, showing the date, holiday name, and a brief description. Each item could include a small icon or emoji for visual appeal.
+View Toggle: A prominent toggle button or tab switcher (e.g., "Calendar" and "List") to seamlessly switch between views without losing context.
+Holiday Interaction: Clicking or hovering on a holiday in either view should display a tooltip or expandable modal with additional details, such as:
+Holiday name
+Date
+Brief description (e.g., "A day to celebrate love and relationships")
+Social media tips (e.g., "Post romantic content or heart-themed graphics")
+Optional: A "Plan Post" button that could link to a mock social media scheduler (for future expansion).
+Current Month Focus: Automatically load and display holidays for the current month. Include a header showing the month and year (e.g., "October 2023").
+Current Date Highlighting: Clearly mark today's date in the calendar view (e.g., with a bold border or different background color).
+UI/UX Design:
+
+Layout: Use a clean, modern design with a header for the title and view toggle. The main content area should be the calendar or list, taking up most of the screen. Ensure the layout is responsive: on desktop, show the calendar/list in a centered container; on mobile, stack elements vertically and make the calendar/list scrollable.
+Styling with Tailwind CSS:
+Use a light, airy color scheme by default (whites, grays, and accent colors like blue or green for holidays).
+Holidays: Use subtle highlights (e.g., light blue background for holiday cells in calendar view, or colored badges in list view).
+Buttons and toggles: Rounded corners, hover effects (e.g., slight shadow or color change), and smooth transitions.
+Typography: Clear, readable fonts (e.g., Tailwind's default sans-serif) with appropriate sizing for headers, dates, and descriptions.
+Animations: Add subtle fade-in effects when switching views or loading data, and hover animations for interactive elements.
+Accessibility: Ensure the app is keyboard-navigable (e.g., tab through holidays), with proper ARIA labels for buttons, tooltips, and modals. Use high-contrast colors for readability.
+Responsiveness: The calendar grid should adapt to screen size (e.g., fewer columns on mobile). List view should be touch-friendly with larger tap targets.
+Holiday Data Management:
+
+Mock Data: Use a predefined array of mock holidays for the current month. Each holiday object should include:
+date: A date string or Date object (e.g., "2023-10-31")
+name: String (e.g., "Halloween")
+description: String (e.g., "A spooky holiday for costumes and treats")
+socialTip: String (e.g., "Share themed photos or videos")
+Optional: icon: An emoji or icon class (e.g., "🎃" for Halloween)
+Data Filtering: Dynamically filter holidays to show only those in the current month. Use JavaScript's Date API to handle month/year logic.
+Customization: Allow users to add custom holidays via a simple form (e.g., input fields for date, name, and description). Added holidays should appear in the views and persist in local storage for the session.
+Data Source: For MVP, hardcode mock data. In a real app, this could integrate with an API like Calendarific or Google Calendar for real holidays.
+Technical Implementation:
+
+React Structure: Use functional components with hooks (e.g., useState for view mode and holiday data, useEffect for loading current month data).
+Component Breakdown:
+App: Main container managing state and layout.
+Header: Title, month display, and view toggle.
+CalendarView: Grid component rendering the month calendar with holiday markers.
+ListView: List component rendering holiday items.
+HolidayModal: Modal or tooltip for detailed holiday info.
+AddHolidayForm: Optional form for adding custom holidays.
+State Management: Keep holiday data in state, update views reactively on changes.
+Performance: Optimize rendering with React.memo for components if needed, and ensure smooth interactions.
+Dependencies: Use only React and Tailwind CSS; avoid heavy libraries unless necessary (e.g., date-fns for date handling if complex).
+Bonus Features (Optional for Enhancement):
+
+Search/Filter: Add a search bar to filter holidays by name or keyword in the list view.
+Export/Share: Button to export the month's holidays as a JSON file, CSV, or shareable link (e.g., generate a URL with encoded data).
+Themes: Toggle between light and dark modes using Tailwind's dark mode utilities.
+Notifications: Mock reminders for upcoming holidays (e.g., a bell icon with a count of holidays in the next 7 days).
+Integration: Placeholder for social media APIs (e.g., a "Post to Instagram" button that opens a mock scheduler).
+Multi-Month Navigation: Allow users to navigate to previous/next months, loading mock data accordingly.
