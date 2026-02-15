@@ -284,5 +284,140 @@ ${text}`;
     }
   });
 
+  const deepseek = new OpenAI({
+    apiKey: process.env.DEEPSEEK_API_KEY,
+    baseURL: "https://api.deepseek.com",
+  });
+
+  app.post("/api/youtube-tags", async (req, res) => {
+    try {
+      const { url } = req.body;
+
+      if (!url || typeof url !== "string") {
+        return res.status(400).json({ error: "YouTube URL is required" });
+      }
+
+      const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|shorts\/|embed\/)|youtu\.be\/).+/;
+      if (!youtubeRegex.test(url.trim())) {
+        return res.status(400).json({ error: "Invalid YouTube URL" });
+      }
+
+      let videoId = "";
+      try {
+        const parsed = new URL(url.includes("://") ? url : `https://${url}`);
+        if (parsed.hostname === "youtu.be") {
+          videoId = parsed.pathname.slice(1);
+        } else if (parsed.pathname.includes("/shorts/")) {
+          videoId = parsed.pathname.split("/shorts/")[1]?.split(/[/?]/)[0] || "";
+        } else {
+          videoId = parsed.searchParams.get("v") || "";
+        }
+      } catch {
+        return res.status(400).json({ error: "Could not parse YouTube URL" });
+      }
+
+      if (!videoId) {
+        return res.status(400).json({ error: "Could not extract video ID from URL" });
+      }
+
+      const oembedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+      let videoTitle = "";
+
+      try {
+        const oembedRes = await fetch(oembedUrl);
+        if (oembedRes.ok) {
+          const oembedData = await oembedRes.json() as any;
+          videoTitle = oembedData.title || "";
+        }
+      } catch {
+        // oembed failed, try page scraping
+      }
+
+      if (!videoTitle) {
+        try {
+          const pageRes = await fetch(`https://www.youtube.com/watch?v=${videoId}`, {
+            headers: { "User-Agent": "Mozilla/5.0 (compatible; DigiTools/1.0)" },
+          });
+          if (pageRes.ok) {
+            const html = await pageRes.text();
+            const titleMatch = html.match(/<title>([^<]*)<\/title>/i);
+            if (titleMatch) {
+              videoTitle = titleMatch[1].replace(/ - YouTube$/, "").trim();
+            }
+          }
+        } catch {
+          // page fetch also failed
+        }
+      }
+
+      if (!videoTitle) {
+        return res.status(400).json({ error: "Could not fetch video information. Please check the URL and try again." });
+      }
+
+      const apiKey = process.env.DEEPSEEK_API_KEY;
+      if (!apiKey) {
+        return res.status(500).json({ error: "DeepSeek API key not configured" });
+      }
+
+      const response = await deepseek.chat.completions.create({
+        model: "deepseek-chat",
+        messages: [
+          {
+            role: "system",
+            content: `You are a YouTube SEO expert. Given a YouTube video title, generate relevant SEO tags/keywords that would help the video rank better in YouTube search. 
+
+Rules:
+- Generate exactly 20 tags
+- Tags should be a mix of broad and specific keywords
+- Include both short-tail and long-tail keywords
+- Tags should be relevant to the video topic
+- Do NOT include hashtags or special characters
+- Each tag should be 1-4 words
+
+Respond ONLY with a valid JSON object (no markdown, no code blocks):
+{"tags": ["tag1", "tag2", ...]}`
+          },
+          {
+            role: "user",
+            content: `Generate YouTube SEO tags for this video:\n\nTitle: "${videoTitle}"`
+          }
+        ],
+        max_tokens: 500,
+      });
+
+      const content = response.choices[0]?.message?.content || "";
+      let tags: string[] = [];
+
+      try {
+        const cleanContent = content.replace(/```json\n?|\n?```/g, "").trim();
+        const parsed = JSON.parse(cleanContent);
+        tags = Array.isArray(parsed.tags) ? parsed.tags : [];
+      } catch {
+        const tagMatches = content.match(/"([^"]+)"/g);
+        if (tagMatches) {
+          tags = tagMatches.map(t => t.replace(/"/g, "")).filter(t => t.length > 0 && t.length < 50);
+        }
+      }
+
+      if (tags.length === 0) {
+        return res.status(500).json({ error: "Failed to generate tags. Please try again." });
+      }
+
+      res.json({ title: videoTitle, tags });
+    } catch (error: any) {
+      const errMsg = error?.message || String(error);
+      console.error("Error extracting YouTube tags:", errMsg);
+      if (errMsg.includes("401") || errMsg.includes("Authentication") || errMsg.includes("invalid")) {
+        res.status(500).json({ error: "DeepSeek API key is invalid. Please check your API key and try again." });
+      } else if (errMsg.includes("429") || errMsg.includes("rate")) {
+        res.status(429).json({ error: "Too many requests. Please wait a moment and try again." });
+      } else if (errMsg.includes("insufficient") || errMsg.includes("balance")) {
+        res.status(500).json({ error: "DeepSeek API balance is insufficient. Please top up your account." });
+      } else {
+        res.status(500).json({ error: "Failed to extract tags. Please try again." });
+      }
+    }
+  });
+
   return httpServer;
 }
