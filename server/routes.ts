@@ -354,17 +354,10 @@ ${text}`;
         return res.status(400).json({ error: "Could not fetch video information. Please check the URL and try again." });
       }
 
-      const apiKey = process.env.DEEPSEEK_API_KEY;
-      if (!apiKey) {
-        return res.status(500).json({ error: "DeepSeek API key not configured" });
-      }
-
-      const response = await deepseek.chat.completions.create({
-        model: "deepseek-chat",
-        messages: [
-          {
-            role: "system",
-            content: `You are a YouTube SEO expert. Given a YouTube video title, generate relevant SEO tags/keywords that would help the video rank better in YouTube search. 
+      const tagPrompt = [
+        {
+          role: "system" as const,
+          content: `You are a YouTube SEO expert. Given a YouTube video title, generate relevant SEO tags/keywords that would help the video rank better in YouTube search. 
 
 Rules:
 - Generate exactly 20 tags
@@ -376,16 +369,47 @@ Rules:
 
 Respond ONLY with a valid JSON object (no markdown, no code blocks):
 {"tags": ["tag1", "tag2", ...]}`
-          },
-          {
-            role: "user",
-            content: `Generate YouTube SEO tags for this video:\n\nTitle: "${videoTitle}"`
-          }
-        ],
-        max_tokens: 500,
-      });
+        },
+        {
+          role: "user" as const,
+          content: `Generate YouTube SEO tags for this video:\n\nTitle: "${videoTitle}"`
+        }
+      ];
 
-      const content = response.choices[0]?.message?.content || "";
+      let content = "";
+      const deepseekKey = process.env.DEEPSEEK_API_KEY;
+
+      if (deepseekKey) {
+        try {
+          const response = await deepseek.chat.completions.create({
+            model: "deepseek-chat",
+            messages: tagPrompt,
+            max_tokens: 500,
+          });
+          content = response.choices[0]?.message?.content || "";
+        } catch (deepseekErr: any) {
+          const dMsg = deepseekErr?.message || "";
+          console.warn("DeepSeek failed, falling back to OpenAI:", dMsg);
+        }
+      }
+
+      if (!content) {
+        try {
+          const response = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: tagPrompt,
+            max_completion_tokens: 500,
+          });
+          content = response.choices[0]?.message?.content || "";
+        } catch (openaiErr: any) {
+          console.error("OpenAI fallback also failed:", openaiErr?.message);
+        }
+      }
+
+      if (!content) {
+        return res.status(500).json({ error: "Failed to generate tags. Both AI providers unavailable." });
+      }
+
       let tags: string[] = [];
 
       try {
@@ -405,17 +429,8 @@ Respond ONLY with a valid JSON object (no markdown, no code blocks):
 
       res.json({ title: videoTitle, tags });
     } catch (error: any) {
-      const errMsg = error?.message || String(error);
-      console.error("Error extracting YouTube tags:", errMsg);
-      if (errMsg.includes("401") || errMsg.includes("Authentication") || errMsg.includes("invalid")) {
-        res.status(500).json({ error: "DeepSeek API key is invalid. Please check your API key and try again." });
-      } else if (errMsg.includes("429") || errMsg.includes("rate")) {
-        res.status(429).json({ error: "Too many requests. Please wait a moment and try again." });
-      } else if (errMsg.includes("insufficient") || errMsg.includes("balance")) {
-        res.status(500).json({ error: "DeepSeek API balance is insufficient. Please top up your account." });
-      } else {
-        res.status(500).json({ error: "Failed to extract tags. Please try again." });
-      }
+      console.error("Error extracting YouTube tags:", error?.message || error);
+      res.status(500).json({ error: "Failed to extract tags. Please try again." });
     }
   });
 
