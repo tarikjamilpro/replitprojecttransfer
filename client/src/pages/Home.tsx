@@ -169,6 +169,13 @@ const imageTools = [
     path: "/meme-generator",
     color: "bg-yellow-500 dark:bg-yellow-600",
   },
+  {
+    name: "Background Remover",
+    description: "Remove image backgrounds instantly with AI. 100% private - processed in your browser.",
+    icon: ImageIcon,
+    path: "/background-remover",
+    color: "bg-emerald-500 dark:bg-emerald-600",
+  },
 ];
 
 const imageEditingTools = [

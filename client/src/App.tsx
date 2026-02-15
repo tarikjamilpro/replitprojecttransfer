@@ -52,6 +52,7 @@ const YouTubeTagExtractor = lazy(() => import("@/pages/YouTubeTagExtractor"));
 const ViralHooksGenerator = lazy(() => import("@/pages/ViralHooksGenerator"));
 const BioLinkBuilder = lazy(() => import("@/pages/BioLinkBuilder"));
 const HolidayCalendar = lazy(() => import("@/pages/HolidayCalendar"));
+const BackgroundRemover = lazy(() => import("@/pages/BackgroundRemover"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const Disclaimer = lazy(() => import("@/pages/Disclaimer"));
 const TermsOfUse = lazy(() => import("@/pages/TermsOfUse"));
@@ -107,6 +108,7 @@ function Router() {
         <Route path="/viral-hooks-generator" component={ViralHooksGenerator} />
         <Route path="/bio-link-builder" component={BioLinkBuilder} />
         <Route path="/holiday-calendar" component={HolidayCalendar} />
+        <Route path="/background-remover" component={BackgroundRemover} />
         <Route path="/privacy-policy" component={PrivacyPolicy} />
         <Route path="/disclaimer" component={Disclaimer} />
         <Route path="/terms" component={TermsOfUse} />

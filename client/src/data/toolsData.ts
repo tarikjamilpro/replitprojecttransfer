@@ -121,6 +121,16 @@ export const toolsData: ToolData[] = [
     icon: "Image",
   },
   {
+    id: "background-remover",
+    path: "/background-remover",
+    name: "Background Remover",
+    description: "Remove image backgrounds with AI",
+    seoTitle: "Free Image Background Remover - Remove BG Online with AI",
+    seoDescription: "Remove image backgrounds instantly with AI-powered processing. No server uploads, 100% private. Supports PNG, JPG, WebP. Download transparent PNG for free.",
+    category: "Image Tools",
+    icon: "Image",
+  },
+  {
     id: "qr-code-generator",
     path: "/qr-code-generator",
     name: "QR Code Generator",

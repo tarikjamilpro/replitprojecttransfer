@@ -13,6 +13,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **PNG/JPG Converter**: Convert images between PNG and JPG formats directly in the browser
 - **Image Resizer**: Resize images to any dimensions with aspect ratio lock and preset sizes
 - **Universal Image Processor**: Convert and resize images to JPG, PNG, WEBP, BMP, ICO with batch ZIP download
+- **Image Background Remover**: AI-powered background removal using @imgly/background-removal, processed entirely in the browser with drag-and-drop upload, before/after preview, progress indicator, and transparent PNG download
 - **QR Code Generator**: Generate QR codes for URLs or text with real-time preview and PNG download
 - **JSON Formatter**: Format, beautify, or minify JSON data with syntax validation
 - **Meta Tag Generator**: Generate HTML meta tags for SEO, Open Graph, and Twitter cards
@@ -97,6 +98,7 @@ server/
 - `/image-converter` - PNG/JPG Converter tool
 - `/image-resizer` - Image Resizer tool
 - `/image-processor` - Universal Image Processor tool
+- `/background-remover` - Image Background Remover tool
 - `/qr-code-generator` - QR Code Generator tool
 - `/json-formatter` - JSON Formatter tool
 - `/meta-tag-generator` - Meta Tag Generator tool
