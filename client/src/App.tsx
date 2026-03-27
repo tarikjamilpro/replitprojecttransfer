@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Header, Footer } from "@/components/Layout";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const Home = lazy(() => import("@/pages/Home"));
 const WordCounter = lazy(() => import("@/pages/WordCounter"));
@@ -131,6 +132,7 @@ function App() {
           <Footer />
         </div>
         <Toaster />
+        <SpeedInsights />
       </TooltipProvider>
     </QueryClientProvider>
   );
