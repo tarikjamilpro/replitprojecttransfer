@@ -42,18 +42,27 @@ function LoginGate({ onAuth }: { onAuth: () => void }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: pw }),
       });
-      const data = await res.json();
+
+      let data: any = null;
+      const contentType = res.headers.get("content-type") || "";
+      if (contentType.includes("application/json")) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        throw new Error(`Server returned ${res.status}: ${text.slice(0, 120)}`);
+      }
+
       if (res.status === 401) {
         setError("Incorrect Password. Access Denied.");
         setPw("");
       } else if (!res.ok) {
-        setError("Server error. Please try again.");
+        setError(data?.error || data?.message || `Server error (${res.status}). Please try again.`);
       } else {
         storeToken(data.token);
         onAuth();
       }
-    } catch {
-      setError("Connection error. Please try again.");
+    } catch (err: any) {
+      setError(err?.message || "Connection error. Please try again.");
     } finally {
       setLoading(false);
     }
