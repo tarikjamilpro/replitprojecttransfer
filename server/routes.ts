@@ -47,9 +47,9 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  const openai = new OpenAI({
-    apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-    baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+  const deepseek = new OpenAI({
+    apiKey: process.env.DEEPSEEK_API_KEY,
+    baseURL: "https://api.deepseek.com",
   });
 
   app.post("/api/ai-detection", async (req, res) => {
@@ -65,8 +65,8 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Text exceeds 2000 word limit" });
       }
 
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+      const response = await deepseek.chat.completions.create({
+        model: "deepseek-chat",
         messages: [
           {
             role: "system",
@@ -97,7 +97,7 @@ The aiScore and humanScore should add up to 100.`
             content: `Analyze this text for AI-generated content:\n\n${text}`
           }
         ],
-        max_completion_tokens: 500,
+        max_tokens: 500,
       });
 
       const content = response.choices[0]?.message?.content || "";
@@ -136,8 +136,8 @@ The aiScore and humanScore should add up to 100.`
         return res.status(400).json({ error: "Text exceeds 2000 word limit" });
       }
 
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+      const response = await deepseek.chat.completions.create({
+        model: "deepseek-chat",
         messages: [
           {
             role: "system",
@@ -155,7 +155,7 @@ Only output the paraphrased text, nothing else.`
             content: text
           }
         ],
-        max_completion_tokens: 2000,
+        max_tokens: 2000,
       });
 
       const paraphrased = response.choices[0]?.message?.content || "";
@@ -323,11 +323,6 @@ ${text}`;
     }
   });
 
-  const deepseek = new OpenAI({
-    apiKey: process.env.DEEPSEEK_API_KEY,
-    baseURL: "https://api.deepseek.com",
-  });
-
   app.post("/api/youtube-tags", async (req, res) => {
     try {
       const { url } = req.body;
@@ -416,37 +411,21 @@ Respond ONLY with a valid JSON object (no markdown, no code blocks):
       ];
 
       let content = "";
-      const deepseekKey = process.env.DEEPSEEK_API_KEY;
 
-      if (deepseekKey) {
-        try {
-          const response = await deepseek.chat.completions.create({
-            model: "deepseek-chat",
-            messages: tagPrompt,
-            max_tokens: 500,
-          });
-          content = response.choices[0]?.message?.content || "";
-        } catch (deepseekErr: any) {
-          const dMsg = deepseekErr?.message || "";
-          console.warn("DeepSeek failed, falling back to OpenAI:", dMsg);
-        }
+      try {
+        const response = await deepseek.chat.completions.create({
+          model: "deepseek-chat",
+          messages: tagPrompt,
+          max_tokens: 500,
+        });
+        content = response.choices[0]?.message?.content || "";
+      } catch (err: any) {
+        console.error("DeepSeek tag generation failed:", err?.message);
+        return res.status(500).json({ error: "Failed to generate tags. Please try again." });
       }
 
       if (!content) {
-        try {
-          const response = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: tagPrompt,
-            max_completion_tokens: 500,
-          });
-          content = response.choices[0]?.message?.content || "";
-        } catch (openaiErr: any) {
-          console.error("OpenAI fallback also failed:", openaiErr?.message);
-        }
-      }
-
-      if (!content) {
-        return res.status(500).json({ error: "Failed to generate tags. Both AI providers unavailable." });
+        return res.status(500).json({ error: "Failed to generate tags. Please try again." });
       }
 
       let tags: string[] = [];
