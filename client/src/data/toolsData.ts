@@ -4,7 +4,8 @@ import {
   Scale, Smile, Wallet, Wifi, Keyboard, MousePointer, Paintbrush,
   FileJson, Tags, Bot, PenTool, Clock, Percent, Hash, Shield,
   FileImage, Files, Briefcase, Dices, Languages, Sparkles, ShieldCheck,
-  CalendarDays
+  CalendarDays,
+  Receipt
 } from "lucide-react";
 
 export type ToolCategory = 
@@ -480,6 +481,16 @@ export const toolsData: ToolData[] = [
     category: "Utility Tools",
     icon: "CalendarDays",
   },
+  {
+    id: "invoice-generator",
+    path: "/invoice-generator",
+    name: "Invoice Generator",
+    description: "Create professional invoices and download as PDF instantly",
+    seoTitle: "Free Invoice Generator - Create & Download PDF Invoices Online",
+    seoDescription: "Generate professional invoices for free with our online invoice maker. Add logo, line items, tax, discounts, and download as a PDF instantly. No sign-up required.",
+    category: "Utility Tools",
+    icon: "Receipt",
+  },
 ];
 
 export const getToolSEO = (path: string): ToolData | undefined => {
@@ -551,4 +562,5 @@ export const iconMap: Record<string, any> = {
   Sparkles,
   ShieldCheck,
   CalendarDays,
+  Receipt,
 };

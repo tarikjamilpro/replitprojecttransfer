@@ -1,0 +1,82 @@
+Act as a Senior Frontend Developer. Your task is to build a modern, fully functional Invoice Generator web application named 'DigiBestTools'. It should closely replicate the UI/UX of [https://invoice-generator.com/](https://invoice-generator.com/).
+
+Tech Stack
+HTML5 & Vanilla JavaScript
+
+Tailwind CSS (via CDN for styling)
+
+FontAwesome (via CDN for icons)
+
+html2pdf.js (via CDN for PDF generation)
+
+Design & Layout Requirements
+1. General Layout
+
+The page should have a light gray background.
+
+The main invoice area should look like a white A4 paper sheet centered on the screen with a subtle shadow.
+
+A fixed or floating right-sidebar should contain the user action buttons.
+
+2. Header Section (Inside the A4 sheet)
+
+Right Side: A large, bold, editable title that defaults to "INVOICE".
+
+Left Side: A placeholder box labeled "+ Add Your Logo". Clicking this should allow the user to upload and display an image.
+
+3. Input Fields
+
+All inputs should be clean and borderless, only revealing a light border when hovered over or focused.
+
+Sender Details: Text area for "Who is this from?".
+
+Client Details: Text area for "Bill To".
+
+Optional: Text area for "Ship To".
+
+Invoice Meta: Right-aligned inputs for Invoice #, Date, Payment Terms, and Due Date.
+
+4. Dynamic Items Table
+
+Headers: Item, Quantity, Rate, Amount.
+
+The "Amount" column should be read-only and auto-calculated.
+
+Include a "+ Line Item" button below the table to add new rows.
+
+Each row should have a small, subtle delete/trash icon to remove it.
+
+5. Calculations Panel (Bottom Right of A4 sheet)
+
+Must display and auto-calculate:
+
+Subtotal (Sum of all line item amounts)
+
+Tax (User inputs a percentage)
+
+Discount (User inputs a flat value or percentage)
+
+Shipping (User inputs a flat value)
+
+Total Balance Due
+
+Functional Requirements
+Real-time Math: Any change to Quantity, Rate, Tax, Discount, or Shipping must immediately update the Line Item Amounts, Subtotal, and Total Balance Due.
+
+PDF Download:
+
+When the "Download PDF" button is clicked, use html2pdf.js to capture only the white A4 invoice container (do not include the right sidebar in the PDF).
+
+The downloaded file must be named DigiBestTools-Invoice.pdf.
+
+Branding: The name 'DigiBestTools' must appear in the browser tab (<title>) and in a small footer at the bottom of the page.
+
+Sidebar / Action Bar Requirements
+A large, prominent green button labeled "Download PDF".
+
+A secondary button labeled "Send Invoice".
+
+A Currency selector dropdown (e.g., USD, EUR, GBP) that updates the currency symbols displayed in the table and calculations panel.
+
+Output Format
+Provide the complete source code (HTML, Tailwind classes, CSS, and JavaScript) completely contained within a single index.html file. Do not split the code into separate files, so I can run it immediately in Replit.

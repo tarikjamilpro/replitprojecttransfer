@@ -61,6 +61,7 @@ const TermsOfUse = lazy(() => import("@/pages/TermsOfUse"));
 const Contact = lazy(() => import("@/pages/Contact"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 const AdminDashboard = lazy(() => import("@/pages/AdminDashboard"));
+const InvoiceGenerator = lazy(() => import("@/pages/InvoiceGenerator"));
 
 function Router() {
   return (
@@ -113,6 +114,7 @@ function Router() {
         <Route path="/bio-link-builder" component={BioLinkBuilder} />
         <Route path="/holiday-calendar" component={HolidayCalendar} />
         <Route path="/background-remover" component={BackgroundRemover} />
+        <Route path="/invoice-generator" component={InvoiceGenerator} />
         <Route path="/privacy-policy" component={PrivacyPolicy} />
         <Route path="/disclaimer" component={Disclaimer} />
         <Route path="/terms" component={TermsOfUse} />
