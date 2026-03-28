@@ -5,8 +5,26 @@ import Bytez from "bytez.js";
 import OpenAI from "openai";
 import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
+import jwt from "jsonwebtoken";
 
 const ADS_FILE = join(process.cwd(), "server/ads.json");
+
+function getJwtSecret(): string {
+  const secret = process.env.ADMIN_PASSWORD;
+  if (!secret) throw new Error("ADMIN_PASSWORD is not set");
+  return secret + "_jwt";
+}
+
+function verifyAdminToken(authHeader: string | undefined): boolean {
+  if (!authHeader?.startsWith("Bearer ")) return false;
+  const token = authHeader.slice(7);
+  try {
+    jwt.verify(token, getJwtSecret());
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 async function readAdsConfig() {
   try {
@@ -455,6 +473,22 @@ Respond ONLY with a valid JSON object (no markdown, no code blocks):
     }
   });
 
+  app.post("/api/login", (req, res) => {
+    const { password } = req.body;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!adminPassword || password !== adminPassword) {
+      return res.status(401).json({ error: "Incorrect Password. Access Denied." });
+    }
+
+    try {
+      const token = jwt.sign({ role: "admin" }, getJwtSecret(), { expiresIn: "8h" });
+      res.json({ token });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to generate token" });
+    }
+  });
+
   app.get("/api/ads", async (_req, res) => {
     try {
       const config = await readAdsConfig();
@@ -465,15 +499,12 @@ Respond ONLY with a valid JSON object (no markdown, no code blocks):
   });
 
   app.post("/api/ads/update", async (req, res) => {
-    const adminPassword = process.env.ADMIN_PASSWORD;
-    const { password, ...payload } = req.body;
-
-    if (!adminPassword || password !== adminPassword) {
+    if (!verifyAdminToken(req.headers.authorization)) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
     try {
-      await writeAdsConfig(payload);
+      await writeAdsConfig(req.body);
       res.json({ success: true });
     } catch (err) {
       res.status(500).json({ error: "Failed to save ad config" });
