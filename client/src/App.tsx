@@ -8,6 +8,7 @@ import { Header, Footer } from "@/components/Layout";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { AdProvider } from "@/contexts/AdContext";
+import { TelegramPopupModal } from "@/components/TelegramPopupModal";
 
 const Home = lazy(() => import("@/pages/Home"));
 const WordCounter = lazy(() => import("@/pages/WordCounter"));
@@ -149,6 +150,7 @@ function AppShell() {
       </div>
       <Toaster />
       <SpeedInsights />
+      <TelegramPopupModal />
     </>
   );
 }
