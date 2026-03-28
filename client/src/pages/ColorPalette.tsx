@@ -5,6 +5,7 @@ import { Lock, Unlock, Shuffle, Copy, Check } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 interface ColorBar {
   hex: string;
@@ -107,6 +108,7 @@ const initialPalette = (): ColorBar[] => {
 export default function ColorPalette() {
   const toolSEO = getToolSEO("/color-palette");
   const [palette, setPalette] = useState<ColorBar[]>(initialPalette);
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const { toast } = useToast();
 
   const generatePalette = useCallback(() => {
@@ -259,7 +261,7 @@ export default function ColorPalette() {
         <div className="container mx-auto max-w-4xl">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
-              onClick={generatePalette}
+              onClick={() => requestAction(generatePalette)}
               size="lg"
               className="w-full sm:w-auto"
               data-testid="button-generate"
@@ -300,6 +302,11 @@ export default function ColorPalette() {
           <RelatedTools currentToolId="color-palette" category="Design Tools" />
         </div>
       </div>
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Color Palette Generator"
+      />
     </div>
   );
 }

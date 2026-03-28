@@ -9,6 +9,7 @@ import { Copy, Trash2, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { SEO } from "@/components/SEO";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 const LOREM_WORDS = [
   "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit",
@@ -35,6 +36,7 @@ type GenerationType = "paragraphs" | "words" | "sentences";
 export default function LoremIpsum() {
   const toolSEO = getToolSEO("/lorem-ipsum");
   const [output, setOutput] = useState("");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [count, setCount] = useState(3);
   const [type, setType] = useState<GenerationType>("paragraphs");
   const [startWithLorem, setStartWithLorem] = useState(true);
@@ -201,7 +203,7 @@ export default function LoremIpsum() {
           </div>
         </div>
 
-        <Button onClick={generate} className="w-full" size="lg" data-testid="button-generate">
+        <Button onClick={() => requestAction(generate)} className="w-full" size="lg" data-testid="button-generate">
           <FileText className="w-4 h-4 mr-2" />
           Generate Lorem Ipsum
         </Button>
@@ -228,6 +230,12 @@ export default function LoremIpsum() {
           </Button>
         </div>
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Lorem Ipsum Generator"
+      />
     </ToolPageLayout>
   );
 }

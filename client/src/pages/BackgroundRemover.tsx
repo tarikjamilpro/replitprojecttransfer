@@ -7,6 +7,7 @@ import { Upload, Download, RotateCcw, ImageIcon, AlertCircle, CheckCircle2 } fro
 import { useToast } from "@/hooks/use-toast";
 import { SEO } from "@/components/SEO";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ACCEPTED_TYPES = ["image/png", "image/jpeg", "image/webp"];
@@ -22,6 +23,7 @@ function formatFileSize(bytes: number): string {
 export default function BackgroundRemover() {
   const toolSEO = getToolSEO("/background-remover");
   const [originalImage, setOriginalImage] = useState<string | null>(null);
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [originalFile, setOriginalFile] = useState<File | null>(null);
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -313,7 +315,7 @@ export default function BackgroundRemover() {
           {originalImage && (
             <div className="flex flex-wrap items-center gap-3">
               <Button
-                onClick={handleDownload}
+                onClick={() => requestAction(handleDownload)}
                 disabled={!processedImage || isProcessing}
                 data-testid="button-download"
               >
@@ -356,7 +358,13 @@ export default function BackgroundRemover() {
             </CardContent>
           </Card>
         </div>
-      </ToolPageLayout>
+  
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Background Remover"
+      />
+    </ToolPageLayout>
     </>
   );
 }

@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Wifi, Download, Upload, Clock, Play, RotateCcw } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 type TestStatus = "idle" | "testing" | "complete";
 type TestPhase = "download" | "upload" | "latency" | "none";
@@ -19,6 +20,7 @@ interface SpeedResults {
 export default function SpeedTest() {
   const toolSEO = getToolSEO("/speed-test");
   const [status, setStatus] = useState<TestStatus>("idle");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [phase, setPhase] = useState<TestPhase>("none");
   const [progress, setProgress] = useState(0);
   const [results, setResults] = useState<SpeedResults>({
@@ -229,7 +231,7 @@ export default function SpeedTest() {
           )}
 
           {status === "idle" && (
-            <Button size="lg" onClick={runSpeedTest} data-testid="button-start-test">
+            <Button size="lg" onClick={() => requestAction(runSpeedTest)} data-testid="button-start-test">
               <Play className="w-5 h-5 mr-2" />
               Start Speed Test
             </Button>
@@ -312,6 +314,12 @@ export default function SpeedTest() {
           </Card>
         )}
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Speed Test"
+      />
     </ToolPageLayout>
   );
 }

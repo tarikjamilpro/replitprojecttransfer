@@ -9,6 +9,7 @@ import { Youtube, Search, Copy, Check, Loader2, Tag } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { SEO } from "@/components/SEO";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 function isValidYouTubeUrl(url: string): boolean {
   return /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|shorts\/|embed\/)|youtu\.be\/).+/.test(url.trim());
@@ -17,6 +18,7 @@ function isValidYouTubeUrl(url: string): boolean {
 export default function YouTubeTagExtractor() {
   const toolSEO = getToolSEO("/youtube-tag-extractor");
   const [url, setUrl] = useState("");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ title: string; tags: string[] } | null>(null);
   const [copiedAll, setCopiedAll] = useState(false);
@@ -136,7 +138,7 @@ export default function YouTubeTagExtractor() {
 
             <Button
               className="w-full bg-red-600 text-white"
-              onClick={handleExtract}
+              onClick={() => requestAction(handleExtract)}
               disabled={loading}
               data-testid="button-extract"
             >
@@ -250,7 +252,13 @@ export default function YouTubeTagExtractor() {
             )}
           </div>
         </div>
-      </ToolPageLayout>
+  
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="YouTube Tag Extractor"
+      />
+    </ToolPageLayout>
     </>
   );
 }

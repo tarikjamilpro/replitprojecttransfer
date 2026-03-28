@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Hash, Copy, Check, RefreshCw, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 const hashtagDictionary: Record<string, string[]> = {
   fitness: ["#fitness", "#gymlife", "#workout", "#gains", "#health", "#fitfam", "#exercise", "#bodybuilding", "#training", "#motivation", "#gym", "#fitnessmotivation", "#getfit", "#strong", "#personaltrainer"],
@@ -51,6 +52,7 @@ function categorizeHashtags(tags: string[]): { highReach: string[]; niche: strin
 
 export default function AIHashtagGenerator() {
   const [keyword, setKeyword] = useState("");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [platform, setPlatform] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<{ highReach: string[]; niche: string[]; trending: string[] } | null>(null);
@@ -187,7 +189,7 @@ export default function AIHashtagGenerator() {
 
           <Button
             className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white border-pink-600"
-            onClick={handleGenerate}
+            onClick={() => requestAction(handleGenerate)}
             disabled={isLoading}
             data-testid="button-generate"
           >
@@ -278,6 +280,12 @@ export default function AIHashtagGenerator() {
           )}
         </div>
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="AI Hashtag Generator"
+      />
     </ToolPageLayout>
   );
 }

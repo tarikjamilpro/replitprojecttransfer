@@ -8,10 +8,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Upload, Download, Image as ImageIcon, X, Lock, Unlock } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 export default function ImageResizer() {
   const toolSEO = getToolSEO("/image-resizer");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [originalWidth, setOriginalWidth] = useState(0);
   const [originalHeight, setOriginalHeight] = useState(0);
@@ -326,7 +328,7 @@ export default function ImageResizer() {
                 </Card>
 
                 <Button
-                  onClick={resizeAndDownload}
+                  onClick={() => requestAction(resizeAndDownload)}
                   disabled={isResizing || width <= 0 || height <= 0}
                   className="w-full"
                   data-testid="button-resize-download"
@@ -339,6 +341,12 @@ export default function ImageResizer() {
           </div>
         )}
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Image Resizer"
+      />
     </ToolPageLayout>
   );
 }

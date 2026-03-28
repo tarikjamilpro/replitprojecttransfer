@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Sparkles, Copy, Check, Info, List, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 const hookTemplates: Record<string, string[]> = {
   Controversial: [
@@ -82,6 +83,7 @@ function shuffleAndPick(arr: string[], count: number): string[] {
 
 export default function ViralHooksGenerator() {
   const [topic, setTopic] = useState("");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [style, setStyle] = useState("");
   const [hooks, setHooks] = useState<string[]>([]);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
@@ -198,7 +200,7 @@ export default function ViralHooksGenerator() {
 
           <Button
             className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white"
-            onClick={handleGenerate}
+            onClick={() => requestAction(handleGenerate)}
             data-testid="button-generate"
           >
             <Zap className="w-4 h-4 mr-2" />
@@ -281,6 +283,12 @@ export default function ViralHooksGenerator() {
           )}
         </div>
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Viral Hooks Generator"
+      />
     </ToolPageLayout>
   );
 }

@@ -7,6 +7,7 @@ import { Activity, Scale, Ruler, ArrowDown } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 type UnitSystem = "metric" | "imperial";
 
@@ -61,6 +62,7 @@ const categoryLabels = {
 export default function BMICalculator() {
   const toolSEO = getToolSEO("/bmi-calculator");
   const [unitSystem, setUnitSystem] = useState<UnitSystem>("metric");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [weightKg, setWeightKg] = useState("");
   const [heightCm, setHeightCm] = useState("");
   const [weightLbs, setWeightLbs] = useState("");
@@ -219,7 +221,7 @@ export default function BMICalculator() {
             )}
 
             <Button
-              onClick={calculateBMI}
+              onClick={() => requestAction(calculateBMI)}
               disabled={!isFormValid()}
               className="w-full"
               size="lg"
@@ -310,6 +312,11 @@ export default function BMICalculator() {
 
         <RelatedTools currentToolId="bmi-calculator" category="Calculators" />
       </div>
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="BMI Calculator"
+      />
     </div>
   );
 }

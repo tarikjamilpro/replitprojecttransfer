@@ -17,6 +17,7 @@ import {
 import { SEO } from "@/components/SEO";
 import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 const MEME_TEMPLATES = [
   { id: "drake", name: "Drake Hotline Bling", url: "https://i.imgflip.com/30b1gx.jpg" },
@@ -32,6 +33,7 @@ const MEME_TEMPLATES = [
 export default function MemeGenerator() {
   const toolSEO = getToolSEO("/meme-generator");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [topText, setTopText] = useState("");
   const [bottomText, setBottomText] = useState("");
   const [fontSize, setFontSize] = useState(48);
@@ -327,7 +329,7 @@ export default function MemeGenerator() {
 
             <div className="flex gap-3">
               <Button
-                onClick={handleDownload}
+                onClick={() => requestAction(handleDownload)}
                 disabled={!selectedImage}
                 className="flex-1"
                 size="lg"
@@ -407,6 +409,11 @@ export default function MemeGenerator() {
 
         <RelatedTools currentToolId="meme-generator" category="Design Tools" />
       </div>
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Meme Generator"
+      />
     </div>
   );
 }

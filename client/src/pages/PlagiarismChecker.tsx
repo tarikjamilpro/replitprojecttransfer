@@ -36,6 +36,7 @@ import {
 import { SEO } from "@/components/SEO";
 import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 const MAX_WORDS = 2000;
 
@@ -67,6 +68,7 @@ interface ParaphraseResult {
 export default function PlagiarismChecker() {
   const toolSEO = getToolSEO("/plagiarism-checker");
   const [activeTab, setActiveTab] = useState("ai-detection");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [text, setText] = useState("");
   const [url, setUrl] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -534,7 +536,7 @@ export default function PlagiarismChecker() {
 
                 <div className="flex flex-wrap gap-2">
                   <Button
-                    onClick={handleAnalyze}
+                    onClick={() => requestAction(handleAnalyze)}
                     disabled={isProcessing || !text.trim() || !captchaVerified || isOverLimit}
                     className="flex-1"
                     data-testid="button-analyze"
@@ -765,6 +767,11 @@ export default function PlagiarismChecker() {
 
         <RelatedTools currentToolId="plagiarism-checker" category="Text Tools" />
       </div>
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Plagiarism Checker"
+      />
     </div>
   );
 }

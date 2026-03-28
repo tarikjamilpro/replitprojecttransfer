@@ -10,6 +10,7 @@ import { PDFDocument } from "pdf-lib";
 import { Upload, FileImage, Trash2, ChevronUp, ChevronDown, Loader2, Download, AlertCircle } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 interface ImageFile {
   id: string;
@@ -28,6 +29,7 @@ const PAGE_SIZES = {
 export default function ImageToPDF() {
   const toolSEO = getToolSEO("/image-to-pdf");
   const [images, setImages] = useState<ImageFile[]>([]);
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [pageSize, setPageSize] = useState<PageSize>("a4");
   const [orientation, setOrientation] = useState<Orientation>("portrait");
   const [processing, setProcessing] = useState(false);
@@ -313,7 +315,7 @@ export default function ImageToPDF() {
             </div>
 
             <Button
-              onClick={convertToPDF}
+              onClick={() => requestAction(convertToPDF)}
               disabled={images.length === 0 || processing}
               className="w-full mt-6"
               size="lg"
@@ -339,6 +341,12 @@ export default function ImageToPDF() {
           <p>For best results, use files smaller than 50MB. All processing happens in your browser - no files are uploaded to any server.</p>
         </div>
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Image to PDF"
+      />
     </ToolPageLayout>
   );
 }

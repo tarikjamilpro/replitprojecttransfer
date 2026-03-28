@@ -8,10 +8,12 @@ import { QRCodeSVG } from "qrcode.react";
 import { Download, QrCode } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 export default function QRCodeGenerator() {
   const toolSEO = getToolSEO("/qr-code-generator");
   const [inputText, setInputText] = useState("");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [qrSize, setQrSize] = useState(256);
   const qrRef = useRef<HTMLDivElement>(null);
 
@@ -132,7 +134,7 @@ export default function QRCodeGenerator() {
 
               {inputText.trim() && (
                 <Button
-                  onClick={downloadQRCode}
+                  onClick={() => requestAction(downloadQRCode)}
                   className="mt-4"
                   data-testid="button-download-qr"
                 >
@@ -157,6 +159,12 @@ export default function QRCodeGenerator() {
           </Card>
         )}
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="QR Code Generator"
+      />
     </ToolPageLayout>
   );
 }

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calculator, ThumbsUp, MessageCircle, Users, BarChart3, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 interface EngagementResult {
   rate: number;
@@ -44,6 +45,7 @@ function getRating(rate: number): EngagementResult {
 
 export default function EngagementCalculator() {
   const [followers, setFollowers] = useState("");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [likes, setLikes] = useState("");
   const [comments, setComments] = useState("");
   const [result, setResult] = useState<EngagementResult | null>(null);
@@ -167,7 +169,7 @@ export default function EngagementCalculator() {
           <div className="flex gap-3">
             <Button
               className="flex-1"
-              onClick={handleCalculate}
+              onClick={() => requestAction(handleCalculate)}
               data-testid="button-calculate"
             >
               <Calculator className="w-4 h-4 mr-2" />
@@ -275,6 +277,12 @@ export default function EngagementCalculator() {
           )}
         </div>
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Engagement Calculator"
+      />
     </ToolPageLayout>
   );
 }

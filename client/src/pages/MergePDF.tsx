@@ -9,6 +9,7 @@ import { PDFDocument } from "pdf-lib";
 import { Upload, FileText, Trash2, ChevronUp, ChevronDown, Loader2, Download, AlertCircle } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 interface PDFFile {
   id: string;
@@ -21,6 +22,7 @@ interface PDFFile {
 export default function MergePDF() {
   const toolSEO = getToolSEO("/merge-pdf");
   const [pdfFiles, setPdfFiles] = useState<PDFFile[]>([]);
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [processing, setProcessing] = useState(false);
   const { toast } = useToast();
 
@@ -261,7 +263,7 @@ export default function MergePDF() {
         <Card>
           <CardContent className="p-6">
             <Button
-              onClick={mergePDFs}
+              onClick={() => requestAction(mergePDFs)}
               disabled={validFileCount < 2 || processing}
               className="w-full"
               size="lg"
@@ -293,6 +295,12 @@ export default function MergePDF() {
           <p>For best results, use files smaller than 50MB. All processing happens in your browser - no files are uploaded to any server.</p>
         </div>
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="PDF Merger"
+      />
     </ToolPageLayout>
   );
 }

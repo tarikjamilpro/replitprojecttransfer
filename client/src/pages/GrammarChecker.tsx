@@ -22,6 +22,7 @@ import {
 import { SEO } from "@/components/SEO";
 import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 interface GrammarError {
   message: string;
@@ -65,6 +66,7 @@ const MAX_WORDS = 5000;
 export default function GrammarChecker() {
   const toolSEO = getToolSEO("/grammar-checker");
   const [text, setText] = useState("");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [language, setLanguage] = useState("en-US");
   const [deepCheck, setDeepCheck] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
@@ -435,7 +437,7 @@ export default function GrammarChecker() {
                       </Button>
                     )}
                     <Button
-                      onClick={checkGrammar}
+                      onClick={() => requestAction(checkGrammar)}
                       disabled={isChecking || !text.trim() || isOverLimit}
                       data-testid="button-check"
                     >
@@ -605,6 +607,11 @@ export default function GrammarChecker() {
           </div>
         </div>
       </div>
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Grammar Checker"
+      />
     </div>
   );
 }

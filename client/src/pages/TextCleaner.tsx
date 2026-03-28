@@ -11,10 +11,12 @@ import { Copy, Check, Trash2, Download, Link, ListFilter, Type } from "lucide-re
 import { SEO } from "@/components/SEO";
 import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 export default function TextCleaner() {
   const toolSEO = getToolSEO("/text-cleaner");
   const { toast } = useToast();
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   
   const [dupInput, setDupInput] = useState("");
   const [dupOutput, setDupOutput] = useState("");
@@ -230,7 +232,7 @@ export default function TextCleaner() {
                   </div>
 
                   <Button
-                    onClick={removeDuplicates}
+                    onClick={() => requestAction(removeDuplicates)}
                     className="w-full mt-6"
                     disabled={!dupInput.trim()}
                     data-testid="button-remove-duplicates"
@@ -432,6 +434,11 @@ export default function TextCleaner() {
           </TabsContent>
         </Tabs>
       </div>
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Text Cleaner"
+      />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sparkles, Copy, Check, Loader2, MessageSquare } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 const mockPosts: Record<string, string[]> = {
   Professional: [
@@ -44,6 +45,7 @@ const platformHints: Record<string, string> = {
 
 export default function AIPostGenerator() {
   const [topic, setTopic] = useState("");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [tone, setTone] = useState("");
   const [platform, setPlatform] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -154,7 +156,7 @@ export default function AIPostGenerator() {
 
           <Button
             className="w-full"
-            onClick={handleGenerate}
+            onClick={() => requestAction(handleGenerate)}
             disabled={isLoading}
             data-testid="button-generate"
           >
@@ -225,6 +227,12 @@ export default function AIPostGenerator() {
           ))}
         </div>
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="AI Post Generator"
+      />
     </ToolPageLayout>
   );
 }

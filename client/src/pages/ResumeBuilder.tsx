@@ -13,6 +13,7 @@ import CreativeTemplate from "@/components/resume-templates/CreativeTemplate";
 import { SEO } from "@/components/SEO";
 import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 interface Education {
   id: string;
@@ -172,6 +173,7 @@ const templates = [
 export default function ResumeBuilder() {
   const toolSEO = getToolSEO("/resume-builder");
   const [resumeData, setResumeData] = useState<ResumeData>(emptyData);
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [openSections, setOpenSections] = useState({
     template: true,
     personal: true,
@@ -765,7 +767,7 @@ export default function ResumeBuilder() {
             </Card>
 
             <Button
-              onClick={handleDownloadPDF}
+              onClick={() => requestAction(handleDownloadPDF)}
               disabled={downloading || !personal.name}
               className="w-full"
               size="lg"
@@ -817,6 +819,11 @@ export default function ResumeBuilder() {
 
         <RelatedTools currentToolId="resume-builder" category="Utility Tools" />
       </div>
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Resume Builder"
+      />
     </div>
   );
 }

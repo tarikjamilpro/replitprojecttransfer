@@ -7,10 +7,12 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Upload, Download, Image as ImageIcon, X } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 export default function ImageConverter() {
   const toolSEO = getToolSEO("/image-converter");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [convertedUrl, setConvertedUrl] = useState<string | null>(null);
   const [outputFormat, setOutputFormat] = useState<"png" | "jpg">("png");
@@ -245,7 +247,7 @@ export default function ImageConverter() {
 
               {convertedUrl && (
                 <Button
-                  onClick={downloadImage}
+                  onClick={() => requestAction(downloadImage)}
                   variant="outline"
                   data-testid="button-download"
                 >
@@ -257,6 +259,12 @@ export default function ImageConverter() {
           </div>
         )}
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Image Converter"
+      />
     </ToolPageLayout>
   );
 }

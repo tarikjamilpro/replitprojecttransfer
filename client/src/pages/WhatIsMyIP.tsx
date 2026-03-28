@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { RefreshCw, Globe, Loader2 } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 interface IPData {
   ip: string;
@@ -13,6 +14,7 @@ interface IPData {
 export default function WhatIsMyIP() {
   const toolSEO = getToolSEO("/what-is-my-ip");
   const [ipData, setIpData] = useState<IPData | null>(null);
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -83,7 +85,7 @@ export default function WhatIsMyIP() {
             )}
             
             <Button
-              onClick={fetchIP}
+              onClick={() => requestAction(fetchIP)}
               disabled={loading}
               className="mt-6"
               data-testid="button-refresh"
@@ -111,6 +113,12 @@ export default function WhatIsMyIP() {
           </CardContent>
         </Card>
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="What Is My IP"
+      />
     </ToolPageLayout>
   );
 }

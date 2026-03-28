@@ -10,10 +10,12 @@ import { useToast } from "@/hooks/use-toast";
 import { Copy, Check } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 export default function RobotsTxtGenerator() {
   const toolSEO = getToolSEO("/robots-txt-generator");
   const [allowAllBots, setAllowAllBots] = useState(true);
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [enableCrawlDelay, setEnableCrawlDelay] = useState(false);
   const [crawlDelay, setCrawlDelay] = useState("10");
   const [sitemapUrl, setSitemapUrl] = useState("");
@@ -196,7 +198,7 @@ export default function RobotsTxtGenerator() {
                   {copied ? "Copied!" : "Copy"}
                 </Button>
                 <Button
-                  onClick={downloadFile}
+                  onClick={() => requestAction(downloadFile)}
                   variant="outline"
                   size="sm"
                   data-testid="button-download"
@@ -219,6 +221,12 @@ export default function RobotsTxtGenerator() {
           </CardContent>
         </Card>
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Robots.txt Generator"
+      />
     </ToolPageLayout>
   );
 }

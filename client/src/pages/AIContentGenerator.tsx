@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sparkles, Copy, Check, Loader2, FileText, Video, Camera, MessageCircle, Twitter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 type Platform = "YouTube Script" | "Instagram Caption" | "Facebook Post" | "Twitter Thread";
 type Tone = "Professional" | "Funny" | "Inspirational" | "Controversial" | "Educational";
@@ -411,6 +412,7 @@ Save this thread and share it with someone starting their ${t} journey.`,
 
 export default function AIContentGenerator() {
   const [topic, setTopic] = useState("");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [platform, setPlatform] = useState<Platform | "">("");
   const [tone, setTone] = useState<Tone | "">("");
   const [isLoading, setIsLoading] = useState(false);
@@ -538,7 +540,7 @@ export default function AIContentGenerator() {
 
           <Button
             className="w-full"
-            onClick={handleGenerate}
+            onClick={() => requestAction(handleGenerate)}
             disabled={isLoading}
             data-testid="button-generate"
           >
@@ -619,6 +621,12 @@ export default function AIContentGenerator() {
           )}
         </div>
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="AI Content Generator"
+      />
     </ToolPageLayout>
   );
 }

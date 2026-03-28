@@ -23,6 +23,7 @@ import {
 import { SEO } from "@/components/SEO";
 import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 type EncryptionType = "WPA" | "WPA3" | "WEP" | "nopass";
 
@@ -62,6 +63,7 @@ const generateWifiString = (
 export default function WifiQRGenerator() {
   const toolSEO = getToolSEO("/wifi-qr-generator");
   const [ssid, setSsid] = useState("");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [password, setPassword] = useState("");
   const [encryption, setEncryption] = useState<EncryptionType>("WPA");
   const [isHidden, setIsHidden] = useState(false);
@@ -378,7 +380,7 @@ export default function WifiQRGenerator() {
 
             {ssid && (
               <div className="grid grid-cols-3 gap-3">
-                <Button onClick={handleDownload} className="flex-1" data-testid="button-download">
+                <Button onClick={() => requestAction(handleDownload)} className="flex-1" data-testid="button-download">
                   <Download className="w-4 h-4 mr-2" />
                   Download
                 </Button>
@@ -426,6 +428,11 @@ export default function WifiQRGenerator() {
 
         <RelatedTools currentToolId="wifi-qr-generator" category="Generator Tools" />
       </div>
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="WiFi QR Generator"
+      />
     </div>
   );
 }

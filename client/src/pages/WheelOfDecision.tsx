@@ -9,6 +9,7 @@ import confetti from "canvas-confetti";
 import { SEO } from "@/components/SEO";
 import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 type SpinState = "idle" | "spinning" | "finished";
 
@@ -24,6 +25,7 @@ Curry`;
 export default function WheelOfDecision() {
   const toolSEO = getToolSEO("/wheel-of-decision");
   const [inputText, setInputText] = useState(DEFAULT_OPTIONS);
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [options, setOptions] = useState<string[]>([]);
   const [spinState, setSpinState] = useState<SpinState>("idle");
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
@@ -213,7 +215,7 @@ export default function WheelOfDecision() {
             </Card>
 
             <Button
-              onClick={spin}
+              onClick={() => requestAction(spin)}
               size="lg"
               className="w-full text-lg py-6"
               disabled={spinState === "spinning" || options.length < 2}
@@ -347,6 +349,11 @@ export default function WheelOfDecision() {
 
         <RelatedTools currentToolId="wheel-of-decision" category="Utility Tools" />
       </div>
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Wheel of Decision"
+      />
     </div>
   );
 }

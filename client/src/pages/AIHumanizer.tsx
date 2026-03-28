@@ -25,6 +25,7 @@ import {
 import { SEO } from "@/components/SEO";
 import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 const LANGUAGES = [
   { code: "en", name: "English" },
@@ -45,6 +46,7 @@ const MAX_WORDS = 2000;
 export default function AIHumanizer() {
   const toolSEO = getToolSEO("/ai-humanizer");
   const [inputText, setInputText] = useState("");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [outputText, setOutputText] = useState("");
   const [language, setLanguage] = useState("en");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -302,7 +304,7 @@ export default function AIHumanizer() {
                     <Copy className="w-4 h-4 mr-2" />
                     Copy
                   </Button>
-                  <Button variant="outline" size="sm" onClick={handleDownload} data-testid="button-download">
+                  <Button variant="outline" size="sm" onClick={() => requestAction(handleDownload)} data-testid="button-download">
                     <Download className="w-4 h-4 mr-2" />
                     Download
                   </Button>
@@ -325,7 +327,7 @@ export default function AIHumanizer() {
           </Button>
           <Button
             size="lg"
-            onClick={handleHumanize}
+            onClick={() => requestAction(handleHumanize)}
             disabled={isProcessing || !inputText.trim() || isOverLimit}
             className="min-w-[200px]"
             data-testid="button-humanize"
@@ -370,6 +372,11 @@ export default function AIHumanizer() {
 
         <RelatedTools currentToolId="ai-humanizer" category="Text Tools" />
       </div>
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="AI Humanizer"
+      />
     </div>
   );
 }

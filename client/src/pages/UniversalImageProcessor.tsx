@@ -15,6 +15,7 @@ import { saveAs } from "file-saver";
 import { SEO } from "@/components/SEO";
 import { RelatedTools } from "@/components/RelatedTools";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 interface ImageFile {
   id: string;
@@ -61,6 +62,7 @@ const formatBytes = (bytes: number): string => {
 export default function UniversalImageProcessor() {
   const toolSEO = getToolSEO("/image-processor");
   const [images, setImages] = useState<ImageFile[]>([]);
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [resizeEnabled, setResizeEnabled] = useState(false);
   const [targetWidth, setTargetWidth] = useState<number>(800);
   const [targetHeight, setTargetHeight] = useState<number>(600);
@@ -405,7 +407,7 @@ export default function UniversalImageProcessor() {
                   </Button>
                 )}
                 <Button
-                  onClick={handleProcessAll}
+                  onClick={() => requestAction(handleProcessAll)}
                   disabled={images.length === 0 || isProcessing}
                   className="min-w-[140px]"
                   data-testid="button-process-all"
@@ -429,7 +431,7 @@ export default function UniversalImageProcessor() {
 
         {processedCount > 1 && (
           <div className="mb-4 flex justify-end">
-            <Button onClick={downloadAllAsZip} variant="outline" data-testid="button-download-zip">
+            <Button onClick={() => requestAction(downloadAllAsZip)} variant="outline" data-testid="button-download-zip">
               <FileArchive className="w-4 h-4 mr-2" />
               Download All as ZIP ({processedCount} images)
             </Button>
@@ -510,6 +512,11 @@ export default function UniversalImageProcessor() {
 
         <RelatedTools currentToolId="image-processor" category="Image Tools" />
       </div>
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Image Processor"
+      />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Download, Search, AlertCircle } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 interface ThumbnailQuality {
   name: string;
@@ -32,6 +33,7 @@ const extractVideoId = (url: string): string | false => {
 export default function YouTubeThumbnailDownloader() {
   const toolSEO = getToolSEO("/youtube-thumbnail-downloader");
   const [url, setUrl] = useState("");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [videoId, setVideoId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [downloading, setDownloading] = useState<string | null>(null);
@@ -136,7 +138,7 @@ export default function YouTubeThumbnailDownloader() {
                 data-testid="input-youtube-url"
               />
               <Button 
-                onClick={handleGetThumbnails}
+                onClick={() => requestAction(handleGetThumbnails)}
                 data-testid="button-get-thumbnails"
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -198,6 +200,12 @@ export default function YouTubeThumbnailDownloader() {
           </div>
         )}
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="YouTube Thumbnail Downloader"
+      />
     </ToolPageLayout>
   );
 }

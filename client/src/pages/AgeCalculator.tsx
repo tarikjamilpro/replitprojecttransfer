@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Calendar, Calculator } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 interface AgeResult {
   years: number;
@@ -50,6 +51,7 @@ function formatDate(date: Date): string {
 export default function AgeCalculator() {
   const toolSEO = getToolSEO("/age-calculator");
   const [birthDate, setBirthDate] = useState("");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [toDate, setToDate] = useState(formatDate(new Date()));
   const [result, setResult] = useState<AgeResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -138,7 +140,7 @@ export default function AgeCalculator() {
             )}
 
             <Button
-              onClick={handleCalculate}
+              onClick={() => requestAction(handleCalculate)}
               className="mt-6 w-full md:w-auto"
               data-testid="button-calculate"
             >
@@ -192,6 +194,12 @@ export default function AgeCalculator() {
           </Card>
         )}
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Age Calculator"
+      />
     </ToolPageLayout>
   );
 }

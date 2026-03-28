@@ -7,10 +7,12 @@ import { useToast } from "@/hooks/use-toast";
 import { Wand2, Minimize2, Copy, AlertCircle, Check } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 export default function JSONFormatter() {
   const toolSEO = getToolSEO("/json-formatter");
   const [input, setInput] = useState("");
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
   const [output, setOutput] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -98,7 +100,7 @@ export default function JSONFormatter() {
       {toolSEO && <SEO title={toolSEO.seoTitle} description={toolSEO.seoDescription} />}
       <div className="space-y-4">
         <div className="flex flex-wrap gap-2">
-          <Button onClick={formatJSON} data-testid="button-format">
+          <Button onClick={() => requestAction(formatJSON)} data-testid="button-format">
             <Wand2 className="w-4 h-4 mr-2" />
             Format / Beautify
           </Button>
@@ -187,6 +189,12 @@ export default function JSONFormatter() {
           </CardContent>
         </Card>
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="JSON Formatter"
+      />
     </ToolPageLayout>
   );
 }
