@@ -8,6 +8,7 @@ import { Upload, Download, Trash2, Image as ImageIcon, FileImage } from "lucide-
 import { useToast } from "@/hooks/use-toast";
 import { SEO } from "@/components/SEO";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 interface ImageFile {
   original: File;
@@ -25,6 +26,7 @@ export default function ImageCompressor() {
   const [isCompressing, setIsCompressing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return "0 Bytes";
@@ -301,7 +303,7 @@ export default function ImageCompressor() {
                 {isCompressing ? "Compressing..." : "Compress Images"}
               </Button>
               {hasCompressedImages && (
-                <Button onClick={handleDownloadAll} variant="outline" data-testid="button-download-all">
+                <Button onClick={() => requestAction(handleDownloadAll)} variant="outline" data-testid="button-download-all">
                   <Download className="w-4 h-4 mr-2" />
                   Download All
                 </Button>
@@ -376,7 +378,7 @@ export default function ImageCompressor() {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleDownload(img, index)}
+                          onClick={() => requestAction(() => handleDownload(img, index))}
                           data-testid={`button-download-${index}`}
                         >
                           <Download className="w-3 h-3 mr-1" />
@@ -399,6 +401,12 @@ export default function ImageCompressor() {
           </div>
         )}
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Image Compressor"
+      />
     </ToolPageLayout>
   );
 }

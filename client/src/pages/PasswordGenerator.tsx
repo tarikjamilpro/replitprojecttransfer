@@ -10,6 +10,7 @@ import { Copy, RefreshCw, Shield, ShieldCheck, ShieldAlert } from "lucide-react"
 import { useToast } from "@/hooks/use-toast";
 import { SEO } from "@/components/SEO";
 import { getToolSEO } from "@/data/toolsData";
+import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
 
 const CHAR_SETS = {
   uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
@@ -29,6 +30,7 @@ export default function PasswordGenerator() {
     symbols: true,
   });
   const { toast } = useToast();
+  const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
 
   const generatePassword = useCallback(() => {
     let charset = "";
@@ -222,7 +224,7 @@ export default function PasswordGenerator() {
         </div>
 
         <Button
-          onClick={generatePassword}
+          onClick={() => requestAction(generatePassword)}
           className="w-full"
           size="lg"
           data-testid="button-generate"
@@ -231,6 +233,12 @@ export default function PasswordGenerator() {
           Generate Password
         </Button>
       </div>
+
+      <AdInterstitial
+        isOpen={showInterstitial}
+        onContinue={handleContinue}
+        toolName="Password Generator"
+      />
     </ToolPageLayout>
   );
 }
