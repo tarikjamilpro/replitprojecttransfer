@@ -26,7 +26,12 @@ const initPromise = (async () => {
 })();
 
 async function handler(req: Request, res: Response) {
-  await initPromise;
+  try {
+    await initPromise;
+  } catch (err: any) {
+    res.status(500).json({ error: "Server initialization failed", message: err?.message });
+    return;
+  }
   app(req, res);
 }
 
