@@ -3,7 +3,7 @@ import { X, Send } from "lucide-react";
 
 const STORAGE_KEY = "tg_modal_closed_at";
 const SUPPRESS_HOURS = 24;
-const TELEGRAM_URL = "https://t.me/digibesttools";
+const TELEGRAM_URL = "https://t.me/digibestresource";
 
 function shouldShow(): boolean {
   try {
