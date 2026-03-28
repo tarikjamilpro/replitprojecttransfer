@@ -84,14 +84,16 @@ app.get("/health", (_req, res) => {
 
     const port = parseInt(process.env.PORT || "5000", 10);
 
-    httpServer.listen(
-      { port, host: "0.0.0.0", reusePort: true },
-      () => {
-        log(`✓ Server listening on 0.0.0.0:${port}`);
-        log(`✓ Environment: ${process.env.NODE_ENV || "development"}`);
-        log(`✓ Health check available at /health`);
-      },
-    );
+    httpServer.on("error", (err: NodeJS.ErrnoException) => {
+      console.error("Fatal: HTTP server error:", err.message);
+      process.exit(1);
+    });
+
+    httpServer.listen(port, "0.0.0.0", () => {
+      log(`✓ Server listening on 0.0.0.0:${port}`);
+      log(`✓ Environment: ${process.env.NODE_ENV || "development"}`);
+      log(`✓ Health check available at /health`);
+    });
   } catch (err) {
     console.error("Fatal: server failed to start:", err);
     process.exit(1);
