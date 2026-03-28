@@ -1,20 +1,16 @@
 import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2, Zap } from "lucide-react";
+import { useAdConfig } from "@/contexts/AdContext";
 
-const AD_LINKS = [
-  { type: "script", src: "https://pl28685678.profitablecpmratenetwork.com/28/39/31/2839311f7eebefb36dab99aa0e5423a4.js" },
-  { type: "url", href: "https://omg10.com/4/10795886" },
-];
-
-function triggerAd() {
-  const ad = AD_LINKS[Math.random() < 0.5 ? 0 : 1];
-  if (ad.type === "script") {
+function triggerAdLink(link: string) {
+  if (!link) return;
+  if (link.endsWith(".js")) {
     const s = document.createElement("script");
-    s.src = ad.src!;
+    s.src = link;
     document.body.appendChild(s);
   } else {
-    window.open(ad.href, "_blank", "noopener");
+    window.open(link, "_blank", "noopener");
   }
 }
 
@@ -26,15 +22,17 @@ interface AdInterstitialProps {
 
 export function AdInterstitial({ isOpen, onContinue, toolName = "this tool" }: AdInterstitialProps) {
   const [loading, setLoading] = useState(false);
+  const { getActiveDirectLink } = useAdConfig();
 
   const handleContinue = useCallback(() => {
     setLoading(true);
-    triggerAd();
+    const link = getActiveDirectLink();
+    if (link) triggerAdLink(link);
     setTimeout(() => {
       setLoading(false);
       onContinue();
     }, 1000);
-  }, [onContinue]);
+  }, [onContinue, getActiveDirectLink]);
 
   if (!isOpen) return null;
 
@@ -105,11 +103,16 @@ export function AdInterstitial({ isOpen, onContinue, toolName = "this tool" }: A
 export function useAdInterstitial() {
   const [showInterstitial, setShowInterstitial] = useState(false);
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+  const { isInterstitialActive } = useAdConfig();
 
   const requestAction = useCallback((action: () => void) => {
+    if (!isInterstitialActive()) {
+      action();
+      return;
+    }
     setPendingAction(() => action);
     setShowInterstitial(true);
-  }, []);
+  }, [isInterstitialActive]);
 
   const handleContinue = useCallback(() => {
     setShowInterstitial(false);

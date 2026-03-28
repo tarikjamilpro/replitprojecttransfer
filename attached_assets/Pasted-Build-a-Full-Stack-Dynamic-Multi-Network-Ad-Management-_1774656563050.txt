@@ -1,0 +1,36 @@
+Build a Full-Stack Dynamic Multi-Network Ad Management System for my React (Vite) + Tailwind CSS and Node.js (Express) application. 
+
+My goal is to have a centralized way to manage, update, and switch between multiple ad networks (Adsterra, Monetag, and Custom/Other) without modifying the codebase every time.
+
+Please implement the following architecture:
+
+1. Backend (Node.js/Express + JSON Storage):
+   - Create a simple database using an `ads.json` file.
+   - The JSON structure MUST support multiple networks. Example:
+     {
+       "interstitial": { "active": true, "activeProvider": "adsterra" },
+       "directLinks": { "adsterra": "", "monetag": "", "custom": "" },
+       "bannerScripts": { "adsterra": "", "monetag": "", "custom": "" }
+     }
+   - Create a GET endpoint `/api/ads` to fetch the current ad configurations.
+   - Create a POST endpoint `/api/ads/update` to update the JSON file.
+   - Security: Protect the update route by checking if the password sent in the request matches `process.env.ADMIN_PASSWORD`.
+
+2. Frontend Global State (React Context):
+   - Create an `AdContext.jsx` provider that wraps the entire React application.
+   - On initial load, fetch the ad data from `/api/ads` and store it in the global state.
+   - Create a helper function inside the context (e.g., `getActiveDirectLink()`) that checks `interstitial.activeProvider` and returns the corresponding direct link URL (Adsterra, Monetag, or Custom).
+
+3. Admin Dashboard Route (/admin):
+   - Create a protected `/admin` page in React (simple password prompt to access).
+   - Build a clean, modern, card-based Tailwind CSS dashboard with the following sections:
+     a) Global Controls: A toggle switch to turn the "Sponsored Interstitial Modal" ON/OFF globally. A Dropdown menu to select the "Active Interstitial Provider" (Adsterra / Monetag / Custom).
+     b) Direct Links Settings: Three separate input fields to paste the Direct Links for Adsterra, Monetag, and Custom.
+     c) Banner Scripts Settings: Three separate text areas to paste global `<script>` tags for each network.
+     d) A prominent "Save Changes" button that sends the updated payload to the POST endpoint.
+
+4. Global Interstitial Modal Update:
+   - Update my existing Interstitial Modal component to pull the correct Direct Link dynamically using the Context helper.
+   - If `interstitial.active` is false in the context, the modal should be bypassed entirely, letting the user go straight to the tool.
+
+Make the Admin UI look highly professional, clean, and mobile-responsive using Tailwind CSS grid/flexbox.

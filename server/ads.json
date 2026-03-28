@@ -1,0 +1,16 @@
+{
+  "interstitial": {
+    "active": true,
+    "activeProvider": "adsterra"
+  },
+  "directLinks": {
+    "adsterra": "https://pl28685678.profitablecpmratenetwork.com/28/39/31/2839311f7eebefb36dab99aa0e5423a4.js",
+    "monetag": "https://omg10.com/4/10795886",
+    "custom": ""
+  },
+  "bannerScripts": {
+    "adsterra": "",
+    "monetag": "",
+    "custom": ""
+  }
+}

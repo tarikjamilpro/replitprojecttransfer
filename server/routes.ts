@@ -3,6 +3,27 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import Bytez from "bytez.js";
 import OpenAI from "openai";
+import { readFile, writeFile } from "fs/promises";
+import { join } from "path";
+
+const ADS_FILE = join(process.cwd(), "server/ads.json");
+
+async function readAdsConfig() {
+  try {
+    const raw = await readFile(ADS_FILE, "utf-8");
+    return JSON.parse(raw);
+  } catch {
+    return {
+      interstitial: { active: true, activeProvider: "adsterra" },
+      directLinks: { adsterra: "", monetag: "", custom: "" },
+      bannerScripts: { adsterra: "", monetag: "", custom: "" },
+    };
+  }
+}
+
+async function writeAdsConfig(data: object) {
+  await writeFile(ADS_FILE, JSON.stringify(data, null, 2), "utf-8");
+}
 
 export async function registerRoutes(
   httpServer: Server,
@@ -431,6 +452,31 @@ Respond ONLY with a valid JSON object (no markdown, no code blocks):
     } catch (error: any) {
       console.error("Error extracting YouTube tags:", error?.message || error);
       res.status(500).json({ error: "Failed to extract tags. Please try again." });
+    }
+  });
+
+  app.get("/api/ads", async (_req, res) => {
+    try {
+      const config = await readAdsConfig();
+      res.json(config);
+    } catch (err) {
+      res.status(500).json({ error: "Failed to read ad config" });
+    }
+  });
+
+  app.post("/api/ads/update", async (req, res) => {
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    const { password, ...payload } = req.body;
+
+    if (!adminPassword || password !== adminPassword) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+      await writeAdsConfig(payload);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to save ad config" });
     }
   });
 
