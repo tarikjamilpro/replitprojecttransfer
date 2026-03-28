@@ -43,7 +43,8 @@ import {
   BarChart3,
   Tag,
   Zap,
-  Smartphone
+  Smartphone,
+  Receipt
 } from "lucide-react";
 
 const textTools = [
@@ -357,6 +358,13 @@ const pdfTools = [
     icon: Combine,
     path: "/merge-pdf",
     color: "bg-red-500 dark:bg-red-600",
+  },
+  {
+    name: "Invoice Generator",
+    description: "Create professional invoices with logo, line items, tax, and download as PDF.",
+    icon: Receipt,
+    path: "/invoice-generator",
+    color: "bg-green-600 dark:bg-green-700",
   },
 ];
 

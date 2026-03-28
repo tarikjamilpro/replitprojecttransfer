@@ -65,6 +65,7 @@ const toolCategories = {
     { name: "Merge PDF Files", path: "/merge-pdf" },
     { name: "Resume Builder", path: "/resume-builder" },
     { name: "Wheel of Decision", path: "/wheel-of-decision" },
+    { name: "Invoice Generator", path: "/invoice-generator" },
   ],
 };
 
