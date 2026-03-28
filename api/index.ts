@@ -1,8 +1,7 @@
 import express, { type Request, type Response, type NextFunction } from "express";
-import { readFile, writeFile } from "fs/promises";
-import { join } from "path";
 import jwt from "jsonwebtoken";
 import OpenAI from "openai";
+import { Pool } from "pg";
 
 const app = express();
 
@@ -17,7 +16,42 @@ app.use(express.urlencoded({ extended: false }));
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-const ADS_FILE = join(process.cwd(), "server/ads.json");
+const DEFAULT_ADS_CONFIG = {
+  interstitial: { active: true, activeProvider: "adsterra" },
+  directLinks: { adsterra: "", monetag: "", custom: "" },
+  bannerScripts: { adsterra: "", monetag: "", custom: "" },
+};
+
+let _pool: Pool | null = null;
+function getPool(): Pool {
+  if (!_pool) {
+    _pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.DATABASE_URL?.includes("localhost") ? false : { rejectUnauthorized: false },
+      max: 3,
+    });
+  }
+  return _pool;
+}
+
+async function readAdsConfig(): Promise<object> {
+  try {
+    const result = await getPool().query("SELECT config FROM ads_config WHERE id = 1");
+    return result.rows[0]?.config ?? DEFAULT_ADS_CONFIG;
+  } catch (err) {
+    console.error("readAdsConfig DB error:", err);
+    return DEFAULT_ADS_CONFIG;
+  }
+}
+
+async function writeAdsConfig(data: object): Promise<void> {
+  await getPool().query(
+    `INSERT INTO ads_config (id, config, updated_at)
+     VALUES (1, $1::jsonb, NOW())
+     ON CONFLICT (id) DO UPDATE SET config = $1::jsonb, updated_at = NOW()`,
+    [JSON.stringify(data)]
+  );
+}
 
 function getJwtSecret(): string {
   const secret = process.env.ADMIN_PASSWORD;
@@ -32,18 +66,6 @@ function verifyAdminToken(authHeader: string | undefined): boolean {
     return true;
   } catch {
     return false;
-  }
-}
-
-async function readAdsConfig() {
-  try {
-    return JSON.parse(await readFile(ADS_FILE, "utf-8"));
-  } catch {
-    return {
-      interstitial: { active: true, activeProvider: "adsterra" },
-      directLinks: { adsterra: "", monetag: "", custom: "" },
-      bannerScripts: { adsterra: "", monetag: "", custom: "" },
-    };
   }
 }
 
@@ -76,10 +98,11 @@ app.post("/api/ads/update", async (req, res) => {
     return res.status(401).json({ error: "Unauthorized" });
   }
   try {
-    await writeFile(ADS_FILE, JSON.stringify(req.body, null, 2), "utf-8");
+    await writeAdsConfig(req.body);
     res.json({ success: true });
-  } catch {
-    res.status(500).json({ error: "Failed to save ad config" });
+  } catch (err) {
+    console.error("POST /api/ads/update error:", err);
+    res.status(500).json({ error: "Failed to save ad config", message: String(err) });
   }
 });
 

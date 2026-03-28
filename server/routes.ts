@@ -2,11 +2,8 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import Bytez from "bytez.js";
 import OpenAI from "openai";
-import { readFile, writeFile } from "fs/promises";
-import { join } from "path";
 import jwt from "jsonwebtoken";
-
-const ADS_FILE = join(process.cwd(), "server/ads.json");
+import { readAdsConfig, writeAdsConfig } from "./db";
 
 function getJwtSecret(): string {
   const secret = process.env.ADMIN_PASSWORD;
@@ -23,23 +20,6 @@ function verifyAdminToken(authHeader: string | undefined): boolean {
   } catch {
     return false;
   }
-}
-
-async function readAdsConfig() {
-  try {
-    const raw = await readFile(ADS_FILE, "utf-8");
-    return JSON.parse(raw);
-  } catch {
-    return {
-      interstitial: { active: true, activeProvider: "adsterra" },
-      directLinks: { adsterra: "", monetag: "", custom: "" },
-      bannerScripts: { adsterra: "", monetag: "", custom: "" },
-    };
-  }
-}
-
-async function writeAdsConfig(data: object) {
-  await writeFile(ADS_FILE, JSON.stringify(data, null, 2), "utf-8");
 }
 
 export async function registerRoutes(
