@@ -13,7 +13,7 @@ app.use(
 );
 app.use(express.urlencoded({ extended: false }));
 
-// Begin initialization immediately on cold start — not lazily on first request
+// Begin initialization immediately on cold start
 const initPromise = (async () => {
   const httpServer = createServer(app);
   await registerRoutes(httpServer, app);
@@ -25,8 +25,9 @@ const initPromise = (async () => {
   });
 })();
 
-// Single CJS export — what Vercel's Node.js runtime expects
-module.exports = async (req: Request, res: Response) => {
+async function handler(req: Request, res: Response) {
   await initPromise;
   app(req, res);
-};
+}
+
+export default handler;
