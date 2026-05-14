@@ -172,8 +172,8 @@ async function fetchImageAsBase64(url: string): Promise<string> {
 
 app.post("/api/generate", async (req, res) => {
   try {
-    const apiKey = process.env.HUGGINGFACE_API_KEY;
-    if (!apiKey) return res.status(500).json({ error: "Hugging Face API key not configured" });
+    const apiKey = process.env.HF_API_KEY || process.env.HUGGINGFACE_API_KEY;
+    if (!apiKey) return res.status(500).json({ error: "Hugging Face API key not configured (set HF_API_KEY)" });
 
     const {
       prompt,
