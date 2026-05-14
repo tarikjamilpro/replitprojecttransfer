@@ -64,6 +64,7 @@ const NotFound = lazy(() => import("@/pages/not-found"));
 const AdminDashboard = lazy(() => import("@/pages/AdminDashboard"));
 const InvoiceGenerator = lazy(() => import("@/pages/InvoiceGenerator"));
 const AIPromptGenerator = lazy(() => import("@/pages/AIPromptGenerator"));
+const AIImageGenerator = lazy(() => import("@/pages/AIImageGenerator"));
 
 function Router() {
   return (
@@ -118,6 +119,7 @@ function Router() {
         <Route path="/background-remover" component={BackgroundRemover} />
         <Route path="/invoice-generator" component={InvoiceGenerator} />
         <Route path="/ai-prompt-generator" component={AIPromptGenerator} />
+        <Route path="/ai-image-generator" component={AIImageGenerator} />
         <Route path="/privacy-policy" component={PrivacyPolicy} />
         <Route path="/disclaimer" component={Disclaimer} />
         <Route path="/terms" component={TermsOfUse} />

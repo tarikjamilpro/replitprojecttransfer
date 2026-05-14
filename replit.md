@@ -53,6 +53,7 @@ A fully functional, responsive SEO & Utility Tools website inspired by SmallSEOT
 - **Viral Hook Generator**: Generate scroll-stopping hooks in 4 styles (Controversial, Educational, Listicle/Tips, Storytelling) with copy functionality
 - **Bio Link Builder**: Create Link in Bio pages with live mobile preview, 9 themes + custom colors, 3 fonts, and HTML export
 - **Social Media Holiday Calendar**: Interactive calendar with 60+ holidays across all 12 months, calendar/list views, month navigation, holiday detail modals with social media tips, custom holiday form with local storage, search, and JSON export
+- **AI Image Generator**: Generate AI images from text prompts using Hugging Face Inference Providers (FLUX.1 Schnell, FLUX.1 Dev, Stable Diffusion XL via fal-ai). Supports negative prompts, aspect ratios (1:1, 16:9, 9:16, 4:3), advanced settings (steps, guidance scale, batch size up to 4 images), and one-click PNG download.
 
 ## Project Structure
 ```
@@ -134,6 +135,7 @@ server/
 - `/viral-hooks-generator` - Viral Hook Generator tool
 - `/bio-link-builder` - Bio Link Builder tool
 - `/holiday-calendar` - Social Media Holiday Calendar tool
+- `/ai-image-generator` - AI Image Generator tool (Hugging Face)
 
 ### Legal Pages (AdSense/GDPR Compliance)
 - `/privacy-policy` - Privacy Policy page with cookie disclosure and GDPR information

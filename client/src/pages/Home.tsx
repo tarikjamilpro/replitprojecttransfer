@@ -139,6 +139,13 @@ const textTools = [
     path: "/ai-prompt-generator",
     color: "bg-violet-500 dark:bg-violet-600",
   },
+  {
+    name: "AI Image Generator",
+    description: "Generate stunning AI images from text using Stable Diffusion XL, FLUX, and other Hugging Face models.",
+    icon: Sparkles,
+    path: "/ai-image-generator",
+    color: "bg-fuchsia-500 dark:bg-fuchsia-600",
+  },
 ];
 
 const imageTools = [
