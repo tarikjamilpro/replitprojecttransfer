@@ -106,6 +106,23 @@ app.post("/api/ads/update", async (req, res) => {
   }
 });
 
+// ── OpenRouter (single LLM provider for ALL AI calls) ────────────────────────
+
+const OPENROUTER_MODEL = "openrouter/auto";
+
+function getOpenRouter(): OpenAI {
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) throw new Error("OPENROUTER_API_KEY is not set");
+  return new OpenAI({
+    apiKey,
+    baseURL: "https://openrouter.ai/api/v1",
+    defaultHeaders: {
+      "HTTP-Referer": "https://digibesttools.site",
+      "X-Title": "Digi Best Tools",
+    },
+  });
+}
+
 // ── AI Detection ──────────────────────────────────────────────────────────────
 
 app.post("/api/ai-detection", async (req, res) => {
@@ -114,9 +131,8 @@ app.post("/api/ai-detection", async (req, res) => {
     if (!text || typeof text !== "string") return res.status(400).json({ error: "Text is required" });
     if (text.trim().split(/\s+/).length > 2000) return res.status(400).json({ error: "Text exceeds 2000 word limit" });
 
-    const deepseek = new OpenAI({ apiKey: process.env.DEEPSEEK_API_KEY, baseURL: "https://api.deepseek.com" });
-    const response = await deepseek.chat.completions.create({
-      model: "deepseek-chat",
+    const response = await getOpenRouter().chat.completions.create({
+      model: OPENROUTER_MODEL,
       messages: [
         { role: "system", content: `You are an AI content detection expert. Analyze the provided text and determine if it was written by AI or a human.\n\nRespond ONLY with a valid JSON object:\n{"aiScore":<0-100>,"humanScore":<0-100>,"analysis":"<2-3 sentences>","confidence":"<high|medium|low>","details":{"patternScore":<0-100>,"vocabularyScore":<0-100>,"structureScore":<0-100>}}` },
         { role: "user", content: `Analyze this text:\n\n${text}` },
@@ -130,6 +146,7 @@ app.post("/api/ai-detection", async (req, res) => {
       res.json({ aiScore: 50, humanScore: 50, analysis: "Unable to perform detailed analysis.", confidence: "low", details: { patternScore: 50, vocabularyScore: 50, structureScore: 50 } });
     }
   } catch (err: any) {
+    console.error("ai-detection error:", err?.message || err);
     res.status(500).json({ error: "Failed to analyze content" });
   }
 });
@@ -144,42 +161,16 @@ app.post("/api/enhance-prompt", async (req, res) => {
 
     const systemPrompt = `You are an expert AI image prompt engineer. Transform a user's basic idea into a single, professional, highly-detailed prompt optimized for "${targetModel}".\n\nRules:\n- Output ONLY the final prompt text. No labels, no explanations, no markdown, no quotes.\n- Include specifics on subject, composition, lighting, color palette, mood, camera/lens (if photographic), art style, and quality modifiers.\n- Tailor the structure and modifiers to the conventions of "${targetModel}" (e.g., Midjourney uses --ar and --v flags; Stable Diffusion uses comma-separated tags with weights; DALL-E 3 prefers natural language descriptions; Flux prefers detailed natural language).\n- Keep the prompt under 150 words. Do not invent unrelated subjects.`;
 
-    const messages = [
-      { role: "system" as const, content: systemPrompt },
-      { role: "user" as const, content: `Basic idea: ${idea}` },
-    ];
-
-    let prompt = "";
-
-    if (process.env.AI_INTEGRATIONS_OPENAI_API_KEY && process.env.AI_INTEGRATIONS_OPENAI_BASE_URL) {
-      try {
-        const replitAI = new OpenAI({
-          apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-          baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-        });
-        const r = await replitAI.chat.completions.create({
-          model: "gpt-4o-mini",
-          messages,
-          max_tokens: 600,
-          temperature: 0.8,
-        });
-        prompt = (r.choices[0]?.message?.content || "").trim();
-      } catch (e: any) {
-        console.warn("Replit AI failed, falling back to DeepSeek:", e?.message || e);
-      }
-    }
-
-    if (!prompt && process.env.DEEPSEEK_API_KEY) {
-      const deepseek = new OpenAI({ apiKey: process.env.DEEPSEEK_API_KEY, baseURL: "https://api.deepseek.com" });
-      const r = await deepseek.chat.completions.create({
-        model: "deepseek-chat",
-        messages,
-        max_tokens: 600,
-        temperature: 0.8,
-      });
-      prompt = (r.choices[0]?.message?.content || "").trim();
-    }
-
+    const r = await getOpenRouter().chat.completions.create({
+      model: OPENROUTER_MODEL,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: `Basic idea: ${idea}` },
+      ],
+      max_tokens: 600,
+      temperature: 0.8,
+    });
+    const prompt = (r.choices[0]?.message?.content || "").trim();
     if (!prompt) return res.status(502).json({ error: "AI service unavailable" });
     res.json({ prompt });
   } catch (err: any) {
@@ -196,9 +187,8 @@ app.post("/api/paraphrase", async (req, res) => {
     if (!text || typeof text !== "string") return res.status(400).json({ error: "Text is required" });
     if (text.trim().split(/\s+/).length > 2000) return res.status(400).json({ error: "Text exceeds 2000 word limit" });
 
-    const deepseek = new OpenAI({ apiKey: process.env.DEEPSEEK_API_KEY, baseURL: "https://api.deepseek.com" });
-    const response = await deepseek.chat.completions.create({
-      model: "deepseek-chat",
+    const response = await getOpenRouter().chat.completions.create({
+      model: OPENROUTER_MODEL,
       messages: [
         { role: "system", content: "You are a professional paraphrasing tool. Rewrite the provided text maintaining meaning but using different words and structures. Only output the paraphrased text." },
         { role: "user", content: text },
@@ -206,7 +196,8 @@ app.post("/api/paraphrase", async (req, res) => {
       max_tokens: 2000,
     });
     res.json({ paraphrased: response.choices[0]?.message?.content || "" });
-  } catch {
+  } catch (err: any) {
+    console.error("paraphrase error:", err?.message || err);
     res.status(500).json({ error: "Failed to paraphrase content" });
   }
 });
@@ -239,9 +230,8 @@ app.post("/api/youtube-tags", async (req, res) => {
 
     if (!videoTitle) return res.status(400).json({ error: "Could not fetch video information." });
 
-    const deepseek = new OpenAI({ apiKey: process.env.DEEPSEEK_API_KEY, baseURL: "https://api.deepseek.com" });
-    const response = await deepseek.chat.completions.create({
-      model: "deepseek-chat",
+    const response = await getOpenRouter().chat.completions.create({
+      model: OPENROUTER_MODEL,
       messages: [
         { role: "system", content: 'You are a YouTube SEO expert. Generate exactly 20 relevant tags for the video. Respond ONLY with JSON: {"tags":["tag1","tag2",...]}' },
         { role: "user", content: `Generate YouTube SEO tags for: "${videoTitle}"` },
@@ -255,21 +245,19 @@ app.post("/api/youtube-tags", async (req, res) => {
     } catch {
       res.status(500).json({ error: "Failed to parse tags response" });
     }
-  } catch {
+  } catch (err: any) {
+    console.error("youtube-tags error:", err?.message || err);
     res.status(500).json({ error: "Failed to generate tags" });
   }
 });
 
-// ── Humanize (bytez.js — dynamic import to avoid ESM bundling issues) ─────────
+// ── Humanize ──────────────────────────────────────────────────────────────────
 
 app.post("/api/humanize", async (req, res) => {
   try {
     const { text, language = "en" } = req.body;
     if (!text || typeof text !== "string") return res.status(400).json({ error: "Text is required" });
     if (text.trim().split(/\s+/).length > 2000) return res.status(400).json({ error: "Text exceeds 2000 word limit" });
-
-    const apiKey = process.env.BYTEZ_API_KEY;
-    if (!apiKey) return res.status(500).json({ error: "Bytez API key not configured" });
 
     const languageNames: Record<string, string> = { en: "English", es: "Spanish", fr: "French", de: "German", pt: "Portuguese", it: "Italian", nl: "Dutch", zh: "Chinese", ja: "Japanese" };
     const targetLanguage = languageNames[language] || "English";
@@ -278,25 +266,24 @@ app.post("/api/humanize", async (req, res) => {
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
 
-    const { default: Bytez } = await import("bytez.js");
-    const sdk = new Bytez(apiKey);
-    const model = sdk.model("zai-org/GLM-4.5-Air");
+    const systemPrompt = `You are an expert writing assistant that transforms AI-generated text into natural, human-like content. Rewrite naturally, vary sentence structure, maintain the original meaning, and avoid robotic phrasing. Output the humanized text in ${targetLanguage}. Output ONLY the humanized text — no explanations or meta-commentary.`;
 
-    const prompt = `You are an expert writing assistant that transforms AI-generated text into natural, human-like content. Rewrite the text naturally, maintaining meaning but sounding more human.\n\nOutput the humanized text in ${targetLanguage}. Output only the humanized text:\n\n${text}`;
-
-    const result = await model.run([{ role: "user", content: prompt }]);
-    if (result.error) throw new Error(result.error);
-
-    let outputText = "";
-    const output = result.output;
-    if (typeof output === "string") outputText = output;
-    else if (Array.isArray(output)) outputText = output.find((m: any) => m.role === "assistant")?.content || JSON.stringify(output);
-    else if (output && typeof output === "object") outputText = (output as any).content || (output as any).message || (output as any).text || JSON.stringify(output);
+    const response = await getOpenRouter().chat.completions.create({
+      model: OPENROUTER_MODEL,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: text },
+      ],
+      max_tokens: 2000,
+      temperature: 0.8,
+    });
+    const outputText = (response.choices[0]?.message?.content || "").trim();
 
     if (outputText) res.write(`data: ${JSON.stringify({ content: outputText })}\n\n`);
     res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
     res.end();
   } catch (err: any) {
+    console.error("humanize error:", err?.message || err);
     if (!res.headersSent) res.status(500).json({ error: err?.message || "Failed to humanize text" });
     else { res.write(`data: ${JSON.stringify({ error: "Failed to humanize text" })}\n\n`); res.end(); }
   }

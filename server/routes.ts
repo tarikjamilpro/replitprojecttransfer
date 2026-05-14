@@ -1,9 +1,23 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import Bytez from "bytez.js";
 import OpenAI from "openai";
 import jwt from "jsonwebtoken";
 import { readAdsConfig, writeAdsConfig } from "./db";
+
+const OPENROUTER_MODEL = "openrouter/auto";
+
+function getOpenRouter(): OpenAI {
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) throw new Error("OPENROUTER_API_KEY is not set");
+  return new OpenAI({
+    apiKey,
+    baseURL: "https://openrouter.ai/api/v1",
+    defaultHeaders: {
+      "HTTP-Referer": "https://digibesttools.site",
+      "X-Title": "Digi Best Tools",
+    },
+  });
+}
 
 function getJwtSecret(): string {
   const secret = process.env.ADMIN_PASSWORD;
@@ -26,10 +40,7 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  const deepseek = new OpenAI({
-    apiKey: process.env.DEEPSEEK_API_KEY,
-    baseURL: "https://api.deepseek.com",
-  });
+  const openrouter = getOpenRouter();
 
   app.post("/api/ai-detection", async (req, res) => {
     try {
@@ -44,8 +55,8 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Text exceeds 2000 word limit" });
       }
 
-      const response = await deepseek.chat.completions.create({
-        model: "deepseek-chat",
+      const response = await openrouter.chat.completions.create({
+        model: OPENROUTER_MODEL,
         messages: [
           {
             role: "system",
@@ -115,8 +126,8 @@ The aiScore and humanScore should add up to 100.`
         return res.status(400).json({ error: "Text exceeds 2000 word limit" });
       }
 
-      const response = await deepseek.chat.completions.create({
-        model: "deepseek-chat",
+      const response = await openrouter.chat.completions.create({
+        model: OPENROUTER_MODEL,
         messages: [
           {
             role: "system",
@@ -211,84 +222,38 @@ Only output the paraphrased text, nothing else.`
         return res.status(400).json({ error: "Text is required" });
       }
 
-      const apiKey = process.env.BYTEZ_API_KEY;
-      if (!apiKey) {
-        console.error("BYTEZ_API_KEY not found in environment");
-        return res.status(500).json({ error: "Bytez API key not configured" });
-      }
-
       const wordCount = text.trim().split(/\s+/).length;
       if (wordCount > 2000) {
         return res.status(400).json({ error: "Text exceeds 2000 word limit" });
       }
 
       const languageNames: Record<string, string> = {
-        en: "English",
-        es: "Spanish",
-        fr: "French",
-        de: "German",
-        pt: "Portuguese",
-        it: "Italian",
-        nl: "Dutch",
-        zh: "Chinese",
-        ja: "Japanese",
+        en: "English", es: "Spanish", fr: "French", de: "German",
+        pt: "Portuguese", it: "Italian", nl: "Dutch", zh: "Chinese", ja: "Japanese",
       };
-
       const targetLanguage = languageNames[language] || "English";
 
       res.setHeader("Content-Type", "text/event-stream");
       res.setHeader("Cache-Control", "no-cache");
       res.setHeader("Connection", "keep-alive");
 
-      const sdk = new Bytez(apiKey);
-      const model = sdk.model("zai-org/GLM-4.5-Air");
+      const systemPrompt = `You are an expert writing assistant that transforms AI-generated text into natural, human-like content. Rewrite the text to sound more natural and conversational, vary sentence structure, include occasional colloquialisms, maintain the original meaning, and avoid robotic phrasing. Output the humanized text in ${targetLanguage}. Output ONLY the humanized text — no explanations or meta-commentary.`;
 
-      const prompt = `You are an expert writing assistant that transforms AI-generated text into natural, human-like content. Your task is to:
+      const response = await openrouter.chat.completions.create({
+        model: OPENROUTER_MODEL,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: text },
+        ],
+        max_tokens: 2000,
+        temperature: 0.8,
+      });
 
-1. Rewrite the text to sound more natural and conversational
-2. Add subtle variations in sentence structure and length
-3. Include occasional colloquialisms or informal expressions where appropriate
-4. Maintain the original meaning and key information
-5. Make the text flow more naturally with better transitions
-6. Avoid overly formal or robotic phrasing
-7. Add a human touch with slight imperfections that feel natural
+      const outputText = (response.choices[0]?.message?.content || "").trim();
 
-Output the humanized text in ${targetLanguage}. Do not include any explanations or meta-commentary - just output the humanized version of the text.
-
-Please humanize the following text:
-
-${text}`;
-
-      const result = await model.run([
-        {
-          role: "user",
-          content: prompt,
-        },
-      ]);
-
-      if (result.error) {
-        throw new Error(result.error);
-      }
-
-      // Extract text content from the response
-      let outputText = "";
-      const output = result.output;
-      
-      if (typeof output === "string") {
-        outputText = output;
-      } else if (Array.isArray(output)) {
-        // If it's an array of messages, extract the assistant's content
-        const assistantMessage = output.find((msg: any) => msg.role === "assistant");
-        outputText = assistantMessage?.content || JSON.stringify(output);
-      } else if (output && typeof output === "object") {
-        // If it's an object, try to get content or message
-        outputText = output.content || output.message || output.text || JSON.stringify(output);
-      }
-      
       if (outputText) {
         res.write(`data: ${JSON.stringify({ content: outputText })}\n\n`);
       }
-
       res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
       res.end();
     } catch (error: any) {
@@ -392,14 +357,14 @@ Respond ONLY with a valid JSON object (no markdown, no code blocks):
       let content = "";
 
       try {
-        const response = await deepseek.chat.completions.create({
-          model: "deepseek-chat",
+        const response = await openrouter.chat.completions.create({
+          model: OPENROUTER_MODEL,
           messages: tagPrompt,
           max_tokens: 500,
         });
         content = response.choices[0]?.message?.content || "";
       } catch (err: any) {
-        console.error("DeepSeek tag generation failed:", err?.message);
+        console.error("OpenRouter tag generation failed:", err?.message);
         return res.status(500).json({ error: "Failed to generate tags. Please try again." });
       }
 
@@ -447,43 +412,16 @@ Rules:
 - Tailor the structure and modifiers to the conventions of "${targetModel}" (e.g., Midjourney uses --ar and --v flags; Stable Diffusion uses comma-separated tags with weights; DALL-E 3 prefers natural language descriptions; Flux prefers detailed natural language).
 - Keep the prompt under 150 words. Do not invent unrelated subjects.`;
 
-      const messages = [
-        { role: "system" as const, content: systemPrompt },
-        { role: "user" as const, content: `Basic idea: ${idea}` },
-      ];
-
-      let prompt = "";
-
-      // Try Replit's built-in AI integration first
-      if (process.env.AI_INTEGRATIONS_OPENAI_API_KEY && process.env.AI_INTEGRATIONS_OPENAI_BASE_URL) {
-        try {
-          const replitAI = new OpenAI({
-            apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-            baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-          });
-          const r = await replitAI.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages,
-            max_tokens: 600,
-            temperature: 0.8,
-          });
-          prompt = (r.choices[0]?.message?.content || "").trim();
-        } catch (e: any) {
-          console.warn("Replit AI failed, falling back to DeepSeek:", e?.message || e);
-        }
-      }
-
-      // Fallback to DeepSeek
-      if (!prompt && process.env.DEEPSEEK_API_KEY) {
-        const r = await deepseek.chat.completions.create({
-          model: "deepseek-chat",
-          messages,
-          max_tokens: 600,
-          temperature: 0.8,
-        });
-        prompt = (r.choices[0]?.message?.content || "").trim();
-      }
-
+      const r = await openrouter.chat.completions.create({
+        model: OPENROUTER_MODEL,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Basic idea: ${idea}` },
+        ],
+        max_tokens: 600,
+        temperature: 0.8,
+      });
+      const prompt = (r.choices[0]?.message?.content || "").trim();
       if (!prompt) return res.status(502).json({ error: "AI service unavailable" });
       res.json({ prompt });
     } catch (error: any) {
