@@ -431,6 +431,42 @@ Respond ONLY with a valid JSON object (no markdown, no code blocks):
     }
   });
 
+  app.post("/api/enhance-prompt", async (req, res) => {
+    try {
+      const { idea, model } = req.body;
+      if (!idea || typeof idea !== "string") {
+        return res.status(400).json({ error: "Idea is required" });
+      }
+      const targetModel = (typeof model === "string" && model.trim()) || "Midjourney";
+
+      const response = await deepseek.chat.completions.create({
+        model: "deepseek-chat",
+        messages: [
+          {
+            role: "system",
+            content: `You are an expert AI image prompt engineer. Transform a user's basic idea into a single, professional, highly-detailed prompt optimized for "${targetModel}".
+
+Rules:
+- Output ONLY the final prompt text. No labels, no explanations, no markdown, no quotes.
+- Include specifics on subject, composition, lighting, color palette, mood, camera/lens (if photographic), art style, and quality modifiers.
+- Tailor the structure and modifiers to the conventions of "${targetModel}" (e.g., Midjourney uses --ar and --v flags; Stable Diffusion uses comma-separated tags with weights; DALL-E 3 prefers natural language descriptions; Flux prefers detailed natural language).
+- Keep the prompt under 150 words. Do not invent unrelated subjects.`,
+          },
+          { role: "user", content: `Basic idea: ${idea}` },
+        ],
+        max_tokens: 600,
+        temperature: 0.8,
+      });
+
+      const prompt = (response.choices[0]?.message?.content || "").trim();
+      if (!prompt) return res.status(502).json({ error: "Empty response from AI" });
+      res.json({ prompt });
+    } catch (error: any) {
+      console.error("Error in enhance-prompt:", error?.message || error);
+      res.status(500).json({ error: "Failed to generate prompt" });
+    }
+  });
+
   app.post("/api/login", (req, res) => {
     const { password } = req.body;
     const adminPassword = process.env.ADMIN_PASSWORD;

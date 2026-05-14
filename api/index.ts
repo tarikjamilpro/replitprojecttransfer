@@ -134,6 +134,37 @@ app.post("/api/ai-detection", async (req, res) => {
   }
 });
 
+// ── Enhance Prompt (AI Image Prompt Generator) ────────────────────────────────
+
+app.post("/api/enhance-prompt", async (req, res) => {
+  try {
+    const { idea, model } = req.body;
+    if (!idea || typeof idea !== "string") return res.status(400).json({ error: "Idea is required" });
+    const targetModel = (typeof model === "string" && model.trim()) || "Midjourney";
+
+    const deepseek = new OpenAI({ apiKey: process.env.DEEPSEEK_API_KEY, baseURL: "https://api.deepseek.com" });
+    const response = await deepseek.chat.completions.create({
+      model: "deepseek-chat",
+      messages: [
+        {
+          role: "system",
+          content: `You are an expert AI image prompt engineer. Transform a user's basic idea into a single, professional, highly-detailed prompt optimized for "${targetModel}".\n\nRules:\n- Output ONLY the final prompt text. No labels, no explanations, no markdown, no quotes.\n- Include specifics on subject, composition, lighting, color palette, mood, camera/lens (if photographic), art style, and quality modifiers.\n- Tailor the structure and modifiers to the conventions of "${targetModel}" (e.g., Midjourney uses --ar and --v flags; Stable Diffusion uses comma-separated tags with weights; DALL-E 3 prefers natural language descriptions; Flux prefers detailed natural language).\n- Keep the prompt under 150 words. Do not invent unrelated subjects.`,
+        },
+        { role: "user", content: `Basic idea: ${idea}` },
+      ],
+      max_tokens: 600,
+      temperature: 0.8,
+    });
+
+    const prompt = (response.choices[0]?.message?.content || "").trim();
+    if (!prompt) return res.status(502).json({ error: "Empty response from AI" });
+    res.json({ prompt });
+  } catch (err: any) {
+    console.error("enhance-prompt error:", err?.message || err);
+    res.status(500).json({ error: "Failed to generate prompt" });
+  }
+});
+
 // ── Paraphrase ────────────────────────────────────────────────────────────────
 
 app.post("/api/paraphrase", async (req, res) => {

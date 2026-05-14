@@ -132,6 +132,13 @@ const textTools = [
     path: "/viral-hooks-generator",
     color: "bg-purple-500 dark:bg-purple-600",
   },
+  {
+    name: "AI Image Prompt Generator",
+    description: "Transform basic ideas into professional prompts optimized for Midjourney, DALL-E, Flux & more.",
+    icon: Wand2,
+    path: "/ai-prompt-generator",
+    color: "bg-violet-500 dark:bg-violet-600",
+  },
 ];
 
 const imageTools = [
