@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digi Best Tools</title>
+  <script src="https://js.puter.com/v2/"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-zinc-950 text-white">
+  <div class="max-w-5xl mx-auto p-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
+          <i class="fas fa-tools text-white"></i>
+        </div>
+        <h1 class="text-3xl font-bold">Digi Best Tools</h1>
+      </div>
+    </div>
+
+    <!-- Prompt -->
+    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 mb-6">
+      <textarea id="prompt" rows="3" class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl p-4 text-lg focus:outline-none focus:border-blue-500"
+        placeholder="Describe the image you want to generate..."></textarea>
+
+      <!-- Negative Prompt -->
+      <div class="mt-4">
+        <label class="text-sm text-zinc-400 flex items-center gap-2 mb-2">
+          <i class="fas fa-ban"></i> NEGATIVE PROMPT (optional)
+        </label>
+        <textarea id="negativePrompt" rows="2" class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl p-3 text-sm focus:outline-none"
+          placeholder="blurry, low quality, deformed, ugly, watermark"></textarea>
+      </div>
+
+      <!-- Model Selection -->
+      <div class="mt-6">
+        <label class="text-sm text-zinc-400 mb-2 block">AI MODEL</label>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <button onclick="selectModel(this, 'flux-schnell')" class="model-btn active bg-blue-600 text-white py-3 rounded-2xl font-medium flex items-center justify-center gap-2">
+            <i class="fas fa-bolt"></i> <span>Fast (Flux)</span>
+          </button>
+          <button onclick="selectModel(this, 'gemini-2.5-flash-image-preview')" class="model-btn bg-zinc-800 hover:bg-zinc-700 py-3 rounded-2xl font-medium flex items-center justify-center gap-2">
+            <i class="fas fa-magic"></i> <span>Very Fast (Gemini)</span>
+          </button>
+          <button onclick="selectModel(this, 'wan-ai/wan2.6-image')" class="model-btn bg-zinc-800 hover:bg-zinc-700 py-3 rounded-2xl font-medium flex items-center justify-center gap-2">
+            <i class="fas fa-star"></i> <span>High Quality (Wan)</span>
+          </button>
+          <button onclick="selectModel(this, 'gpt-image-1-mini')" class="model-btn bg-zinc-800 hover:bg-zinc-700 py-3 rounded-2xl font-medium flex items-center justify-center gap-2">
+            <i class="fas fa-robot"></i> <span>GPT Image</span>
+          </button>
+        </div>
+        <p id="modelNote" class="text-xs text-emerald-400 mt-2">Fast mode recommended for quick results</p>
+      </div>
+
+      <!-- Number of Images & Aspect Ratio -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <div>
+          <label class="text-sm text-zinc-400 mb-2 block">NUMBER OF IMAGES</label>
+          <div class="flex gap-2" id="numImages">
+            <button onclick="selectNum(this, 1)" class="num-btn flex-1 py-3 rounded-2xl bg-blue-600">1</button>
+            <button onclick="selectNum(this, 2)" class="num-btn flex-1 py-3 rounded-2xl bg-zinc-800">2</button>
+            <button onclick="selectNum(this, 3)" class="num-btn flex-1 py-3 rounded-2xl bg-zinc-800">3</button>
+            <button onclick="selectNum(this, 4)" class="num-btn flex-1 py-3 rounded-2xl bg-zinc-800">4</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-sm text-zinc-400 mb-2 block">ASPECT RATIO</label>
+          <div class="flex gap-2" id="aspectRatio">
+            <button onclick="selectAspect(this, 1024, 1024)" class="aspect-btn flex-1 py-3 rounded-2xl bg-blue-600">1:1 Square</button>
+            <button onclick="selectAspect(this, 1280, 720)" class="aspect-btn flex-1 py-3 rounded-2xl bg-zinc-800">16:9</button>
+            <button onclick="selectAspect(this, 720, 1280)" class="aspect-btn flex-1 py-3 rounded-2xl bg-zinc-800">9:16</button>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="generateImages()" 
+        class="mt-8 w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 py-5 rounded-3xl text-xl font-semibold flex items-center justify-center gap-3">
+        <i class="fas fa-magic"></i> Generate Images
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="hidden bg-zinc-900 border border-zinc-800 rounded-3xl p-8 text-center mb-6">
+      <div class="flex justify-center mb-4">
+        <i class="fas fa-spinner fa-spin text-5xl text-blue-400"></i>
+      </div>
+      <h3 id="loadingTitle" class="text-2xl font-semibold mb-2">Generating images...</h3>
+      <p id="loadingText" class="text-zinc-400">Please wait. This may take 10–40 seconds depending on the model.</p>
+      <div class="mt-4 text-sm text-zinc-500" id="progressText"></div>
+      <button onclick="cancelGeneration()" class="mt-6 px-6 py-2 bg-red-600 hover:bg-red-700 rounded-2xl text-sm">Cancel</button>
+    </div>
+
+    <!-- Generated Images -->
+    <div id="resultSection" class="hidden">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-semibold flex items-center gap-2">
+          <i class="fas fa-images"></i> Generated Images
+        </h3>
+        <button onclick="clearResults()" class="text-sm px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Clear All</button>
+      </div>
+      <div id="results" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+    </div>
+  </div>
+
+  <script>
+    let selectedModel = "flux-schnell";
+    let selectedNum = 1;
+    let selectedWidth = 1024;
+    let selectedHeight = 1024;
+    let isGenerating = false;
+
+    function selectModel(element, model) {
+      document.querySelectorAll('.model-btn').forEach(btn => btn.classList.remove('bg-blue-600', 'text-white'));
+      element.classList.add('bg-blue-600', 'text-white');
+      selectedModel = model;
+
+      const note = document.getElementById('modelNote');
+      if (model.includes('wan')) {
+        note.innerHTML = '<span class="text-amber-400">Wan is high quality but slower (15-40s per image)</span>';
+      } else {
+        note.innerHTML = 'Fast mode recommended for quick results';
+        note.className = 'text-xs text-emerald-400 mt-2';
+      }
+    }
+
+    function selectNum(element, num) {
+      document.querySelectorAll('#numImages button').forEach(b => b.classList.remove('bg-blue-600'));
+      element.classList.add('bg-blue-600');
+      selectedNum = num;
+    }
+
+    function selectAspect(element, w, h) {
+      document.querySelectorAll('#aspectRatio button').forEach(b => b.classList.remove('bg-blue-600'));
+      element.classList.add('bg-blue-600');
+      selectedWidth = w;
+      selectedHeight = h;
+    }
+
+    let currentGeneration = null;
+
+    async function generateImages() {
+      const prompt = document.getElementById('prompt').value.trim();
+      const negative = document.getElementById('negativePrompt').value.trim();
+
+      if (!prompt) {
+        alert("Please enter a prompt!");
+        return;
+      }
+
+      isGenerating = true;
+      document.getElementById('loadingState').classList.remove('hidden');
+      document.getElementById('resultSection').classList.add('hidden');
+
+      const resultsContainer = document.getElementById('results');
+      resultsContainer.innerHTML = '';
+
+      const loadingTitle = document.getElementById('loadingTitle');
+      const loadingText = document.getElementById('loadingText');
+      const progressText = document.getElementById('progressText');
+
+      try {
+        for (let i = 0; i < selectedNum; i++) {
+          if (!isGenerating) break;
+
+          progressText.innerHTML = `Generating image ${i + 1} of ${selectedNum}...`;
+
+          const controller = new AbortController();
+          currentGeneration = controller;
+
+          const timeout = setTimeout(() => {
+            controller.abort();
+          }, 90000); // 90 second timeout
+
+          try {
+            const image = await puter.ai.txt2img(prompt, {
+              model: selectedModel,
+              negative_prompt: negative || undefined,
+              width: selectedWidth,
+              height: selectedHeight
+            });
+
+            clearTimeout(timeout);
+
+            // Create result card
+            const card = document.createElement('div');
+            card.className = "bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden";
+            card.innerHTML = `
+              <img src="${image.src}" class="w-full" alt="Generated image">
+              <div class="p-4 flex gap-3">
+                <a href="${image.src}" download="generated-${Date.now()}.png" 
+                   class="flex-1 bg-emerald-600 hover:bg-emerald-700 py-3 rounded-2xl text-center font-medium">
+                  <i class="fas fa-download"></i> Download
+                </a>
+                <button onclick="this.closest('.bg-zinc-900').remove()" 
+                   class="flex-1 bg-zinc-700 hover:bg-zinc-600 py-3 rounded-2xl text-center font-medium">
+                  <i class="fas fa-trash"></i> Remove
+                </button>
+              </div>
+            `;
+            resultsContainer.appendChild(card);
+
+          } catch (err) {
+            clearTimeout(timeout);
+            if (err.name === 'AbortError') {
+              alert(`Image ${i+1} timed out. Try a faster model or reduce number of images.`);
+            } else {
+              alert(`Error generating image ${i+1}: ${err.message}`);
+            }
+          }
+        }
+
+        document.getElementById('loadingState').classList.add('hidden');
+        document.getElementById('resultSection').classList.remove('hidden');
+
+      } catch (error) {
+        alert("Something went wrong: " + error.message);
+        document.getElementById('loadingState').classList.add('hidden');
+      }
+
+      isGenerating = false;
+      currentGeneration = null;
+    }
+
+    function cancelGeneration() {
+      isGenerating = false;
+      if (currentGeneration) {
+        currentGeneration.abort();
+      }
+      document.getElementById('loadingState').classList.add('hidden');
+      alert("Generation cancelled.");
+    }
+
+    function clearResults() {
+      document.getElementById('results').innerHTML = '';
+      document.getElementById('resultSection').classList.add('hidden');
+    }
+
+    // Keyboard shortcut
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === "Enter") {
+        generateImages();
+      }
+    });
+
+    // Set default selections on load
+    window.onload = function() {
+      // Default to Flux (fast)
+      document.querySelector('.model-btn').classList.add('bg-blue-600', 'text-white');
+      
+      // Default number of images
+      document.querySelector('#numImages button').classList.add('bg-blue-600');
+      
+      // Default aspect ratio
+      document.querySelector('#aspectRatio button').classList.add('bg-blue-600');
+    }
+  </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ToolPageLayout } from "@/components/Layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,10 @@ import {
   AlignLeft,
   AlertTriangle,
   Sparkles,
+  Zap,
+  Bot,
+  Star,
+  X,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AdInterstitial, useAdInterstitial } from "@/components/AdInterstitial";
@@ -37,18 +41,34 @@ const ASPECT_RATIOS = [
 
 const NUM_IMAGES = [1, 2, 3, 4];
 
-const MODEL = "wan-ai/wan2.6-image";
+const MODELS = [
+  { id: "flux-schnell", name: "Fast (Flux)", icon: Zap, note: "Best balance of speed & quality. ~5–15s per image.", noteColor: "text-emerald-500" },
+  { id: "gemini-2.5-flash-image-preview", name: "Very Fast (Gemini)", icon: Sparkles, note: "Fastest option. ~3–10s per image.", noteColor: "text-emerald-500" },
+  { id: "wan-ai/wan2.6-image", name: "High Quality (Wan)", icon: Star, note: "Highest quality but slow. ~15–60s per image.", noteColor: "text-amber-500" },
+  { id: "gpt-image-1-mini", name: "GPT Image", icon: Bot, note: "OpenAI image model. ~10–30s per image.", noteColor: "text-blue-500" },
+] as const;
+
+type ModelId = typeof MODELS[number]["id"];
 
 export default function AIImageGenerator() {
   const [prompt, setPrompt] = useState("");
   const [negativePrompt, setNegativePrompt] = useState("");
-  const [numImages, setNumImages] = useState(2);
+  const [numImages, setNumImages] = useState(1);
   const [aspect, setAspect] = useState(ASPECT_RATIOS[0]);
+  const [model, setModel] = useState<ModelId>("flux-schnell");
   const [isLoading, setIsLoading] = useState(false);
   const [images, setImages] = useState<{ src: string; prompt: string }[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState<{ done: number; total: number; elapsed: number }>({ done: 0, total: 0, elapsed: 0 });
+  const [cancelRequested, setCancelRequested] = useState(false);
+  const cancelHandlerRef = useRef<(() => void) | null>(null);
   const { toast } = useToast();
+
+  const handleCancel = () => {
+    if (cancelHandlerRef.current) cancelHandlerRef.current();
+  };
+
+  const selectedModelInfo = MODELS.find((m) => m.id === model)!;
   const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
 
   const runGenerate = useCallback(async () => {
@@ -68,6 +88,8 @@ export default function AIImageGenerator() {
     setIsLoading(true);
     setImages([]);
     setError(null);
+    setCancelRequested(false);
+    let cancelled = false;
     const startTime = Date.now();
     setProgress({ done: 0, total: numImages, elapsed: 0 });
 
@@ -75,20 +97,29 @@ export default function AIImageGenerator() {
       setProgress((p) => ({ ...p, elapsed: Math.floor((Date.now() - startTime) / 1000) }));
     }, 500);
 
-    const PER_IMAGE_TIMEOUT_MS = 90_000;
+    // Slower model = longer timeout
+    const isWan = model.includes("wan");
+    const PER_IMAGE_TIMEOUT_MS = isWan ? 120_000 : 60_000;
 
     const withTimeout = <T,>(promise: Promise<T>, ms: number): Promise<T> =>
       new Promise((resolve, reject) => {
-        const t = window.setTimeout(() => reject(new Error(`Request timed out after ${ms / 1000}s`)), ms);
+        const t = window.setTimeout(() => reject(new Error(`Request timed out after ${ms / 1000}s. Try a faster model.`)), ms);
         promise.then((v) => { window.clearTimeout(t); resolve(v); })
                .catch((e) => { window.clearTimeout(t); reject(e); });
       });
 
+    // Expose cancel via closure
+    cancelHandlerRef.current = () => {
+      cancelled = true;
+      setCancelRequested(true);
+    };
+
     try {
       const tasks = Array.from({ length: numImages }, async () => {
+        if (cancelled) throw new Error("Cancelled");
         const result: any = await withTimeout(
           window.puter!.ai.txt2img(p, {
-            model: MODEL,
+            model,
             negative_prompt: np || undefined,
             width: aspect.width,
             height: aspect.height,
@@ -96,9 +127,9 @@ export default function AIImageGenerator() {
           }) as Promise<any>,
           PER_IMAGE_TIMEOUT_MS,
         );
+        if (cancelled) throw new Error("Cancelled");
         const src = typeof result === "string" ? result : result?.src;
         if (!src) throw new Error("Empty image response");
-        // Stream into UI as soon as this one resolves
         setImages((prev) => [...prev, { src, prompt: p }]);
         setProgress((prev) => ({ ...prev, done: prev.done + 1 }));
         return src;
@@ -108,24 +139,29 @@ export default function AIImageGenerator() {
       const ok = settled.filter((r) => r.status === "fulfilled").length;
       const failed = settled.length - ok;
 
-      if (ok === 0) {
+      if (cancelled) {
+        toast({ title: "Cancelled", description: ok > 0 ? `Stopped — ${ok} image${ok > 1 ? "s" : ""} kept.` : "Generation cancelled." });
+      } else if (ok === 0) {
         const firstErr = settled.find((r) => r.status === "rejected") as PromiseRejectedResult | undefined;
         throw new Error(firstErr?.reason?.message || "All image requests failed.");
-      }
-      if (failed > 0) {
+      } else if (failed > 0) {
         toast({ title: "Partial success", description: `${ok} of ${settled.length} images generated. ${failed} failed.` });
       } else {
         toast({ title: "Success", description: `${ok} image${ok > 1 ? "s" : ""} generated in ${Math.floor((Date.now() - startTime) / 1000)}s.` });
       }
     } catch (err: any) {
       const msg = err?.message || "Failed to generate images. Please try again.";
-      setError(msg);
-      toast({ title: "Generation failed", description: msg, variant: "destructive" });
+      if (!cancelled) {
+        setError(msg);
+        toast({ title: "Generation failed", description: msg, variant: "destructive" });
+      }
     } finally {
       window.clearInterval(elapsedTimer);
       setIsLoading(false);
+      setCancelRequested(false);
+      cancelHandlerRef.current = null;
     }
-  }, [prompt, negativePrompt, numImages, aspect, toast]);
+  }, [prompt, negativePrompt, numImages, aspect, model, toast]);
 
   const handleGenerate = () => requestAction(runGenerate);
 
@@ -144,7 +180,7 @@ export default function AIImageGenerator() {
     try {
       const a = document.createElement("a");
       a.href = src;
-      a.download = `wan-ai-${Date.now()}-${idx + 1}.png`;
+      a.download = `ai-image-${Date.now()}-${idx + 1}.png`;
       a.target = "_blank";
       a.rel = "noopener";
       document.body.appendChild(a);
@@ -167,8 +203,8 @@ export default function AIImageGenerator() {
 
   return (
     <ToolPageLayout
-      title="Wan AI Image Generator"
-      description="Generate stunning AI images for free using the Wan 2.6 model via Puter.js. No API key, no signup, unlimited generations right in your browser."
+      title="AI Image Generator"
+      description="Generate stunning AI images for free using Flux, Gemini, Wan 2.6, or GPT Image — all powered by Puter.js. No API key, no signup, unlimited generations right in your browser."
       toolPath="/ai-image-generator"
       howToUse={
         <ol className="list-decimal pl-6 space-y-2 text-sm text-muted-foreground">
@@ -186,7 +222,36 @@ export default function AIImageGenerator() {
           <CardContent className="p-6 space-y-5">
             <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
               <Sparkles className="w-4 h-4 text-violet-500" />
-              <span>Powered by Wan 2.6 via Puter.js · Free & Unlimited</span>
+              <span>Powered by Puter.js · Free & Unlimited</span>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold tracking-wide text-muted-foreground mb-2 block">
+                AI MODEL
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {MODELS.map((m) => {
+                  const Icon = m.icon;
+                  const active = model === m.id;
+                  return (
+                    <Button
+                      key={m.id}
+                      type="button"
+                      variant={active ? "default" : "outline"}
+                      onClick={() => setModel(m.id)}
+                      data-testid={`button-model-${m.id}`}
+                      size="sm"
+                      className="justify-start text-xs h-auto py-2"
+                    >
+                      <Icon className="w-3.5 h-3.5 mr-1.5 shrink-0" />
+                      <span className="truncate">{m.name}</span>
+                    </Button>
+                  );
+                })}
+              </div>
+              <p className={`text-xs mt-2 ${selectedModelInfo.noteColor}`} data-testid="text-model-note">
+                {selectedModelInfo.note}
+              </p>
             </div>
 
             <div>
@@ -257,19 +322,39 @@ export default function AIImageGenerator() {
               </div>
             </div>
 
-            <Button
-              data-testid="button-generate"
-              onClick={handleGenerate}
-              disabled={isLoading}
-              className="w-full"
-              size="lg"
-            >
-              {isLoading ? (
-                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Generating {numImages} image{numImages > 1 ? "s" : ""}...</>
-              ) : (
-                <><Wand2 className="w-4 h-4 mr-2" /> Generate with Wan AI</>
-              )}
-            </Button>
+            {isLoading ? (
+              <div className="space-y-2">
+                <Button
+                  disabled
+                  className="w-full"
+                  size="lg"
+                >
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Generating {progress.done}/{progress.total} · {progress.elapsed}s
+                </Button>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleCancel}
+                  disabled={cancelRequested}
+                  className="w-full"
+                  size="sm"
+                  data-testid="button-cancel"
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  {cancelRequested ? "Cancelling..." : "Cancel"}
+                </Button>
+              </div>
+            ) : (
+              <Button
+                data-testid="button-generate"
+                onClick={handleGenerate}
+                className="w-full"
+                size="lg"
+              >
+                <Wand2 className="w-4 h-4 mr-2" /> Generate {numImages > 1 ? `${numImages} Images` : "Image"}
+              </Button>
+            )}
 
             <p className="text-center text-xs text-muted-foreground">
               Tip: Press <kbd className="px-1.5 py-0.5 rounded bg-muted text-foreground border">Ctrl</kbd>
@@ -295,12 +380,12 @@ export default function AIImageGenerator() {
             {isLoading && images.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 text-center">
                 <Loader2 className="w-10 h-10 animate-spin text-primary mb-4" />
-                <p className="text-sm font-medium">Wan AI is generating your images...</p>
+                <p className="text-sm font-medium">{selectedModelInfo.name} is generating your images...</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   {progress.done} of {progress.total} done · {progress.elapsed}s elapsed
                 </p>
                 <p className="text-xs text-muted-foreground/70 mt-2 max-w-xs">
-                  Wan 2.6 is a high-quality model — typical response is 15–60 seconds per image. Times out at 90s.
+                  {selectedModelInfo.note}
                 </p>
               </div>
             ) : error ? (
