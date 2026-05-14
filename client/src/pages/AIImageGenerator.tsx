@@ -47,6 +47,7 @@ export default function AIImageGenerator() {
   const [isLoading, setIsLoading] = useState(false);
   const [images, setImages] = useState<{ src: string; prompt: string }[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [progress, setProgress] = useState<{ done: number; total: number; elapsed: number }>({ done: 0, total: 0, elapsed: 0 });
   const { toast } = useToast();
   const { showInterstitial, requestAction, handleContinue } = useAdInterstitial();
 
@@ -67,28 +68,61 @@ export default function AIImageGenerator() {
     setIsLoading(true);
     setImages([]);
     setError(null);
+    const startTime = Date.now();
+    setProgress({ done: 0, total: numImages, elapsed: 0 });
+
+    const elapsedTimer = window.setInterval(() => {
+      setProgress((p) => ({ ...p, elapsed: Math.floor((Date.now() - startTime) / 1000) }));
+    }, 500);
+
+    const PER_IMAGE_TIMEOUT_MS = 90_000;
+
+    const withTimeout = <T,>(promise: Promise<T>, ms: number): Promise<T> =>
+      new Promise((resolve, reject) => {
+        const t = window.setTimeout(() => reject(new Error(`Request timed out after ${ms / 1000}s`)), ms);
+        promise.then((v) => { window.clearTimeout(t); resolve(v); })
+               .catch((e) => { window.clearTimeout(t); reject(e); });
+      });
+
     try {
-      const tasks = Array.from({ length: numImages }, () =>
-        window.puter!.ai.txt2img(p, {
-          model: MODEL,
-          negative_prompt: np || undefined,
-          width: aspect.width,
-          height: aspect.height,
-          quality: "high",
-        }),
-      );
-      const results = await Promise.all(tasks);
-      const srcs = results
-        .map((r: any) => (typeof r === "string" ? r : r?.src))
-        .filter(Boolean) as string[];
-      if (srcs.length === 0) throw new Error("No images returned from Puter.js");
-      setImages(srcs.map((src) => ({ src, prompt: p })));
-      toast({ title: "Success", description: `${srcs.length} image${srcs.length > 1 ? "s" : ""} generated.` });
+      const tasks = Array.from({ length: numImages }, async () => {
+        const result: any = await withTimeout(
+          window.puter!.ai.txt2img(p, {
+            model: MODEL,
+            negative_prompt: np || undefined,
+            width: aspect.width,
+            height: aspect.height,
+            quality: "high",
+          }) as Promise<any>,
+          PER_IMAGE_TIMEOUT_MS,
+        );
+        const src = typeof result === "string" ? result : result?.src;
+        if (!src) throw new Error("Empty image response");
+        // Stream into UI as soon as this one resolves
+        setImages((prev) => [...prev, { src, prompt: p }]);
+        setProgress((prev) => ({ ...prev, done: prev.done + 1 }));
+        return src;
+      });
+
+      const settled = await Promise.allSettled(tasks);
+      const ok = settled.filter((r) => r.status === "fulfilled").length;
+      const failed = settled.length - ok;
+
+      if (ok === 0) {
+        const firstErr = settled.find((r) => r.status === "rejected") as PromiseRejectedResult | undefined;
+        throw new Error(firstErr?.reason?.message || "All image requests failed.");
+      }
+      if (failed > 0) {
+        toast({ title: "Partial success", description: `${ok} of ${settled.length} images generated. ${failed} failed.` });
+      } else {
+        toast({ title: "Success", description: `${ok} image${ok > 1 ? "s" : ""} generated in ${Math.floor((Date.now() - startTime) / 1000)}s.` });
+      }
     } catch (err: any) {
       const msg = err?.message || "Failed to generate images. Please try again.";
       setError(msg);
       toast({ title: "Generation failed", description: msg, variant: "destructive" });
     } finally {
+      window.clearInterval(elapsedTimer);
       setIsLoading(false);
     }
   }, [prompt, negativePrompt, numImages, aspect, toast]);
@@ -258,11 +292,16 @@ export default function AIImageGenerator() {
               )}
             </div>
 
-            {isLoading ? (
+            {isLoading && images.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 text-center">
                 <Loader2 className="w-10 h-10 animate-spin text-primary mb-4" />
                 <p className="text-sm font-medium">Wan AI is generating your images...</p>
-                <p className="text-xs text-muted-foreground mt-1">This may take 10–30 seconds.</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {progress.done} of {progress.total} done · {progress.elapsed}s elapsed
+                </p>
+                <p className="text-xs text-muted-foreground/70 mt-2 max-w-xs">
+                  Wan 2.6 is a high-quality model — typical response is 15–60 seconds per image. Times out at 90s.
+                </p>
               </div>
             ) : error ? (
               <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -277,6 +316,13 @@ export default function AIImageGenerator() {
                 <p className="text-xs text-muted-foreground/70 mt-1">Enter a prompt and click Generate</p>
               </div>
             ) : (
+              <>
+                {isLoading && (
+                  <div className="mb-4 flex items-center gap-3 text-xs text-muted-foreground">
+                    <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                    <span>{progress.done} of {progress.total} done · {progress.elapsed}s elapsed — streaming as they finish…</span>
+                  </div>
+                )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {images.map((img, idx) => (
                   <div
@@ -322,6 +368,7 @@ export default function AIImageGenerator() {
                   </div>
                 ))}
               </div>
+              </>
             )}
           </CardContent>
         </Card>
