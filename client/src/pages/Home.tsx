@@ -140,8 +140,8 @@ const textTools = [
     color: "bg-violet-500 dark:bg-violet-600",
   },
   {
-    name: "AI Image Generator",
-    description: "Generate stunning AI images from text using Stable Diffusion XL, FLUX, and other Hugging Face models.",
+    name: "Wan AI Image Generator",
+    description: "Generate stunning AI images for free using the Wan 2.6 model. No API key, no signup, unlimited generations in your browser.",
     icon: Sparkles,
     path: "/ai-image-generator",
     color: "bg-fuchsia-500 dark:bg-fuchsia-600",

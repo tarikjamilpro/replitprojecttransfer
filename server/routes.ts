@@ -19,121 +19,6 @@ function getOpenRouter(): OpenAI {
   });
 }
 
-// ── HF Inference Providers — curated working text-to-image models ────────────
-const HF_IMAGE_MODELS: Record<string, { url: string }> = {
-  "flux-schnell": { url: "https://router.huggingface.co/fal-ai/fal-ai/flux/schnell" },
-  "flux-dev":     { url: "https://router.huggingface.co/fal-ai/fal-ai/flux/dev" },
-  "sdxl":         { url: "https://router.huggingface.co/fal-ai/fal-ai/fast-sdxl" },
-};
-
-const ALLOWED_IMAGE_HOSTS = new Set([
-  "fal.media",
-  "v2.fal.media",
-  "v3.fal.media",
-  "v3b.fal.media",
-  "cdn.fal.ai",
-]);
-
-function isAllowedImageHost(rawUrl: string): boolean {
-  try {
-    const u = new URL(rawUrl);
-    if (u.protocol !== "https:") return false;
-    if (ALLOWED_IMAGE_HOSTS.has(u.hostname)) return true;
-    return u.hostname.endsWith(".fal.media") || u.hostname.endsWith(".fal.ai");
-  } catch {
-    return false;
-  }
-}
-
-function pickFalImageSize(width: number, height: number): string {
-  if (width === height) return "square_hd";
-  if (width > height) return width / height >= 1.7 ? "landscape_16_9" : "landscape_4_3";
-  return height / width >= 1.7 ? "portrait_16_9" : "portrait_4_3";
-}
-
-async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: number): Promise<Response> {
-  const ctrl = new AbortController();
-  const id = setTimeout(() => ctrl.abort(), timeoutMs);
-  try {
-    return await fetch(url, { ...options, signal: ctrl.signal });
-  } finally {
-    clearTimeout(id);
-  }
-}
-
-async function fetchAsBase64(url: string): Promise<string> {
-  if (!isAllowedImageHost(url)) throw new Error("Provider returned an image URL from an untrusted host.");
-  const r = await fetchWithTimeout(url, {}, 30_000);
-  if (!r.ok) throw new Error(`Failed to download generated image (${r.status})`);
-  const buf = Buffer.from(await r.arrayBuffer());
-  return buf.toString("base64");
-}
-
-async function generateImageHandler(req: any, res: any) {
-  try {
-    const apiKey = process.env.HF_API_KEY || process.env.HUGGINGFACE_API_KEY;
-    if (!apiKey) return res.status(500).json({ error: "Hugging Face API key not configured (set HF_API_KEY)" });
-
-    const {
-      prompt,
-      negative_prompt = "",
-      model = "flux-schnell",
-      steps = 30,
-      guidance_scale = 7.5,
-      num_images = 1,
-      width = 1024,
-      height = 1024,
-    } = req.body || {};
-
-    if (!prompt || typeof prompt !== "string") {
-      return res.status(400).json({ error: "Prompt is required" });
-    }
-
-    const entry = HF_IMAGE_MODELS[model];
-    if (!entry) return res.status(400).json({ error: `Unknown model "${model}".` });
-
-    const n = Math.max(1, Math.min(4, Number(num_images) || 1));
-    const w = Number(width) || 1024;
-    const h = Number(height) || 1024;
-
-    const r = await fetchWithTimeout(entry.url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        prompt,
-        negative_prompt: negative_prompt || undefined,
-        image_size: pickFalImageSize(w, h),
-        num_inference_steps: Number(steps) || 30,
-        guidance_scale: Number(guidance_scale) || 7.5,
-        num_images: n,
-      }),
-    }, 90_000);
-
-    if (!r.ok) {
-      const j: any = await r.json().catch(() => ({}));
-      const detail = j.error || j.detail || JSON.stringify(j).slice(0, 300);
-      if (r.status === 401 || r.status === 403) return res.status(502).json({ error: "Hugging Face API key is invalid or lacks access to Inference Providers." });
-      if (r.status === 402) return res.status(402).json({ error: "Your Hugging Face Inference Providers credits are depleted. Add credits or upgrade to PRO at https://huggingface.co/settings/billing." });
-      if (r.status === 429) return res.status(429).json({ error: "Rate limit reached. Please wait a moment and try again." });
-      return res.status(502).json({ error: `Hugging Face error (${r.status}): ${detail}` });
-    }
-
-    const data: any = await r.json();
-    const urls: string[] = (data.images || []).map((img: any) => img.url).filter(Boolean);
-    if (urls.length === 0) return res.status(502).json({ error: "No images returned from provider" });
-
-    const images = await Promise.all(urls.map(fetchAsBase64));
-    res.json({ images });
-  } catch (err: any) {
-    const msg = err?.name === "AbortError" ? "Image generation timed out. Please try again." : (err?.message || "Failed to generate images");
-    console.error("/api/generate error:", msg);
-    res.status(500).json({ error: msg });
-  }
-}
-
 function getJwtSecret(): string {
   const secret = process.env.ADMIN_PASSWORD;
   if (!secret) throw new Error("ADMIN_PASSWORD is not set");
@@ -510,8 +395,6 @@ Respond ONLY with a valid JSON object (no markdown, no code blocks):
       res.status(500).json({ error: "Failed to extract tags. Please try again." });
     }
   });
-
-  app.post("/api/generate", generateImageHandler);
 
   app.post("/api/enhance-prompt", async (req, res) => {
     try {

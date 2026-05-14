@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wan AI Image Generator • Puter.js</title>
+    <script src="https://js.puter.com/v2/"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+        }
+
+        .image-card {
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        
+        .image-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .section-header {
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .primary-btn {
+            background: linear-gradient(to right, #6366f1, #4f46e5);
+            transition: all 0.3s ease;
+        }
+        
+        .primary-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgb(99 102 241 / 0.3);
+        }
+
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .option-btn.active {
+            background-color: #6366f1;
+            color: white;
+            border-color: #6366f1;
+        }
+
+        .toast {
+            animation: slideUp 0.3s ease forwards;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200">
+    <div class="max-w-6xl mx-auto px-6 py-8">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-x-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-magic text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-semibold tracking-tighter font-display">Wan AI Image Generator</h1>
+                    <p class="text-zinc-400">Free &amp; Unlimited • Powered by Puter.js + Wan 2.6</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Controls -->
+            <div class="lg:col-span-5 bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                
+                <!-- Prompt -->
+                <div class="mb-6">
+                    <div class="section-header mb-2 flex items-center gap-x-2">
+                        <i class="fas fa-edit text-violet-400"></i>
+                        <span>PROMPT</span>
+                    </div>
+                    <textarea id="prompt" rows="4" 
+                              class="w-full bg-zinc-950 border border-zinc-700 focus:border-violet-500 rounded-2xl p-4 text-white placeholder-zinc-500 resize-y"
+                              placeholder="A cyberpunk samurai standing on a neon rooftop at night, cinematic lighting..."></textarea>
+                </div>
+
+                <!-- Negative Prompt -->
+                <div class="mb-6">
+                    <div class="section-header mb-2 flex items-center gap-x-2">
+                        <i class="fas fa-ban text-red-400"></i>
+                        <span>NEGATIVE PROMPT (optional)</span>
+                    </div>
+                    <textarea id="negativePrompt" rows="2" 
+                              class="w-full bg-zinc-950 border border-zinc-700 focus:border-violet-500 rounded-2xl p-4 text-sm placeholder-zinc-500"
+                              placeholder="blurry, low quality, deformed, ugly..."></textarea>
+                </div>
+
+                <!-- Number of Images -->
+                <div class="mb-6">
+                    <div class="section-header mb-3">NUMBER OF IMAGES</div>
+                    <div class="flex gap-2" id="numImagesContainer"></div>
+                </div>
+
+                <!-- Aspect Ratio -->
+                <div class="mb-8">
+                    <div class="section-header mb-3">ASPECT RATIO</div>
+                    <div class="flex flex-wrap gap-2" id="aspectRatioContainer"></div>
+                </div>
+
+                <!-- Generate Button -->
+                <button onclick="generateImages()" 
+                        class="primary-btn w-full flex items-center justify-center gap-x-3 text-white font-semibold py-4 px-8 rounded-2xl text-lg shadow-lg">
+                    <i class="fas fa-magic"></i>
+                    <span>Generate with Wan AI</span>
+                </button>
+            </div>
+
+            <!-- Results -->
+            <div class="lg:col-span-7">
+                <!-- Loading -->
+                <div id="loading" class="hidden bg-zinc-900 border border-zinc-800 rounded-3xl p-12 text-center">
+                    <i class="fas fa-spinner fa-spin text-5xl text-violet-400 mb-4"></i>
+                    <p class="text-lg">Wan AI is generating images...</p>
+                    <p class="text-sm text-zinc-400 mt-1">This may take 10-30 seconds</p>
+                </div>
+
+                <!-- Results Grid -->
+                <div id="resultsGrid" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 space-y-2"></div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        let selectedNumImages = 2;
+        let selectedRatio = { name: "1:1", width: 1024, height: 1024 };
+
+        const aspectRatios = [
+            { name: "1:1", width: 1024, height: 1024 },
+            { name: "16:9", width: 1280, height: 720 },
+            { name: "9:16", width: 720, height: 1280 },
+            { name: "4:3", width: 1024, height: 768 }
+        ];
+
+        // ============================================
+        // TOAST NOTIFICATION
+        // ============================================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            const bg = type === 'success' ? 'bg-emerald-600' : 'bg-red-600';
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            
+            toast.className = `toast flex items-center gap-x-3 px-5 py-3 rounded-2xl text-white shadow-xl ${bg}`;
+            toast.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <span class="text-sm font-medium">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.transition = 'all 0.3s ease';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // ============================================
+        // CREATE NUMBER OF IMAGES BUTTONS
+        // ============================================
+        function createNumImagesButtons() {
+            const container = document.getElementById('numImagesContainer');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = `option-btn flex-1 py-3 rounded-2xl font-medium border border-zinc-700 ${i === selectedNumImages ? 'active bg-violet-600 border-violet-600' : 'bg-zinc-800 hover:bg-zinc-700'}`;
+                
+                btn.onclick = () => {
+                    selectedNumImages = i;
+                    createNumImagesButtons(); // refresh active state
+                };
+                
+                container.appendChild(btn);
+            }
+        }
+
+        // ============================================
+        // CREATE ASPECT RATIO BUTTONS
+        // ============================================
+        function createAspectRatioButtons() {
+            const container = document.getElementById('aspectRatioContainer');
+            container.innerHTML = '';
+            
+            aspectRatios.forEach(ratio => {
+                const btn = document.createElement('button');
+                btn.textContent = ratio.name;
+                btn.className = `option-btn px-5 py-3 rounded-2xl font-medium border border-zinc-700 ${ratio.name === selectedRatio.name ? 'active bg-violet-600 border-violet-600' : 'bg-zinc-800 hover:bg-zinc-700'}`;
+                
+                btn.onclick = () => {
+                    selectedRatio = ratio;
+                    createAspectRatioButtons();
+                };
+                
+                container.appendChild(btn);
+            });
+        }
+
+        // ============================================
+        // GENERATE IMAGES
+        // ============================================
+        async function generateImages() {
+            const prompt = document.getElementById('prompt').value.trim();
+            const negativePrompt = document.getElementById('negativePrompt').value.trim();
+
+            if (!prompt) {
+                showToast("Please enter a prompt", "error");
+                return;
+            }
+
+            const loading = document.getElementById('loading');
+            const resultsGrid = document.getElementById('resultsGrid');
+
+            loading.classList.remove('hidden');
+            resultsGrid.classList.add('hidden');
+            resultsGrid.innerHTML = '';
+
+            try {
+                const promises = [];
+                
+                for (let i = 0; i < selectedNumImages; i++) {
+                    promises.push(
+                        puter.ai.txt2img(prompt, {
+                            model: "wan-ai/wan2.6-image",
+                            negative_prompt: negativePrompt || undefined,
+                            width: selectedRatio.width,
+                            height: selectedRatio.height,
+                            quality: "high"
+                        })
+                    );
+                }
+
+                const images = await Promise.all(promises);
+                
+                images.forEach((img, index) => {
+                    const card = createImageCard(img.src, prompt, index);
+                    resultsGrid.appendChild(card);
+                });
+
+                resultsGrid.classList.remove('hidden');
+                showToast(`${images.length} image(s) generated successfully!`);
+
+            } catch (error) {
+                console.error(error);
+                showToast("Failed to generate images. Please try again.", "error");
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+        // ============================================
+        // CREATE IMAGE CARD
+        // ============================================
+        function createImageCard(imageSrc, prompt, index) {
+            const card = document.createElement('div');
+            card.className = `image-card bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden`;
+            
+            card.innerHTML = `
+                <img src="${imageSrc}" class="w-full aspect-square object-cover" alt="Generated image ${index + 1}">
+                
+                <div class="p-4 space-y-3">
+                    <div class="flex gap-2">
+                        <a href="${imageSrc}" download="wan-ai-${Date.now()}-${index + 1}.png"
+                           class="flex-1 flex items-center justify-center gap-x-2 bg-emerald-600 hover:bg-emerald-700 py-2.5 rounded-2xl text-sm font-medium transition-colors">
+                            <i class="fas fa-download"></i>
+                            <span>Download</span>
+                        </a>
+                        
+                        <button onclick="copyPrompt('${prompt.replace(/'/g, "\\'")}')"
+                                class="flex-1 flex items-center justify-center gap-x-2 bg-zinc-700 hover:bg-zinc-600 py-2.5 rounded-2xl text-sm font-medium transition-colors">
+                            <i class="fas fa-copy"></i>
+                            <span>Copy Prompt</span>
+                        </button>
+                    </div>
+                    
+                    <button onclick="regenerateSingleImage(this, '${prompt.replace(/'/g, "\\'")}')"
+                            class="w-full flex items-center justify-center gap-x-2 bg-zinc-800 hover:bg-zinc-700 py-2.5 rounded-2xl text-sm font-medium transition-colors">
+                        <i class="fas fa-redo"></i>
+                        <span>Regenerate</span>
+                    </button>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // ============================================
+        // COPY PROMPT
+        // ============================================
+        function copyPrompt(promptText) {
+            navigator.clipboard.writeText(promptText).then(() => {
+                showToast("Prompt copied to clipboard!");
+            });
+        }
+
+        // ============================================
+        // REGENERATE SINGLE IMAGE
+        // ============================================
+        async function regenerateSingleImage(button, originalPrompt) {
+            const card = button.closest('.image-card');
+            const img = card.querySelector('img');
+            
+            button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> <span>Regenerating...</span>`;
+            button.disabled = true;
+
+            try {
+                const result = await puter.ai.txt2img(originalPrompt, {
+                    model: "wan-ai/wan2.6-image",
+                    width: selectedRatio.width,
+                    height: selectedRatio.height,
+                    quality: "high"
+                });
+
+                img.src = result.src;
+                showToast("Image regenerated!");
+
+            } catch (error) {
+                showToast("Regeneration failed", "error");
+            } finally {
+                button.innerHTML = `<i class="fas fa-redo"></i> <span>Regenerate</span>`;
+                button.disabled = false;
+            }
+        }
+
+        // ============================================
+        // KEYBOARD SUPPORT
+        // ============================================
+        function setupKeyboardSupport() {
+            const promptInput = document.getElementById('prompt');
+            
+            promptInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                    e.preventDefault();
+                    generateImages();
+                }
+            });
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        function initializeTool() {
+            createNumImagesButtons();
+            createAspectRatioButtons();
+            setupKeyboardSupport();
+            
+            // Set default active states
+            console.log('%c[Wan AI Generator] Tool initialized successfully', 'color:#64748b');
+        }
+
+        window.onload = initializeTool;
+    </script>
+</body>
+</html>
