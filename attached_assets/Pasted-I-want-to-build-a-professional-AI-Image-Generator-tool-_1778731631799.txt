@@ -1,0 +1,509 @@
+I want to build a professional AI Image Generator tool using Hugging Face in my Replit project.
+
+**Phase 1: Frontend Implementation**
+
+Please create the frontend first.
+
+1. Create a new file named `index.html`
+2. Paste the complete frontend code below into that file.
+
+Here is the full production-ready frontend code:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Generator • Hugging Face</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+        }
+
+        .glass {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+        }
+
+        .section-header {
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .modern-input, .modern-textarea, .modern-select {
+            transition: all 0.2s ease;
+        }
+        
+        .modern-input:focus, .modern-textarea:focus, .modern-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+            border-color: #6366f1;
+        }
+
+        .primary-btn {
+            background: linear-gradient(to right, #6366f1, #4f46e5);
+            transition: all 0.3s ease;
+        }
+        
+        .primary-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgb(99 102 241 / 0.3);
+        }
+
+        .primary-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .image-card {
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        
+        .image-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .slider {
+            accent-color: #6366f1;
+        }
+
+        .aspect-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .aspect-btn.active {
+            background-color: #6366f1;
+            color: white;
+            border-color: #6366f1;
+        }
+
+        .generated-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .toast {
+            animation: slideUp 0.3s ease forwards;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-x-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-magic text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-semibold tracking-tighter font-display">AI Image Generator</h1>
+                    <p class="text-zinc-400">Powered by Hugging Face</p>
+                </div>
+            </div>
+            <div class="px-4 py-1.5 bg-zinc-900 border border-zinc-800 rounded-full text-xs flex items-center gap-x-2">
+                <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                <span class="text-emerald-400 text-xs font-medium">Hugging Face Connected</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Controls Panel -->
+            <div class="lg:col-span-5">
+                <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 sticky top-6">
+                    
+                    <!-- Prompt -->
+                    <div class="mb-6">
+                        <div class="section-header mb-2 flex items-center gap-x-2">
+                            <i class="fas fa-align-left"></i>
+                            <span>PROMPT</span>
+                        </div>
+                        <textarea id="prompt" rows="4" 
+                                  class="modern-textarea w-full bg-zinc-950 border border-zinc-700 focus:border-indigo-500 rounded-2xl px-5 py-4 text-white placeholder-zinc-500 resize-y"
+                                  placeholder="A majestic cyberpunk samurai standing on a neon rooftop at night, cinematic lighting, highly detailed"></textarea>
+                    </div>
+
+                    <!-- Negative Prompt -->
+                    <div class="mb-6">
+                        <div class="section-header mb-2 flex items-center gap-x-2">
+                            <i class="fas fa-ban"></i>
+                            <span>NEGATIVE PROMPT</span>
+                        </div>
+                        <textarea id="negativePrompt" rows="2" 
+                                  class="modern-textarea w-full bg-zinc-950 border border-zinc-700 focus:border-indigo-500 rounded-2xl px-5 py-4 text-white placeholder-zinc-500 resize-y"
+                                  placeholder="blurry, low quality, deformed, ugly, watermark"></textarea>
+                    </div>
+
+                    <!-- Model Selection -->
+                    <div class="mb-6">
+                        <div class="section-header mb-2 flex items-center gap-x-2">
+                            <i class="fas fa-robot"></i>
+                            <span>MODEL</span>
+                        </div>
+                        <select id="model" class="modern-select w-full bg-zinc-950 border border-zinc-700 focus:border-indigo-500 rounded-2xl px-5 py-3.5 text-white">
+                            <option value="stabilityai/stable-diffusion-xl-base-1.0">Stable Diffusion XL (Best Quality)</option>
+                            <option value="black-forest-labs/FLUX.1-schnell">FLUX.1 Schnell (Fast)</option>
+                            <option value="dreamlike-art/dreamlike-photoreal-2.0">Dreamlike Photoreal</option>
+                            <option value="prompthero/openjourney-v4">OpenJourney v4 (Artistic)</option>
+                            <option value="runwayml/stable-diffusion-v1-5">Stable Diffusion v1.5</option>
+                            <option value="segmind/SSD-1B">SSD-1B (Fast SDXL)</option>
+                        </select>
+                    </div>
+
+                    <!-- Aspect Ratio -->
+                    <div class="mb-6">
+                        <div class="section-header mb-3 flex items-center gap-x-2">
+                            <i class="fas fa-expand"></i>
+                            <span>ASPECT RATIO</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2" id="aspectRatioGroup">
+                            <button onclick="selectAspectRatio(this, '1:1', 1024, 1024)" class="aspect-btn active px-3 py-2 text-sm border border-zinc-700 rounded-xl hover:bg-zinc-800">1:1 Square</button>
+                            <button onclick="selectAspectRatio(this, '16:9', 1024, 576)" class="aspect-btn px-3 py-2 text-sm border border-zinc-700 rounded-xl hover:bg-zinc-800">16:9 Landscape</button>
+                            <button onclick="selectAspectRatio(this, '9:16', 576, 1024)" class="aspect-btn px-3 py-2 text-sm border border-zinc-700 rounded-xl hover:bg-zinc-800">9:16 Portrait</button>
+                            <button onclick="selectAspectRatio(this, '4:3', 1024, 768)" class="aspect-btn px-3 py-2 text-sm border border-zinc-700 rounded-xl hover:bg-zinc-800">4:3</button>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Settings -->
+                    <div class="mb-2">
+                        <button onclick="toggleAdvanced()" class="flex items-center justify-between w-full text-left">
+                            <div class="section-header flex items-center gap-x-2">
+                                <i class="fas fa-sliders-h"></i>
+                                <span>ADVANCED SETTINGS</span>
+                            </div>
+                            <i class="fas fa-chevron-down text-zinc-400 transition-transform" id="advancedIcon"></i>
+                        </button>
+                    </div>
+
+                    <div id="advancedSettings" class="hidden pt-4 space-y-6 border-t border-zinc-800 mt-2">
+                        
+                        <!-- Steps -->
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-zinc-400">Steps</span>
+                                <span id="stepsValue" class="font-mono text-indigo-400">30</span>
+                            </div>
+                            <input type="range" id="steps" min="10" max="60" step="1" value="30" 
+                                   class="slider w-full accent-indigo-500" oninput="updateSliderValue('steps')">
+                        </div>
+
+                        <!-- Guidance Scale -->
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-zinc-400">Guidance Scale</span>
+                                <span id="guidanceValue" class="font-mono text-indigo-400">7.5</span>
+                            </div>
+                            <input type="range" id="guidance" min="1" max="20" step="0.5" value="7.5" 
+                                   class="slider w-full accent-indigo-500" oninput="updateSliderValue('guidance')">
+                        </div>
+
+                        <!-- Number of Images -->
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-zinc-400">Number of Images</span>
+                                <span id="numImagesValue" class="font-mono text-indigo-400">1</span>
+                            </div>
+                            <input type="range" id="numImages" min="1" max="4" step="1" value="1" 
+                                   class="slider w-full accent-indigo-500" oninput="updateSliderValue('numImages')">
+                        </div>
+                    </div>
+
+                    <!-- Generate Button -->
+                    <button onclick="generateImages()" id="generateBtn"
+                            class="primary-btn mt-8 w-full flex items-center justify-center gap-x-3 text-white font-semibold py-4 px-8 rounded-2xl text-lg shadow-lg disabled:opacity-60">
+                        <i class="fas fa-magic" id="btnIcon"></i>
+                        <span id="btnText">Generate Images</span>
+                    </button>
+                    
+                    <p class="text-center text-xs text-zinc-500 mt-3">Images are generated using Hugging Face Inference API</p>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="lg:col-span-7">
+                <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 min-h-[600px]">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <div class="section-header flex items-center gap-x-2">
+                                <i class="fas fa-images"></i>
+                                <span>GENERATED IMAGES</span>
+                            </div>
+                        </div>
+                        <div id="resultCount" class="text-sm text-zinc-400 hidden"></div>
+                    </div>
+
+                    <!-- Images Grid -->
+                    <div id="imagesGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Images will be injected here by JavaScript -->
+                        <div id="emptyState" class="col-span-full flex flex-col items-center justify-center py-16 text-center">
+                            <i class="fas fa-image text-5xl text-zinc-700 mb-4"></i>
+                            <p class="text-zinc-400">Your generated images will appear here</p>
+                            <p class="text-xs text-zinc-500 mt-1">Enter a prompt and click Generate</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 space-y-2"></div>
+
+    <script>
+        let currentAspectRatio = { ratio: '1:1', width: 1024, height: 1024 };
+
+        function initializeTailwind() {
+            console.log('%c[AI Image Generator] Initialized', 'color:#64748b');
+        }
+
+        function updateSliderValue(type) {
+            const valueEl = document.getElementById(type + 'Value');
+            const input = document.getElementById(type);
+            
+            if (type === 'guidance') {
+                valueEl.textContent = parseFloat(input.value).toFixed(1);
+            } else {
+                valueEl.textContent = input.value;
+            }
+        }
+
+        function selectAspectRatio(element, ratio, width, height) {
+            document.querySelectorAll('#aspectRatioGroup button').forEach(btn => {
+                btn.classList.remove('active', 'bg-indigo-600', 'border-indigo-500');
+                btn.classList.add('border-zinc-700');
+            });
+            
+            element.classList.add('active', 'bg-indigo-600', 'border-indigo-500');
+            element.classList.remove('border-zinc-700');
+            
+            currentAspectRatio = { ratio, width, height };
+        }
+
+        function toggleAdvanced() {
+            const settings = document.getElementById('advancedSettings');
+            const icon = document.getElementById('advancedIcon');
+            
+            if (settings.classList.contains('hidden')) {
+                settings.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                settings.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            const bgColor = type === 'success' ? 'bg-emerald-600' : 'bg-red-600';
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            
+            toast.className = `toast flex items-center gap-x-3 px-5 py-3 rounded-2xl text-white shadow-xl ${bgColor}`;
+            toast.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <span class="text-sm font-medium">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.transition = 'all 0.3s ease';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 2800);
+        }
+
+        async function generateImages() {
+            const prompt = document.getElementById('prompt').value.trim();
+            const negativePrompt = document.getElementById('negativePrompt').value.trim();
+            const model = document.getElementById('model').value;
+            const steps = parseInt(document.getElementById('steps').value);
+            const guidance = parseFloat(document.getElementById('guidance').value);
+            const numImages = parseInt(document.getElementById('numImages').value);
+
+            if (!prompt) {
+                showToast("Please enter a prompt", "error");
+                return;
+            }
+
+            const generateBtn = document.getElementById('generateBtn');
+            const btnText = document.getElementById('btnText');
+            const btnIcon = document.getElementById('btnIcon');
+            const imagesGrid = document.getElementById('imagesGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            generateBtn.disabled = true;
+            btnText.textContent = `Generating ${numImages} image${numImages > 1 ? 's' : ''}...`;
+            btnIcon.className = 'fas fa-spinner fa-spin';
+
+            if (emptyState) emptyState.style.display = 'none';
+            imagesGrid.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        negative_prompt: negativePrompt,
+                        model: model,
+                        steps: steps,
+                        guidance_scale: guidance,
+                        num_images: numImages,
+                        width: currentAspectRatio.width,
+                        height: currentAspectRatio.height
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to generate images');
+                }
+
+                const data = await response.json();
+
+                if (!data.images || data.images.length === 0) {
+                    throw new Error('No images returned from server');
+                }
+
+                data.images.forEach((imageBase64, index) => {
+                    const imageCard = createImageCard(imageBase64, prompt, index);
+                    imagesGrid.appendChild(imageCard);
+                });
+
+                document.getElementById('resultCount').innerHTML = `${data.images.length} image${data.images.length > 1 ? 's' : ''} generated`;
+                document.getElementById('resultCount').classList.remove('hidden');
+
+                showToast(`${data.images.length} image(s) generated successfully!`);
+
+            } catch (error) {
+                console.error(error);
+                showToast(error.message || "Failed to generate images", "error");
+                
+                imagesGrid.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center py-12 text-center">
+                        <i class="fas fa-exclamation-triangle text-red-400 text-4xl mb-4"></i>
+                        <p class="text-red-400 font-medium">Generation Failed</p>
+                        <p class="text-sm text-zinc-400 mt-1">${error.message}</p>
+                    </div>
+                `;
+            } finally {
+                generateBtn.disabled = false;
+                btnText.textContent = 'Generate Images';
+                btnIcon.className = 'fas fa-magic';
+            }
+        }
+
+        function createImageCard(base64Image, prompt, index) {
+            const card = document.createElement('div');
+            card.className = `image-card bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden group`;
+            
+            card.innerHTML = `
+                <div class="relative aspect-square bg-black">
+                    <img src="data:image/png;base64,${base64Image}" class="generated-image w-full h-full object-cover" alt="Generated image ${index + 1}">
+                    
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all flex items-end p-4">
+                        <div class="flex gap-2 w-full">
+                            <button onclick="downloadImage('${base64Image}', ${index})" 
+                                    class="flex-1 flex items-center justify-center gap-x-2 bg-white/90 hover:bg-white text-black text-xs font-semibold py-2.5 rounded-xl transition">
+                                <i class="fas fa-download"></i>
+                                <span>Download</span>
+                            </button>
+                            
+                            <button onclick="copyPrompt('${prompt.replace(/'/g, "\\'")}')" 
+                                    class="flex-1 flex items-center justify-center gap-x-2 bg-white/90 hover:bg-white text-black text-xs font-semibold py-2.5 rounded-xl transition">
+                                <i class="fas fa-copy"></i>
+                                <span>Copy Prompt</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-3 flex items-center justify-between bg-zinc-900">
+                    <div class="text-xs text-zinc-400">Image ${index + 1}</div>
+                    <button onclick="regenerateImage('${prompt.replace(/'/g, "\\'")}')" 
+                            class="text-xs flex items-center gap-x-1.5 text-indigo-400 hover:text-indigo-300 transition">
+                        <i class="fas fa-redo text-xs"></i>
+                        <span>Regenerate</span>
+                    </button>
+                </div>
+            `;
+            return card;
+        }
+
+        function downloadImage(base64, index) {
+            const link = document.createElement('a');
+            link.href = `data:image/png;base64,${base64}`;
+            link.download = `ai-image-${Date.now()}-${index + 1}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('Image downloaded');
+        }
+
+        function copyPrompt(promptText) {
+            navigator.clipboard.writeText(promptText).then(() => {
+                showToast('Prompt copied to clipboard');
+            });
+        }
+
+        async function regenerateImage(promptText) {
+            document.getElementById('prompt').value = promptText;
+            showToast('Prompt loaded. Click Generate to create new variations.');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function initializeAspectRatio() {
+            const firstBtn = document.querySelector('#aspectRatioGroup button');
+            if (firstBtn) {
+                firstBtn.classList.add('active', 'bg-indigo-600', 'border-indigo-500');
+            }
+        }
+
+        function initializeSliders() {
+            document.getElementById('stepsValue').textContent = '30';
+            document.getElementById('guidanceValue').textContent = '7.5';
+            document.getElementById('numImagesValue').textContent = '1';
+        }
+
+        function initializeTool() {
+            initializeTailwind();
+            initializeAspectRatio();
+            initializeSliders();
+            
+            const promptInput = document.getElementById('prompt');
+            promptInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                    e.preventDefault();
+                    generateImages();
+                }
+            });
+
+            console.log('%c[AI Image Generator] Tool ready', 'color:#64748b');
+        }
+
+        window.onload = initializeTool;
+    </script>
+</body>
+</html>
