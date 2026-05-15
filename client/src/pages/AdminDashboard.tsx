@@ -16,7 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Shield, Settings, Link2, Code2, Save, LogOut,
   ToggleLeft, Loader2, CheckCircle2, Globe, AlertCircle,
-  ImageIcon, Plus, Pencil, Trash2, ExternalLink,
+  ImageIcon, Plus, Pencil, Trash2, ExternalLink, Search,
 } from "lucide-react";
 import type { AiPrompt, InsertAiPrompt } from "@shared/schema";
 
@@ -301,6 +301,16 @@ function PromptManagerPanel({ onSessionExpired }: { onSessionExpired: () => void
   const [submitting, setSubmitting] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredPrompts = (prompts || []).filter((p) => {
+    const q = searchTerm.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      p.title.toLowerCase().includes(q) ||
+      p.description.toLowerCase().includes(q)
+    );
+  });
 
   const openAdd = () => { setEditing(null); setForm(EMPTY_FORM); setDialogOpen(true); };
   const openEdit = (p: AiPrompt) => {
@@ -386,6 +396,21 @@ function PromptManagerPanel({ onSessionExpired }: { onSessionExpired: () => void
           <Plus className="w-4 h-4 mr-2" /> Add Prompt
         </Button>
       </div>
+
+      {/* Search */}
+      {prompts && prompts.length > 0 && (
+        <div className="relative max-w-md">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <Input
+            type="text"
+            placeholder="Search prompts by title or description…"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-9"
+            data-testid="input-search-prompts"
+          />
+        </div>
+      )}
 
       <Card className="shadow-sm">
         <CardContent className="p-0">
