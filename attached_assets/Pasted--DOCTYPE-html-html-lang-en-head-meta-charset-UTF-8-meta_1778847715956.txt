@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Preview Gallery • MeiGen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .font-display { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+
+        .masonry-grid {
+            column-count: 2;
+            column-gap: 1.5rem;
+        }
+        @media (min-width: 768px) { .masonry-grid { column-count: 3; } }
+        @media (min-width: 1024px) { .masonry-grid { column-count: 4; } }
+        
+        .prompt-card {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        .prompt-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .modal {
+            animation: fadeInScale 0.2s ease forwards;
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200">
+    <!-- Header -->
+    <div class="border-b border-zinc-800">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-magic text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-semibold tracking-tight font-display">Prompt Gallery</h1>
+                </div>
+            </div>
+            <div class="text-sm text-emerald-400 flex items-center gap-x-2">
+                <i class="fas fa-check-circle"></i>
+                <span>Free • High Quality Prompts</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 py-10">
+        
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h2 class="text-4xl font-semibold tracking-tighter">Prompt Preview Gallery</h2>
+            <p class="text-zinc-400 mt-2 text-lg">Discover high-converting prompts used with MeiGen</p>
+        </div>
+
+        <!-- Masonry Gallery -->
+        <div class="masonry-grid" id="gallery">
+            <!-- Populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Single Prompt Modal -->
+    <div id="modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-auto">
+            
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-6 border-b border-zinc-800">
+                <h3 id="modalTitle" class="text-2xl font-semibold"></h3>
+                <button onclick="closeModal()" class="text-zinc-400 hover:text-white text-2xl">&times;</button>
+            </div>
+
+            <div class="p-6">
+                <!-- Image -->
+                <div class="rounded-2xl overflow-hidden border border-zinc-700 mb-6">
+                    <img id="modalImage" class="w-full max-h-[480px] object-contain bg-black" alt="">
+                </div>
+
+                <!-- Description -->
+                <div class="mb-8">
+                    <h4 class="text-sm font-medium text-zinc-400 mb-2">DESCRIPTION</h4>
+                    <p id="modalDescription" class="text-zinc-300 leading-relaxed"></p>
+                </div>
+
+                <!-- CTA Button -->
+                <a id="modalCta" href="#" target="_blank"
+                   class="flex items-center justify-center gap-x-3 w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white font-semibold py-4 rounded-2xl text-lg transition-all">
+                    <i class="fas fa-magic"></i>
+                    <span>Copy Exact Prompt from MeiGen</span>
+                </a>
+                <p class="text-center text-xs text-zinc-500 mt-3">Opens MeiGen in a new tab</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample Data (Replace with real data from your database in production)
+        const prompts = [
+            {
+                id: 1,
+                title: "Cyberpunk Samurai at Night",
+                description: "A highly detailed cyberpunk samurai standing on a neon rooftop during heavy rain, cinematic lighting, blade reflecting neon signs.",
+                image_url: "https://picsum.photos/id/1015/800/800",
+                meigen_target_link: "https://meigen.ai/prompt/12345"
+            },
+            {
+                id: 2,
+                title: "Minimalist Tech Logo",
+                description: "Clean minimalist logo concept for a futuristic AI company, negative space, modern typography, professional brand identity.",
+                image_url: "https://picsum.photos/id/201/800/800",
+                meigen_target_link: "https://meigen.ai/prompt/12346"
+            },
+            {
+                id: 3,
+                title: "Ethereal Forest Goddess",
+                description: "Beautiful ethereal woman in an ancient glowing forest, soft volumetric lighting, fantasy art style, intricate details.",
+                image_url: "https://picsum.photos/id/1005/800/800",
+                meigen_target_link: "https://meigen.ai/prompt/12347"
+            }
+        ];
+
+        // Render Gallery
+        function renderGallery() {
+            const container = document.getElementById('gallery');
+            container.innerHTML = '';
+
+            prompts.forEach(prompt => {
+                const card = document.createElement('div');
+                card.className = `prompt-card bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden cursor-pointer`;
+                
+                card.innerHTML = `
+                    <div class="relative">
+                        <img src="${prompt.image_url}" class="w-full" alt="${prompt.title}">
+                        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="font-semibold text-lg mb-2 line-clamp-2">${prompt.title}</h3>
+                        <p class="text-sm text-zinc-400 line-clamp-3">${prompt.description}</p>
+                    </div>
+                `;
+
+                card.onclick = () => openModal(prompt);
+                container.appendChild(card);
+            });
+        }
+
+        // Open Modal
+        function openModal(prompt) {
+            document.getElementById('modalTitle').textContent = prompt.title;
+            document.getElementById('modalImage').src = prompt.image_url;
+            document.getElementById('modalDescription').textContent = prompt.description;
+            document.getElementById('modalCta').href = prompt.meigen_target_link;
+
+            document.getElementById('modal').classList.remove('hidden');
+            document.getElementById('modal').classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target.id === 'modal') {
+                closeModal();
+            }
+        });
+
+        // Initialize
+        function init() {
+            renderGallery();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

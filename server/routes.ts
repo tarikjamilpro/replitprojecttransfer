@@ -2,7 +2,16 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import OpenAI from "openai";
 import jwt from "jsonwebtoken";
-import { readAdsConfig, writeAdsConfig } from "./db";
+import {
+  readAdsConfig,
+  writeAdsConfig,
+  listAiPrompts,
+  getAiPrompt,
+  createAiPrompt,
+  updateAiPrompt,
+  deleteAiPrompt,
+} from "./db";
+import { insertAiPromptSchema, updateAiPromptSchema } from "@shared/schema";
 
 const OPENROUTER_MODEL = "openrouter/auto";
 
@@ -465,6 +474,80 @@ Rules:
       res.json({ success: true });
     } catch (err) {
       res.status(500).json({ error: "Failed to save ad config" });
+    }
+  });
+
+  // ── Prompt Manager — public endpoints ──────────────────────────────────────
+
+  app.get("/api/prompts", async (_req, res) => {
+    try {
+      const prompts = await listAiPrompts();
+      res.json(prompts);
+    } catch (err) {
+      console.error("GET /api/prompts error:", err);
+      res.status(500).json({ error: "Failed to load prompts" });
+    }
+  });
+
+  app.get("/api/prompts/:id", async (req, res) => {
+    try {
+      const prompt = await getAiPrompt(req.params.id);
+      if (!prompt) return res.status(404).json({ error: "Prompt not found" });
+      res.json(prompt);
+    } catch (err) {
+      console.error("GET /api/prompts/:id error:", err);
+      res.status(500).json({ error: "Failed to load prompt" });
+    }
+  });
+
+  // ── Prompt Manager — admin CRUD ────────────────────────────────────────────
+
+  app.post("/api/prompts", async (req, res) => {
+    if (!verifyAdminToken(req.headers.authorization)) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const parsed = insertAiPromptSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Invalid data", details: parsed.error.flatten() });
+    }
+    try {
+      const created = await createAiPrompt(parsed.data);
+      res.status(201).json(created);
+    } catch (err) {
+      console.error("POST /api/prompts error:", err);
+      res.status(500).json({ error: "Failed to create prompt" });
+    }
+  });
+
+  app.patch("/api/prompts/:id", async (req, res) => {
+    if (!verifyAdminToken(req.headers.authorization)) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const parsed = updateAiPromptSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Invalid data", details: parsed.error.flatten() });
+    }
+    try {
+      const updated = await updateAiPrompt(req.params.id, parsed.data);
+      if (!updated) return res.status(404).json({ error: "Prompt not found" });
+      res.json(updated);
+    } catch (err) {
+      console.error("PATCH /api/prompts/:id error:", err);
+      res.status(500).json({ error: "Failed to update prompt" });
+    }
+  });
+
+  app.delete("/api/prompts/:id", async (req, res) => {
+    if (!verifyAdminToken(req.headers.authorization)) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    try {
+      const ok = await deleteAiPrompt(req.params.id);
+      if (!ok) return res.status(404).json({ error: "Prompt not found" });
+      res.json({ success: true });
+    } catch (err) {
+      console.error("DELETE /api/prompts/:id error:", err);
+      res.status(500).json({ error: "Failed to delete prompt" });
     }
   });
 

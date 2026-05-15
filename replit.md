@@ -136,6 +136,22 @@ server/
 - `/bio-link-builder` - Bio Link Builder tool
 - `/holiday-calendar` - Social Media Holiday Calendar tool
 - `/ai-image-generator` - Wan AI Image Generator tool (Puter.js, client-side)
+- `/prompts` - Prompt Preview Gallery (responsive masonry grid, public)
+- `/prompt/:id` - Single prompt detail page with 3 ad slots (top header, below image, sidebar) and "Copy Exact Prompt from MeiGen" CTA
+
+### Prompt Manager
+The `/admin` dashboard now has two tabs:
+- **Ad Configuration** — existing ad/interstitial settings (unchanged)
+- **Prompt Manager** — CRUD for the `ai_prompts` table (title, description, image_url, meigen_target_link). Public gallery never displays the actual prompt text — only the title, description, image, and CTA.
+
+API endpoints (all under existing JWT admin auth except GETs):
+- `GET /api/prompts` — list (public)
+- `GET /api/prompts/:id` — single (public)
+- `POST /api/prompts` — create (admin)
+- `PATCH /api/prompts/:id` — update (admin)
+- `DELETE /api/prompts/:id` — delete (admin)
+
+The `ai_prompts` table is auto-created on first request via `ensureAiPromptsTable()` in both `server/db.ts` and `api/index.ts`.
 
 ### Legal Pages (AdSense/GDPR Compliance)
 - `/privacy-policy` - Privacy Policy page with cookie disclosure and GDPR information

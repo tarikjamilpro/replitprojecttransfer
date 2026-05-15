@@ -53,6 +53,65 @@ async function writeAdsConfig(data: object): Promise<void> {
   );
 }
 
+// ── ai_prompts table helpers ─────────────────────────────────────────────────
+
+let _promptsTableReady: Promise<void> | null = null;
+function ensureAiPromptsTable(): Promise<void> {
+  if (!_promptsTableReady) {
+    _promptsTableReady = getPool()
+      .query(
+        `CREATE TABLE IF NOT EXISTS ai_prompts (
+           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+           title TEXT NOT NULL,
+           description TEXT NOT NULL,
+           image_url TEXT NOT NULL,
+           meigen_target_link TEXT NOT NULL,
+           created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+           updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+         )`
+      )
+      .then(() => undefined)
+      .catch((err) => { _promptsTableReady = null; throw err; });
+  }
+  return _promptsTableReady;
+}
+
+function rowToPrompt(row: any) {
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description,
+    imageUrl: row.image_url,
+    meigenTargetLink: row.meigen_target_link,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+const promptInputSchema = {
+  validate(body: any, partial: boolean) {
+    const errors: string[] = [];
+    const fields = ["title", "description", "imageUrl", "meigenTargetLink"];
+    const out: any = {};
+    for (const f of fields) {
+      const v = body?.[f];
+      if (v === undefined) {
+        if (!partial) errors.push(`${f} is required`);
+        continue;
+      }
+      if (typeof v !== "string" || !v.trim()) { errors.push(`${f} must be a non-empty string`); continue; }
+      const trimmed = v.trim();
+      if ((f === "imageUrl" || f === "meigenTargetLink")) {
+        try { new URL(trimmed); } catch { errors.push(`${f} must be a valid URL`); continue; }
+      }
+      if (f === "title" && trimmed.length > 200) errors.push("title too long");
+      if (f === "description" && trimmed.length > 2000) errors.push("description too long");
+      out[f] = trimmed;
+    }
+    return errors.length ? { ok: false as const, errors } : { ok: true as const, data: out };
+  },
+};
+
 function getJwtSecret(): string {
   const secret = process.env.ADMIN_PASSWORD;
   if (!secret) throw new Error("ADMIN_PASSWORD env var is not set");
@@ -103,6 +162,106 @@ app.post("/api/ads/update", async (req, res) => {
   } catch (err) {
     console.error("POST /api/ads/update error:", err);
     res.status(500).json({ error: "Failed to save ad config", message: String(err) });
+  }
+});
+
+// ── Prompt Manager ────────────────────────────────────────────────────────────
+
+app.get("/api/prompts", async (_req, res) => {
+  try {
+    await ensureAiPromptsTable();
+    const result = await getPool().query(
+      `SELECT id, title, description, image_url, meigen_target_link, created_at, updated_at
+       FROM ai_prompts ORDER BY created_at DESC`
+    );
+    res.json(result.rows.map(rowToPrompt));
+  } catch (err) {
+    console.error("GET /api/prompts error:", err);
+    res.status(500).json({ error: "Failed to load prompts" });
+  }
+});
+
+app.get("/api/prompts/:id", async (req, res) => {
+  try {
+    await ensureAiPromptsTable();
+    const result = await getPool().query(
+      `SELECT id, title, description, image_url, meigen_target_link, created_at, updated_at
+       FROM ai_prompts WHERE id = $1`,
+      [req.params.id]
+    );
+    if (!result.rows[0]) return res.status(404).json({ error: "Prompt not found" });
+    res.json(rowToPrompt(result.rows[0]));
+  } catch (err) {
+    console.error("GET /api/prompts/:id error:", err);
+    res.status(500).json({ error: "Failed to load prompt" });
+  }
+});
+
+app.post("/api/prompts", async (req, res) => {
+  if (!verifyAdminToken(req.headers.authorization)) return res.status(401).json({ error: "Unauthorized" });
+  const v = promptInputSchema.validate(req.body, false);
+  if (!v.ok) return res.status(400).json({ error: "Invalid data", details: v.errors });
+  try {
+    await ensureAiPromptsTable();
+    const r = await getPool().query(
+      `INSERT INTO ai_prompts (title, description, image_url, meigen_target_link)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, title, description, image_url, meigen_target_link, created_at, updated_at`,
+      [v.data.title, v.data.description, v.data.imageUrl, v.data.meigenTargetLink]
+    );
+    res.status(201).json(rowToPrompt(r.rows[0]));
+  } catch (err) {
+    console.error("POST /api/prompts error:", err);
+    res.status(500).json({ error: "Failed to create prompt" });
+  }
+});
+
+app.patch("/api/prompts/:id", async (req, res) => {
+  if (!verifyAdminToken(req.headers.authorization)) return res.status(401).json({ error: "Unauthorized" });
+  const v = promptInputSchema.validate(req.body, true);
+  if (!v.ok) return res.status(400).json({ error: "Invalid data", details: v.errors });
+  try {
+    await ensureAiPromptsTable();
+    const map: Record<string, string> = {
+      title: "title", description: "description", imageUrl: "image_url", meigenTargetLink: "meigen_target_link",
+    };
+    const setClauses: string[] = []; const values: any[] = []; let i = 1;
+    for (const [k, col] of Object.entries(map)) {
+      if (v.data[k] !== undefined) { setClauses.push(`${col} = $${i++}`); values.push(v.data[k]); }
+    }
+    if (setClauses.length === 0) {
+      const cur = await getPool().query(
+        `SELECT id, title, description, image_url, meigen_target_link, created_at, updated_at FROM ai_prompts WHERE id = $1`,
+        [req.params.id]
+      );
+      if (!cur.rows[0]) return res.status(404).json({ error: "Prompt not found" });
+      return res.json(rowToPrompt(cur.rows[0]));
+    }
+    setClauses.push(`updated_at = NOW()`);
+    values.push(req.params.id);
+    const r = await getPool().query(
+      `UPDATE ai_prompts SET ${setClauses.join(", ")} WHERE id = $${i}
+       RETURNING id, title, description, image_url, meigen_target_link, created_at, updated_at`,
+      values
+    );
+    if (!r.rows[0]) return res.status(404).json({ error: "Prompt not found" });
+    res.json(rowToPrompt(r.rows[0]));
+  } catch (err) {
+    console.error("PATCH /api/prompts/:id error:", err);
+    res.status(500).json({ error: "Failed to update prompt" });
+  }
+});
+
+app.delete("/api/prompts/:id", async (req, res) => {
+  if (!verifyAdminToken(req.headers.authorization)) return res.status(401).json({ error: "Unauthorized" });
+  try {
+    await ensureAiPromptsTable();
+    const r = await getPool().query(`DELETE FROM ai_prompts WHERE id = $1`, [req.params.id]);
+    if ((r.rowCount ?? 0) === 0) return res.status(404).json({ error: "Prompt not found" });
+    res.json({ success: true });
+  } catch (err) {
+    console.error("DELETE /api/prompts/:id error:", err);
+    res.status(500).json({ error: "Failed to delete prompt" });
   }
 });
 
