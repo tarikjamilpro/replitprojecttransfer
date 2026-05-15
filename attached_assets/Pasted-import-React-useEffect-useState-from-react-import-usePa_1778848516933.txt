@@ -1,0 +1,147 @@
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+
+interface Prompt {
+  id: number;
+  title: string;
+  description: string;
+  image_url: string;
+  meigen_target_link: string;
+}
+
+const SinglePrompt: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const [prompt, setPrompt] = useState<Prompt | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPrompt = async () => {
+      try {
+        const res = await fetch(`/api/prompts/${id}`);
+        const data = await res.json();
+        setPrompt(data);
+      } catch (error) {
+        console.error('Failed to fetch prompt');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchPrompt();
+    }
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-violet-500"></div>
+      </div>
+    );
+  }
+
+  if (!prompt) {
+    return (
+      <div className="text-center py-20">
+        <h2 className="text-2xl">Prompt not found</h2>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-5xl mx-auto px-6 py-8">
+      
+      {/* ========== AD SLOT 1: HEADER ========== */}
+      <div className="mb-8">
+        {/* TODO: তোমার Global Banner Component বসাও */}
+        <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-4 text-center text-sm text-zinc-400">
+          [AD BANNER - Header]
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* Main Content */}
+        <div className="lg:col-span-8">
+          
+          {/* Large Image */}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden mb-6">
+            <img 
+              src={prompt.image_url} 
+              alt={prompt.title}
+              className="w-full max-h-[520px] object-contain bg-black" 
+            />
+          </div>
+
+          {/* Title & Description */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-semibold tracking-tight mb-4">
+              {prompt.title}
+            </h1>
+            <p className="text-lg text-zinc-300 leading-relaxed whitespace-pre-line">
+              {prompt.description}
+            </p>
+          </div>
+
+          {/* ========== BIG CTA BUTTON ========== */}
+          <div className="mb-10">
+            <a 
+              href={prompt.meigen_target_link} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="group flex items-center justify-center gap-x-4 w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white text-xl font-semibold py-6 rounded-3xl shadow-xl transition-all active:scale-[0.985]"
+            >
+              <i className="fas fa-magic text-2xl"></i>
+              <span>Copy Exact Prompt from MeiGen</span>
+              <i className="fas fa-external-link-alt text-lg group-active:translate-x-1 transition"></i>
+            </a>
+            <p className="text-center text-xs text-zinc-500 mt-3">
+              Opens MeiGen in a new tab • Free to use
+            </p>
+          </div>
+
+          {/* ========== AD SLOT 2: BELOW IMAGE ========== */}
+          <div className="mb-8">
+            {/* TODO: তোমার Global Banner Component বসাও */}
+            <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-4 text-center text-sm text-zinc-400">
+              [AD BANNER - Below Image]
+            </div>
+          </div>
+
+        </div>
+
+        {/* Sidebar */}
+        <div className="lg:col-span-4">
+          <div className="sticky top-8">
+
+            {/* ========== AD SLOT 3: SIDEBAR ========== */}
+            <div className="mb-6">
+              {/* TODO: তোমার Global Banner Component বসাও */}
+              <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-4 text-center text-sm text-zinc-400 min-h-[220px] flex items-center justify-center">
+                [AD BANNER - Sidebar]
+              </div>
+            </div>
+
+            {/* How it works */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+              <h4 className="font-semibold mb-4 flex items-center gap-x-2">
+                <i className="fas fa-info-circle text-violet-400"></i>
+                <span>How it works</span>
+              </h4>
+              <ol className="text-sm space-y-2 text-zinc-300 list-decimal list-inside">
+                <li>Click the button above</li>
+                <li>MeiGen will open in a new tab</li>
+                <li>Copy the exact prompt</li>
+                <li>Generate high-quality images</li>
+              </ol>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+export default SinglePrompt;

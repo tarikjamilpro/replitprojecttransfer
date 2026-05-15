@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAdConfig } from "@/contexts/AdContext";
 import { AdPlaceholder } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import { Wand2, ArrowLeft, Loader2, AlertTriangle } from "lucide-react";
+import { Wand2, ArrowLeft, Loader2, AlertTriangle, Info } from "lucide-react";
 import type { AiPrompt } from "@shared/schema";
 
 function BannerSlot({ label }: { label: string }) {
@@ -133,14 +133,29 @@ export default function PromptDetail() {
                 <span>Copy Exact Prompt from MeiGen</span>
               </a>
               <p className="text-center text-xs text-muted-foreground">
-                Opens MeiGen in a new tab
+                Opens MeiGen in a new tab • Free to use
               </p>
             </div>
 
-            {/* Sidebar Ad Slot */}
+            {/* Sidebar */}
             <aside className="lg:col-span-4">
-              <div className="lg:sticky lg:top-6">
+              <div className="lg:sticky lg:top-6 space-y-6">
+                {/* Ad Slot 3 */}
                 <AdPlaceholder position="sidebar" />
+
+                {/* How it works */}
+                <div className="bg-card border border-border rounded-2xl p-6" data-testid="card-how-it-works">
+                  <h4 className="font-semibold mb-4 flex items-center gap-x-2 text-foreground">
+                    <Info className="w-4 h-4 text-violet-500" />
+                    <span>How it works</span>
+                  </h4>
+                  <ol className="text-sm space-y-2 text-muted-foreground list-decimal list-inside">
+                    <li>Click the button above</li>
+                    <li>MeiGen will open in a new tab</li>
+                    <li>Copy the exact prompt</li>
+                    <li>Generate high-quality images</li>
+                  </ol>
+                </div>
               </div>
             </aside>
           </div>
