@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Menu, X, Wrench, ChevronDown, ChevronRight, Shield } from "lucide-react";
+import { Search, Menu, X, Wrench, ChevronDown, ChevronRight, Shield, LogIn, UserPlus, LogOut, LayoutDashboard } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
@@ -72,12 +72,43 @@ const toolCategories = {
 
 const allTools = Object.values(toolCategories).flat();
 
+type SessionUser = { id: string; username: string; firstName: string | null; lastName: string | null; email: string };
+
+function readSessionUser(): SessionUser | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem("user");
+    return raw ? (JSON.parse(raw) as SessionUser) : null;
+  } catch {
+    return null;
+  }
+}
+
 export function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [expandedMobileCategory, setExpandedMobileCategory] = useState<string | null>(null);
   const [, setLocation] = useLocation();
+  const [user, setUser] = useState<SessionUser | null>(() => readSessionUser());
+
+  useEffect(() => {
+    const refresh = () => setUser(readSessionUser());
+    refresh();
+    window.addEventListener("storage", refresh);
+    window.addEventListener("focus", refresh);
+    return () => {
+      window.removeEventListener("storage", refresh);
+      window.removeEventListener("focus", refresh);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    setMobileMenuOpen(false);
+    setLocation("/login");
+  };
 
   const filteredTools = allTools.filter((tool) =>
     tool.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -168,6 +199,49 @@ export function Header() {
             ))}
           </nav>
 
+          <div className="hidden md:flex items-center gap-2 shrink-0">
+            {user ? (
+              <>
+                <Link href="/dashboard">
+                  <Button variant="ghost" size="sm" className="gap-1.5" data-testid="button-header-dashboard">
+                    <LayoutDashboard className="w-4 h-4" />
+                    <span className="hidden lg:inline">Hi, {user.firstName?.trim() || user.username}</span>
+                    <span className="lg:hidden">Dashboard</span>
+                  </Button>
+                </Link>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="gap-1.5"
+                  data-testid="button-header-logout"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" size="sm" className="gap-1.5" data-testid="button-header-signin">
+                    <LogIn className="w-4 h-4" />
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button
+                    size="sm"
+                    className="gap-1.5 bg-purple-600 hover:bg-purple-700 text-white"
+                    data-testid="button-header-signup"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
+            )}
+          </div>
+
           <Button
             variant="ghost"
             size="icon"
@@ -181,6 +255,56 @@ export function Header() {
 
         {mobileMenuOpen && (
           <div className="lg:hidden py-4 border-t border-border max-h-[calc(100vh-4rem)] overflow-y-auto">
+            <div className="md:hidden mb-4 flex gap-2">
+              {user ? (
+                <>
+                  <Link href="/dashboard" className="flex-1">
+                    <Button
+                      variant="outline"
+                      className="w-full gap-1.5"
+                      onClick={() => setMobileMenuOpen(false)}
+                      data-testid="button-mobile-dashboard"
+                    >
+                      <LayoutDashboard className="w-4 h-4" />
+                      Hi, {user.firstName?.trim() || user.username}
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="outline"
+                    className="gap-1.5"
+                    onClick={handleLogout}
+                    data-testid="button-mobile-logout"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link href="/login" className="flex-1">
+                    <Button
+                      variant="outline"
+                      className="w-full gap-1.5"
+                      onClick={() => setMobileMenuOpen(false)}
+                      data-testid="button-mobile-signin"
+                    >
+                      <LogIn className="w-4 h-4" />
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link href="/signup" className="flex-1">
+                    <Button
+                      className="w-full gap-1.5 bg-purple-600 hover:bg-purple-700 text-white"
+                      onClick={() => setMobileMenuOpen(false)}
+                      data-testid="button-mobile-signup"
+                    >
+                      <UserPlus className="w-4 h-4" />
+                      Sign Up
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
+
             <div className="relative mb-4">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
