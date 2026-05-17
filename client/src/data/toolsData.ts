@@ -8,7 +8,8 @@ import {
   Receipt,
   BarChart3,
   Link2,
-  Share2
+  Share2,
+  Database
 } from "lucide-react";
 
 export type ToolCategory = 
@@ -375,6 +376,16 @@ export const toolsData: ToolData[] = [
     icon: "Dices",
   },
   {
+    id: "schema-markup-generator",
+    path: "/schema-markup-generator",
+    name: "Schema Markup Generator Pro",
+    description: "Generate JSON-LD structured data",
+    seoTitle: "Free Schema Markup Generator - JSON-LD Structured Data",
+    seoDescription: "Generate valid JSON-LD structured data for Organization, Article, Product, LocalBusiness, FAQ Page, and Website schemas. Free SEO tool with live preview and copy.",
+    category: "Developer Tools",
+    icon: "Database",
+  },
+  {
     id: "open-graph-generator",
     path: "/open-graph-generator",
     name: "Open Graph Generator Pro",
@@ -609,4 +620,5 @@ export const iconMap: Record<string, any> = {
   BarChart3,
   Link2,
   Share2,
+  Database,
 };

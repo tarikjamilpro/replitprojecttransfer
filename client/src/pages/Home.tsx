@@ -43,6 +43,7 @@ import {
   BarChart3,
   Link2,
   Share2,
+  Database,
   Tag,
   Zap,
   Smartphone,
@@ -119,6 +120,13 @@ const textTools = [
     icon: Share2,
     path: "/open-graph-generator",
     color: "bg-purple-500 dark:bg-purple-600",
+  },
+  {
+    name: "Schema Markup Generator Pro",
+    description: "Generate JSON-LD structured data for Organization, Article, Product, FAQ & more.",
+    icon: Database,
+    path: "/schema-markup-generator",
+    color: "bg-indigo-500 dark:bg-indigo-600",
   },
   {
     name: "AI Humanizer",

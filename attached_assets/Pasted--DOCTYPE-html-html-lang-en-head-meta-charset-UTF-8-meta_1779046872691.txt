@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schema Markup Generator Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-white text-slate-800">
+    <div class="max-w-5xl mx-auto px-6 py-10">
+        
+        <div class="flex flex-col items-center text-center mb-10">
+            <div class="w-14 h-14 bg-violet-100 rounded-2xl flex items-center justify-center mb-4">
+                <i class="fas fa-database text-violet-600 text-3xl"></i>
+            </div>
+            <h1 class="text-4xl font-semibold tracking-tight">Schema Markup Generator <span class="text-violet-600">Pro</span></h1>
+            <p class="text-slate-500 mt-2">Generate JSON-LD structured data</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Form -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-8">
+                <h3 class="font-semibold mb-5">Schema Details</h3>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="text-sm text-slate-600">Schema Type</label>
+                        <select id="schemaType" onchange="updateFormFields()" class="w-full border border-slate-300 rounded-2xl px-4 py-2.5 bg-white">
+                            <option value="Organization">Organization</option>
+                            <option value="WebSite">WebSite</option>
+                            <option value="Article">Article</option>
+                            <option value="Product">Product</option>
+                            <option value="LocalBusiness">LocalBusiness</option>
+                            <option value="FAQPage">FAQPage</option>
+                        </select>
+                    </div>
+
+                    <div id="dynamicFields"></div>
+                </div>
+
+                <button onclick="generateSchema()" class="mt-6 w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold py-3.5 rounded-2xl">
+                    Generate JSON-LD
+                </button>
+            </div>
+
+            <!-- Output -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-semibold">JSON-LD</h3>
+                    <button onclick="copySchema()" class="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-sm rounded-2xl flex items-center gap-x-2">
+                        <i class="fas fa-copy"></i> <span>Copy</span>
+                    </button>
+                </div>
+
+                <pre id="schemaOutput" class="bg-slate-900 text-emerald-300 p-5 rounded-2xl text-xs overflow-auto" style="min-height: 380px; white-space: pre-wrap;">Your JSON-LD will appear here...</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateFormFields() {
+            const type = document.getElementById('schemaType').value;
+            const container = document.getElementById('dynamicFields');
+            container.innerHTML = '';
+
+            let html = '';
+
+            if (type === 'Organization' || type === 'LocalBusiness') {
+                html = `
+                    <div><label class="text-sm">Name</label><input type="text" id="name" class="w-full border rounded-2xl px-4 py-2.5"></div>
+                    <div><label class="text-sm">URL</label><input type="url" id="url" class="w-full border rounded-2xl px-4 py-2.5"></div>
+                    <div><label class="text-sm">Description</label><textarea id="description" rows="2" class="w-full border rounded-2xl px-4 py-2.5"></textarea></div>
+                    <div><label class="text-sm">Logo / Image URL</label><input type="url" id="image" class="w-full border rounded-2xl px-4 py-2.5"></div>
+                `;
+            } 
+            else if (type === 'Article') {
+                html = `
+                    <div><label class="text-sm">Headline</label><input type="text" id="headline" class="w-full border rounded-2xl px-4 py-2.5"></div>
+                    <div><label class="text-sm">Author Name</label><input type="text" id="author" class="w-full border rounded-2xl px-4 py-2.5"></div>
+                    <div><label class="text-sm">Date Published</label><input type="date" id="datePublished" class="w-full border rounded-2xl px-4 py-2.5"></div>
+                    <div><label class="text-sm">Image URL</label><input type="url" id="image" class="w-full border rounded-2xl px-4 py-2.5"></div>
+                `;
+            } 
+            else if (type === 'Product') {
+                html = `
+                    <div><label class="text-sm">Product Name</label><input type="text" id="name" class="w-full border rounded-2xl px-4 py-2.5"></div>
+                    <div><label class="text-sm">Description</label><textarea id="description" rows="2" class="w-full border rounded-2xl px-4 py-2.5"></textarea></div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="text-sm">Price</label><input type="number" id="price" class="w-full border rounded-2xl px-4 py-2.5"></div>
+                        <div><label class="text-sm">Currency</label><input type="text" id="currency" value="USD" class="w-full border rounded-2xl px-4 py-2.5"></div>
+                    </div>
+                    <div><label class="text-sm">Image URL</label><input type="url" id="image" class="w-full border rounded-2xl px-4 py-2.5"></div>
+                `;
+            } 
+            else if (type === 'WebSite') {
+                html = `
+                    <div><label class="text-sm">Site Name</label><input type="text" id="name" class="w-full border rounded-2xl px-4 py-2.5"></div>
+                    <div><label class="text-sm">URL</label><input type="url" id="url" class="w-full border rounded-2xl px-4 py-2.5"></div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function generateSchema() {
+            const type = document.getElementById('schemaType').value;
+            if (!type) return alert("Please select a schema type");
+
+            let jsonLD = { "@context": "https://schema.org", "@type": type };
+
+            const getVal = id => document.getElementById(id)?.value;
+
+            if (getVal('name')) jsonLD.name = getVal('name');
+            if (getVal('url')) jsonLD.url = getVal('url');
+            if (getVal('description')) jsonLD.description = getVal('description');
+            if (getVal('image')) jsonLD.image = getVal('image');
+
+            if (type === 'Article') {
+                if (getVal('author')) jsonLD.author = { "@type": "Person", "name": getVal('author') };
+                if (getVal('datePublished')) jsonLD.datePublished = getVal('datePublished');
+                if (getVal('headline')) jsonLD.headline = getVal('headline');
+            }
+
+            if (type === 'Product') {
+                if (getVal('price')) {
+                    jsonLD.offers = {
+                        "@type": "Offer",
+                        "priceCurrency": getVal('currency') || "USD",
+                        "price": getVal('price')
+                    };
+                }
+            }
+
+            const output = JSON.stringify(jsonLD, null, 2);
+            document.getElementById('schemaOutput').textContent = 
+                `<script type="application/ld+json">\n${output}\n<\/script>`;
+        }
+
+        function copySchema() {
+            const code = document.getElementById('schemaOutput').textContent;
+            navigator.clipboard.writeText(code).then(() => alert("Copied to clipboard!"));
+        }
+
+        window.onload = updateFormFields;
+    </script>
+</body>
+</html>
