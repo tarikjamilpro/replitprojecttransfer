@@ -1,0 +1,86 @@
+const express = require('express');
+const { Pool } = require('pg');
+const bcrypt = require('bcrypt');
+const cors = require('cors');
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+
+// Create users table automatically
+async function initDB() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      first_name VARCHAR(100),
+      last_name VARCHAR(100),
+      username VARCHAR(100) UNIQUE NOT NULL,
+      email VARCHAR(150) UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  console.log("✅ Database table ready");
+}
+initDB();
+
+// ==================== SIGN UP ====================
+app.post('/api/signup', async (req, res) => {
+  const { firstName, lastName, username, email, password } = req.body;
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await pool.query(
+      `INSERT INTO users (first_name, last_name, username, email, password) 
+       VALUES ($1, $2, $3, $4, $5)`,
+      [firstName, lastName, username, email, hashedPassword]
+    );
+
+    res.json({ success: true, message: "Account created successfully!" });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ success: false, message: "Username or email already exists" });
+  }
+});
+
+// ==================== LOGIN ====================
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const result = await pool.query(`SELECT * FROM users WHERE username = $1`, [username]);
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ success: false, message: "Invalid username or password" });
+    }
+
+    const user = result.rows[0];
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: "Invalid username or password" });
+    }
+
+    res.json({
+      success: true,
+      user: {
+        id: user.id,
+        username: user.username,
+        firstName: user.first_name
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+app.listen(3000, () => {
+  console.log("🚀 Server running on http://localhost:3000");
+});

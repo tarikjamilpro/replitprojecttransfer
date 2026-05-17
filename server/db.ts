@@ -1,5 +1,9 @@
 import { Pool } from "pg";
-import type { AiPrompt, InsertAiPrompt, UpdateAiPrompt } from "@shared/schema";
+import { randomBytes, scrypt as scryptCb, timingSafeEqual } from "crypto";
+import { promisify } from "util";
+import type { AiPrompt, InsertAiPrompt, UpdateAiPrompt, PublicUser } from "@shared/schema";
+
+const scrypt = promisify(scryptCb) as (password: string, salt: string, keylen: number) => Promise<Buffer>;
 
 let pool: Pool | null = null;
 
@@ -134,4 +138,96 @@ export async function deleteAiPrompt(id: string): Promise<boolean> {
   await ensureAiPromptsTable();
   const result = await getPool().query(`DELETE FROM ai_prompts WHERE id = $1`, [id]);
   return (result.rowCount ?? 0) > 0;
+}
+
+// ── users table (signup/login) ───────────────────────────────────────────────
+
+let usersTableReady: Promise<void> | null = null;
+
+export function ensureUsersTable(): Promise<void> {
+  if (!usersTableReady) {
+    usersTableReady = (async () => {
+      const db = getPool();
+      await db.query(
+        `CREATE TABLE IF NOT EXISTS users (
+           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+           username TEXT NOT NULL UNIQUE,
+           password TEXT NOT NULL
+         )`
+      );
+      // Idempotent column additions for backward compatibility with legacy table
+      await db.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS first_name TEXT`);
+      await db.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS last_name TEXT`);
+      await db.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS email TEXT`);
+      await db.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMP NOT NULL DEFAULT NOW()`);
+      // Case-insensitive uniqueness for username and email (skip silently if pre-existing dupes)
+      await db.query(`CREATE UNIQUE INDEX IF NOT EXISTS users_username_lower_unique ON users (LOWER(username))`).catch(() => {});
+      await db.query(`CREATE UNIQUE INDEX IF NOT EXISTS users_email_lower_unique ON users (LOWER(email)) WHERE email IS NOT NULL`).catch(() => {});
+    })().catch((err) => {
+      usersTableReady = null;
+      throw err;
+    });
+  }
+  return usersTableReady;
+}
+
+export async function hashPassword(plain: string): Promise<string> {
+  const salt = randomBytes(16).toString("hex");
+  const buf = await scrypt(plain, salt, 64);
+  return `${salt}:${buf.toString("hex")}`;
+}
+
+export async function verifyPassword(plain: string, stored: string): Promise<boolean> {
+  try {
+    const [salt, hashHex] = stored.split(":");
+    if (!salt || !hashHex) return false;
+    const hashBuf = Buffer.from(hashHex, "hex");
+    const testBuf = await scrypt(plain, salt, hashBuf.length);
+    return hashBuf.length === testBuf.length && timingSafeEqual(hashBuf, testBuf);
+  } catch {
+    return false;
+  }
+}
+
+function rowToPublicUser(row: any): PublicUser {
+  return {
+    id: row.id,
+    username: row.username,
+    firstName: row.first_name ?? null,
+    lastName: row.last_name ?? null,
+    email: row.email ?? "",
+  };
+}
+
+export async function findUserByUsernameOrEmail(identifier: string): Promise<{ row: any } | null> {
+  await ensureUsersTable();
+  const id = identifier.trim().toLowerCase();
+  const result = await getPool().query(
+    `SELECT id, first_name, last_name, username, email, password FROM users
+     WHERE LOWER(username) = $1 OR LOWER(email) = $1 LIMIT 1`,
+    [id]
+  );
+  return result.rows[0] ? { row: result.rows[0] } : null;
+}
+
+export async function createUserAccount(input: {
+  firstName: string; lastName: string; username: string; email: string; password: string;
+}): Promise<PublicUser> {
+  await ensureUsersTable();
+  const hashed = await hashPassword(input.password);
+  const result = await getPool().query(
+    `INSERT INTO users (first_name, last_name, username, email, password)
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING id, first_name, last_name, username, email`,
+    [input.firstName, input.lastName, input.username, input.email, hashed]
+  );
+  return rowToPublicUser(result.rows[0]);
+}
+
+export async function loginUserAccount(identifier: string, password: string): Promise<PublicUser | null> {
+  const found = await findUserByUsernameOrEmail(identifier);
+  if (!found) return null;
+  const ok = await verifyPassword(password, found.row.password);
+  if (!ok) return null;
+  return rowToPublicUser(found.row);
 }

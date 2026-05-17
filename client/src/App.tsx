@@ -67,6 +67,9 @@ const AIPromptGenerator = lazy(() => import("@/pages/AIPromptGenerator"));
 const AIImageGenerator = lazy(() => import("@/pages/AIImageGenerator"));
 const PromptsGallery = lazy(() => import("@/pages/PromptsGallery"));
 const PromptDetail = lazy(() => import("@/pages/PromptDetail"));
+const Login = lazy(() => import("@/pages/Login"));
+const Signup = lazy(() => import("@/pages/Signup"));
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
 
 function Router() {
   return (
@@ -124,6 +127,9 @@ function Router() {
         <Route path="/ai-image-generator" component={AIImageGenerator} />
         <Route path="/prompts" component={PromptsGallery} />
         <Route path="/prompt/:id" component={PromptDetail} />
+        <Route path="/login" component={Login} />
+        <Route path="/signup" component={Signup} />
+        <Route path="/dashboard" component={Dashboard} />
         <Route path="/privacy-policy" component={PrivacyPolicy} />
         <Route path="/disclaimer" component={Disclaimer} />
         <Route path="/terms" component={TermsOfUse} />
@@ -136,9 +142,13 @@ function Router() {
 
 function AppShell() {
   const [location] = useLocation();
-  const isAdmin = location.startsWith("/admin");
+  const isStandalone =
+    location.startsWith("/admin") ||
+    location === "/login" ||
+    location === "/signup" ||
+    location === "/dashboard";
 
-  if (isAdmin) {
+  if (isStandalone) {
     return (
       <>
         <Router />

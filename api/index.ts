@@ -2,6 +2,11 @@ import express, { type Request, type Response, type NextFunction } from "express
 import jwt from "jsonwebtoken";
 import OpenAI from "openai";
 import { Pool } from "pg";
+import { randomBytes, scrypt as scryptCb, timingSafeEqual } from "crypto";
+import { promisify } from "util";
+import { signupUserSchema, loginUserSchema } from "../shared/schema";
+
+const scrypt = promisify(scryptCb) as (password: string, salt: string, keylen: number) => Promise<Buffer>;
 
 const app = express();
 
@@ -141,6 +146,106 @@ app.post("/api/login", (req, res) => {
     res.json({ token });
   } catch {
     res.status(500).json({ error: "Failed to generate token" });
+  }
+});
+
+// ── User signup / login ───────────────────────────────────────────────────────
+
+let _usersTableReady: Promise<void> | null = null;
+function ensureUsersTable(): Promise<void> {
+  if (!_usersTableReady) {
+    _usersTableReady = (async () => {
+      const db = getPool();
+      await db.query(
+        `CREATE TABLE IF NOT EXISTS users (
+           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+           username TEXT NOT NULL UNIQUE,
+           password TEXT NOT NULL
+         )`
+      );
+      await db.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS first_name TEXT`);
+      await db.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS last_name TEXT`);
+      await db.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS email TEXT`);
+      await db.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMP NOT NULL DEFAULT NOW()`);
+      await db.query(`CREATE UNIQUE INDEX IF NOT EXISTS users_username_lower_unique ON users (LOWER(username))`).catch(() => {});
+      await db.query(`CREATE UNIQUE INDEX IF NOT EXISTS users_email_lower_unique ON users (LOWER(email)) WHERE email IS NOT NULL`).catch(() => {});
+    })().catch((err) => { _usersTableReady = null; throw err; });
+  }
+  return _usersTableReady;
+}
+
+async function hashPasswordApi(plain: string): Promise<string> {
+  const salt = randomBytes(16).toString("hex");
+  const buf = await scrypt(plain, salt, 64);
+  return `${salt}:${buf.toString("hex")}`;
+}
+async function verifyPasswordApi(plain: string, stored: string): Promise<boolean> {
+  try {
+    const [salt, hashHex] = stored.split(":");
+    if (!salt || !hashHex) return false;
+    const hashBuf = Buffer.from(hashHex, "hex");
+    const testBuf = await scrypt(plain, salt, hashBuf.length);
+    return hashBuf.length === testBuf.length && timingSafeEqual(hashBuf, testBuf);
+  } catch { return false; }
+}
+function rowToPublicUser(row: any) {
+  return { id: row.id, username: row.username, firstName: row.first_name ?? null, lastName: row.last_name ?? null, email: row.email ?? "" };
+}
+
+app.post("/api/auth/signup", async (req, res) => {
+  try {
+    const parsed = signupUserSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ success: false, message: parsed.error.issues[0]?.message || "Invalid input" });
+    }
+    await ensureUsersTable();
+    const db = getPool();
+    const id = parsed.data.username.toLowerCase();
+    const existing = await db.query(
+      `SELECT 1 FROM users WHERE LOWER(username) = $1 OR LOWER(email) = $2 LIMIT 1`,
+      [id, parsed.data.email.toLowerCase()]
+    );
+    if (existing.rows.length > 0) {
+      return res.status(409).json({ success: false, message: "Username or email already exists" });
+    }
+    const hashed = await hashPasswordApi(parsed.data.password);
+    const result = await db.query(
+      `INSERT INTO users (first_name, last_name, username, email, password)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING id, first_name, last_name, username, email`,
+      [parsed.data.firstName, parsed.data.lastName, parsed.data.username, parsed.data.email, hashed]
+    );
+    res.status(201).json({ success: true, message: "Account created successfully!", user: rowToPublicUser(result.rows[0]) });
+  } catch (err: any) {
+    console.error("signup error:", err?.message || err);
+    const msg = String(err?.message || "");
+    const code = err?.code;
+    if (code === "23505" || msg.includes("duplicate") || msg.includes("unique")) {
+      return res.status(409).json({ success: false, message: "Username or email already exists" });
+    }
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+app.post("/api/auth/login", async (req, res) => {
+  try {
+    const parsed = loginUserSchema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ success: false, message: "Invalid input" });
+    await ensureUsersTable();
+    const id = parsed.data.username.trim().toLowerCase();
+    const result = await getPool().query(
+      `SELECT id, first_name, last_name, username, email, password FROM users
+       WHERE LOWER(username) = $1 OR LOWER(email) = $1 LIMIT 1`,
+      [id]
+    );
+    const row = result.rows[0];
+    if (!row || !(await verifyPasswordApi(parsed.data.password, row.password))) {
+      return res.status(401).json({ success: false, message: "Invalid username or password" });
+    }
+    res.json({ success: true, user: rowToPublicUser(row) });
+  } catch (err: any) {
+    console.error("user login error:", err?.message || err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 

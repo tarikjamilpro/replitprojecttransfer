@@ -136,6 +136,18 @@ server/
 - `/bio-link-builder` - Bio Link Builder tool
 - `/holiday-calendar` - Social Media Holiday Calendar tool
 - `/ai-image-generator` - Wan AI Image Generator tool (Puter.js, client-side)
+- `/login` - User Sign In page (purple theme, password show/hide, redirects to /dashboard)
+- `/signup` - User Sign Up page (firstName, lastName, username, email, password)
+- `/dashboard` - Authenticated user dashboard (reads `localStorage.user`, redirects to /login if missing, logout button)
+
+### User Authentication
+Separate from admin auth. User accounts are stored in the `users` table (auto-created on first request via `ensureUsersTable()` with backward-compatible `ALTER TABLE ADD COLUMN IF NOT EXISTS`). Passwords are hashed with Node's built-in `crypto.scrypt` (format `salt:hash`). Session is stored in `localStorage["user"]` as a PublicUser object (no password).
+
+API endpoints:
+- `POST /api/auth/signup` — create account, returns `{success, user}`
+- `POST /api/auth/login` — authenticate by username OR email, returns `{success, user}`
+
+Existing admin `POST /api/login` (ADMIN_PASSWORD + JWT) is unchanged.
 - `/prompts` - Prompt Preview Gallery (responsive masonry grid, public)
 - `/prompt/:id` - Single prompt detail page with 3 ad slots (top header, below image, sidebar) and "Copy Exact Prompt from MeiGen" CTA
 

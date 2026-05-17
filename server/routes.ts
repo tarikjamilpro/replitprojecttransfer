@@ -455,6 +455,50 @@ Rules:
     }
   });
 
+  // ── User signup / login ───────────────────────────────────────────────────
+  app.post("/api/auth/signup", async (req, res) => {
+    try {
+      const { signupUserSchema } = await import("@shared/schema");
+      const parsed = signupUserSchema.safeParse(req.body);
+      if (!parsed.success) {
+        const first = parsed.error.issues[0];
+        return res.status(400).json({ success: false, message: first?.message || "Invalid input" });
+      }
+      const { createUserAccount, findUserByUsernameOrEmail } = await import("./db");
+      const existsByUsername = await findUserByUsernameOrEmail(parsed.data.username);
+      if (existsByUsername) return res.status(409).json({ success: false, message: "Username already taken" });
+      const existsByEmail = await findUserByUsernameOrEmail(parsed.data.email);
+      if (existsByEmail) return res.status(409).json({ success: false, message: "Email already registered" });
+      const user = await createUserAccount(parsed.data);
+      res.status(201).json({ success: true, message: "Account created successfully!", user });
+    } catch (err: any) {
+      console.error("signup error:", err?.message || err);
+      const msg = String(err?.message || "");
+      const code = err?.code;
+      if (code === "23505" || msg.includes("duplicate") || msg.includes("unique")) {
+        return res.status(409).json({ success: false, message: "Username or email already exists" });
+      }
+      res.status(500).json({ success: false, message: "Server error" });
+    }
+  });
+
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { loginUserSchema } = await import("@shared/schema");
+      const parsed = loginUserSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ success: false, message: "Invalid input" });
+      }
+      const { loginUserAccount } = await import("./db");
+      const user = await loginUserAccount(parsed.data.username, parsed.data.password);
+      if (!user) return res.status(401).json({ success: false, message: "Invalid username or password" });
+      res.json({ success: true, user });
+    } catch (err: any) {
+      console.error("user login error:", err?.message || err);
+      res.status(500).json({ success: false, message: "Server error" });
+    }
+  });
+
   app.get("/api/ads", async (_req, res) => {
     try {
       const config = await readAdsConfig();
