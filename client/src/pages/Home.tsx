@@ -41,6 +41,7 @@ import {
   SpellCheck,
   Wand2,
   BarChart3,
+  Link2,
   Tag,
   Zap,
   Smartphone,
@@ -96,6 +97,13 @@ const textTools = [
     icon: BarChart3,
     path: "/keyword-density-checker",
     color: "bg-violet-500 dark:bg-violet-600",
+  },
+  {
+    name: "Slug Generator Pro",
+    description: "Generate URL-friendly slugs in 5 formats with real-time preview and history.",
+    icon: Link2,
+    path: "/slug-generator-pro",
+    color: "bg-purple-500 dark:bg-purple-600",
   },
   {
     name: "AI Humanizer",

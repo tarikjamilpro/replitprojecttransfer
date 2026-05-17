@@ -5,7 +5,9 @@ import {
   FileJson, Tags, Bot, PenTool, Clock, Percent, Hash, Shield,
   FileImage, Files, Briefcase, Dices, Languages, Sparkles, ShieldCheck,
   CalendarDays,
-  Receipt
+  Receipt,
+  BarChart3,
+  Link2
 } from "lucide-react";
 
 export type ToolCategory = 
@@ -372,6 +374,16 @@ export const toolsData: ToolData[] = [
     icon: "Dices",
   },
   {
+    id: "slug-generator-pro",
+    path: "/slug-generator-pro",
+    name: "Slug Generator Pro",
+    description: "Generate URL slugs in 5 formats",
+    seoTitle: "Free Slug Generator Pro - URL Slug Maker in 5 Formats",
+    seoDescription: "Generate SEO-friendly URL slugs in kebab-case, snake_case, camelCase, PascalCase & UPPER_SNAKE_CASE. Real-time preview, advanced options, and slug history.",
+    category: "Text Tools",
+    icon: "Link2",
+  },
+  {
     id: "keyword-density-checker",
     path: "/keyword-density-checker",
     name: "Keyword Density Checker",
@@ -573,4 +585,6 @@ export const iconMap: Record<string, any> = {
   ShieldCheck,
   CalendarDays,
   Receipt,
+  BarChart3,
+  Link2,
 };

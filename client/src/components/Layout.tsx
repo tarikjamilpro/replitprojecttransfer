@@ -21,6 +21,7 @@ const toolCategories = {
     { name: "AI Hashtag Generator", path: "/ai-hashtag-generator" },
     { name: "AI Content Generator", path: "/ai-content-generator" },
     { name: "Keyword Density Checker", path: "/keyword-density-checker" },
+    { name: "Slug Generator Pro", path: "/slug-generator-pro" },
   ],
   "Image Tools": [
     { name: "Image Compressor", path: "/image-compressor" },
