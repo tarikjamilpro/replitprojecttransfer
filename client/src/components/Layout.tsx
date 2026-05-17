@@ -38,6 +38,7 @@ const toolCategories = {
     { name: "JSON Formatter", path: "/json-formatter" },
     { name: "Meta Tag Generator", path: "/meta-tag-generator" },
     { name: "Meta Tags + JSON-LD Generator", path: "/meta-tags-json-ld-generator" },
+    { name: "Open Graph Generator", path: "/open-graph-generator" },
     { name: "Robots.txt Generator", path: "/robots-txt-generator" },
     { name: "MD5 Generator", path: "/md5-generator" },
     { name: "Password Generator", path: "/password-generator" },

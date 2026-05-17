@@ -42,6 +42,7 @@ import {
   Wand2,
   BarChart3,
   Link2,
+  Share2,
   Tag,
   Zap,
   Smartphone,
@@ -111,6 +112,13 @@ const textTools = [
     icon: Tags,
     path: "/meta-tags-json-ld-generator",
     color: "bg-violet-500 dark:bg-violet-600",
+  },
+  {
+    name: "Open Graph Generator Pro",
+    description: "Generate Open Graph & Twitter card tags with live Facebook, Twitter & LinkedIn previews.",
+    icon: Share2,
+    path: "/open-graph-generator",
+    color: "bg-purple-500 dark:bg-purple-600",
   },
   {
     name: "AI Humanizer",

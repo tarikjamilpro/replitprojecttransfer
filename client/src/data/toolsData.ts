@@ -7,7 +7,8 @@ import {
   CalendarDays,
   Receipt,
   BarChart3,
-  Link2
+  Link2,
+  Share2
 } from "lucide-react";
 
 export type ToolCategory = 
@@ -374,6 +375,16 @@ export const toolsData: ToolData[] = [
     icon: "Dices",
   },
   {
+    id: "open-graph-generator",
+    path: "/open-graph-generator",
+    name: "Open Graph Generator Pro",
+    description: "Generate OG & Twitter card tags",
+    seoTitle: "Free Open Graph Generator Pro - OG & Twitter Card Tags",
+    seoDescription: "Generate Open Graph and Twitter Card meta tags with real-time output and live Facebook, Twitter, and LinkedIn previews. Free, no signup needed.",
+    category: "Developer Tools",
+    icon: "Share2",
+  },
+  {
     id: "meta-tags-json-ld-generator",
     path: "/meta-tags-json-ld-generator",
     name: "Meta Tags + JSON-LD Generator",
@@ -597,4 +608,5 @@ export const iconMap: Record<string, any> = {
   Receipt,
   BarChart3,
   Link2,
+  Share2,
 };

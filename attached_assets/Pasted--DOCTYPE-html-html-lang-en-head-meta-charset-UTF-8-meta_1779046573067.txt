@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Graph Generator Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-white text-slate-800">
+    <div class="max-w-5xl mx-auto px-6 py-10">
+        
+        <div class="flex flex-col items-center text-center mb-10">
+            <div class="w-14 h-14 bg-violet-100 rounded-2xl flex items-center justify-center mb-4">
+                <i class="fas fa-share-alt text-violet-600 text-3xl"></i>
+            </div>
+            <h1 class="text-4xl font-semibold tracking-tight">Open Graph Generator <span class="text-violet-600">Pro</span></h1>
+            <p class="text-slate-500 mt-2">Generate OG tags for social media sharing</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Form -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-8">
+                <h3 class="font-semibold mb-5">Details</h3>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="text-sm text-slate-600">Title</label>
+                        <input type="text" id="ogTitle" oninput="generateOG()" class="w-full border border-slate-300 rounded-2xl px-4 py-2.5" placeholder="Page title">
+                    </div>
+                    <div>
+                        <label class="text-sm text-slate-600">Description</label>
+                        <textarea id="ogDescription" rows="3" oninput="generateOG()" class="w-full border border-slate-300 rounded-2xl px-4 py-2.5" placeholder="Description"></textarea>
+                    </div>
+                    <div>
+                        <label class="text-sm text-slate-600">URL</label>
+                        <input type="url" id="ogUrl" oninput="generateOG()" class="w-full border border-slate-300 rounded-2xl px-4 py-2.5" placeholder="https://...">
+                    </div>
+                    <div>
+                        <label class="text-sm text-slate-600">Image URL</label>
+                        <input type="url" id="ogImage" oninput="generateOG()" class="w-full border border-slate-300 rounded-2xl px-4 py-2.5" placeholder="https://...image.jpg">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-sm text-slate-600">Type</label>
+                            <select id="ogType" oninput="generateOG()" class="w-full border border-slate-300 rounded-2xl px-4 py-2.5 bg-white">
+                                <option value="website">website</option>
+                                <option value="article">article</option>
+                                <option value="product">product</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-sm text-slate-600">Site Name</label>
+                            <input type="text" id="siteName" oninput="generateOG()" class="w-full border border-slate-300 rounded-2xl px-4 py-2.5" placeholder="Your Site">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-sm text-slate-600">Twitter Card Type</label>
+                        <select id="twitterCard" oninput="generateOG()" class="w-full border border-slate-300 rounded-2xl px-4 py-2.5 bg-white">
+                            <option value="summary">summary</option>
+                            <option value="summary_large_image" selected>summary_large_image</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generated Code + Preview -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-8">
+                <div class="flex justify-between mb-4">
+                    <h3 class="font-semibold">Generated Code</h3>
+                    <button onclick="copyCode()" class="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-sm rounded-2xl flex items-center gap-x-2">
+                        <i class="fas fa-copy"></i> <span>Copy</span>
+                    </button>
+                </div>
+
+                <pre id="codeOutput" class="bg-slate-900 text-emerald-300 p-5 rounded-2xl text-xs overflow-auto" style="min-height: 300px; white-space: pre-wrap;"></pre>
+
+                <div class="mt-6">
+                    <h4 class="text-sm font-medium mb-2">Preview</h4>
+                    <div id="preview" class="border border-slate-200 rounded-2xl p-4 text-sm bg-white"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateOG() {
+            const title = document.getElementById('ogTitle').value || 'Page Title';
+            const description = document.getElementById('ogDescription').value || 'Description';
+            const url = document.getElementById('ogUrl').value || 'https://yoursite.com';
+            const image = document.getElementById('ogImage').value;
+            const type = document.getElementById('ogType').value;
+            const siteName = document.getElementById('siteName').value;
+            const twitterCard = document.getElementById('twitterCard').value;
+
+            let code = `<!-- Open Graph -->\n`;
+            code += `<meta property="og:type" content="${type}">\n`;
+            code += `<meta property="og:title" content="${title}">\n`;
+            code += `<meta property="og:description" content="${description}">\n`;
+            code += `<meta property="og:url" content="${url}">\n`;
+            if (image) code += `<meta property="og:image" content="${image}">\n`;
+            if (siteName) code += `<meta property="og:site_name" content="${siteName}">\n\n`;
+
+            code += `<!-- Twitter -->\n`;
+            code += `<meta name="twitter:card" content="${twitterCard}">\n`;
+            code += `<meta name="twitter:title" content="${title}">\n`;
+            code += `<meta name="twitter:description" content="${description}">\n`;
+            if (image) code += `<meta name="twitter:image" content="${image}">\n`;
+
+            document.getElementById('codeOutput').textContent = code;
+
+            // Live Preview
+            const preview = document.getElementById('preview');
+            preview.innerHTML = `
+                <div class="flex gap-4">
+                    ${image ? `<img src="${image}" class="w-20 h-20 object-cover rounded">` : ''}
+                    <div>
+                        <div class="font-semibold">${title}</div>
+                        <div class="text-sm text-slate-500">${description}</div>
+                        <div class="text-xs text-emerald-600 mt-1">${url}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function copyCode() {
+            const code = document.getElementById('codeOutput').textContent;
+            navigator.clipboard.writeText(code).then(() => alert("Copied to clipboard!"));
+        }
+
+        ['ogTitle','ogDescription','ogUrl','ogImage','ogType','siteName','twitterCard'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', generateOG);
+        });
+
+        window.onload = generateOG;
+    </script>
+</body>
+</html>
