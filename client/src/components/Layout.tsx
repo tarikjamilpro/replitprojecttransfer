@@ -20,6 +20,7 @@ const toolCategories = {
     { name: "AI Post Generator", path: "/ai-post-generator" },
     { name: "AI Hashtag Generator", path: "/ai-hashtag-generator" },
     { name: "AI Content Generator", path: "/ai-content-generator" },
+    { name: "Keyword Density Checker", path: "/keyword-density-checker" },
   ],
   "Image Tools": [
     { name: "Image Compressor", path: "/image-compressor" },

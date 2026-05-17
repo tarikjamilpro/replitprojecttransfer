@@ -91,6 +91,13 @@ const textTools = [
     color: "bg-emerald-500 dark:bg-emerald-600",
   },
   {
+    name: "Keyword Density Checker",
+    description: "Analyze keyword frequency and density % in your content for better SEO.",
+    icon: BarChart3,
+    path: "/keyword-density-checker",
+    color: "bg-violet-500 dark:bg-violet-600",
+  },
+  {
     name: "AI Humanizer",
     description: "Transform AI-generated text into natural, human-like content instantly.",
     icon: Wand2,

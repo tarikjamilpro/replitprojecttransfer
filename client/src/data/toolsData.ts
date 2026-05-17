@@ -372,6 +372,16 @@ export const toolsData: ToolData[] = [
     icon: "Dices",
   },
   {
+    id: "keyword-density-checker",
+    path: "/keyword-density-checker",
+    name: "Keyword Density Checker",
+    description: "Analyze keyword frequency and density",
+    seoTitle: "Free Keyword Density Checker - SEO Content Analyzer",
+    seoDescription: "Analyze keyword density in your content with our free SEO tool. See word counts, top keywords, and density percentages. Ignore common stop words for better insights.",
+    category: "Text Tools",
+    icon: "BarChart3",
+  },
+  {
     id: "grammar-checker",
     path: "/grammar-checker",
     name: "Grammar Checker",

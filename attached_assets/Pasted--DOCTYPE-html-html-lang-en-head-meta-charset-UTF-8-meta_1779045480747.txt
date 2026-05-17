@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyword Density Checker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .font-display { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-white text-slate-800">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        
+        <!-- Header -->
+        <div class="flex flex-col items-center text-center mb-10">
+            <div class="w-14 h-14 bg-violet-100 rounded-2xl flex items-center justify-center mb-4">
+                <i class="fas fa-chart-bar text-violet-600 text-3xl"></i>
+            </div>
+            <h1 class="text-4xl font-semibold tracking-tight">Keyword Density Checker</h1>
+            <p class="text-slate-500 mt-2">Analyze keyword frequency in your content</p>
+        </div>
+
+        <!-- Main Card -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-8">
+            
+            <!-- Textarea -->
+            <div class="mb-6">
+                <textarea id="contentInput" rows="8"
+                    class="w-full border border-slate-300 focus:border-violet-500 focus:ring-1 focus:ring-violet-200 rounded-2xl px-5 py-4 text-base placeholder:text-slate-400 resize-y"
+                    placeholder="Paste your content here to analyze keyword density..."></textarea>
+            </div>
+
+            <!-- Analyze Button -->
+            <button onclick="analyzeText()"
+                class="w-full bg-violet-600 hover:bg-violet-700 transition-colors text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-x-3 text-lg">
+                <i class="fas fa-magic"></i>
+                <span>Analyze Keyword Density</span>
+            </button>
+
+            <!-- Stats -->
+            <div class="mt-8 grid grid-cols-3 gap-4">
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-center">
+                    <div id="wordCount" class="text-3xl font-semibold text-violet-600">0</div>
+                    <div class="text-xs tracking-wider text-slate-500 mt-1">WORDS</div>
+                </div>
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-center">
+                    <div id="charCount" class="text-3xl font-semibold text-violet-600">0</div>
+                    <div class="text-xs tracking-wider text-slate-500 mt-1">CHARACTERS</div>
+                </div>
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-center">
+                    <div id="sentenceCount" class="text-3xl font-semibold text-violet-600">0</div>
+                    <div class="text-xs tracking-wider text-slate-500 mt-1">SENTENCES</div>
+                </div>
+            </div>
+
+            <!-- Keyword Analysis -->
+            <div id="analysisSection" class="mt-8 hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="font-semibold text-lg">Top Keywords</h3>
+                        <p class="text-sm text-slate-500">Most frequent words in your content</p>
+                    </div>
+                    <label class="flex items-center gap-x-2 text-sm cursor-pointer">
+                        <input type="checkbox" id="ignoreStopWords" checked class="accent-violet-600">
+                        <span class="text-slate-600">Ignore common words</span>
+                    </label>
+                </div>
+
+                <div class="border border-slate-200 rounded-2xl overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-slate-50">
+                            <tr class="text-left text-xs text-slate-500">
+                                <th class="px-6 py-3 font-medium">Keyword</th>
+                                <th class="px-6 py-3 font-medium text-center">Count</th>
+                                <th class="px-6 py-3 font-medium text-center">Density</th>
+                            </tr>
+                        </thead>
+                        <tbody id="keywordTable" class="text-sm divide-y divide-slate-100">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const stopWords = new Set([
+            'the','and','for','are','but','not','you','all','can','had','her','was','one',
+            'our','out','day','get','has','him','his','how','man','new','now','old','see',
+            'two','way','who','boy','did','its','let','put','say','she','too','use','that',
+            'with','this','have','from','they','will','would','there','their','what','about',
+            'which','when','make','like','time','just','know','take','into','year','your',
+            'good','some','could','them','than','only','want','look','come','also','back',
+            'after','first','well','even','because','these','most','people','other','many'
+        ]);
+
+        function analyzeText() {
+            const text = document.getElementById('contentInput').value.trim();
+            if (!text) {
+                alert("Please paste some content to analyze.");
+                return;
+            }
+
+            // Stats
+            const words = text.toLowerCase().match(/\b[a-zA-Z']+\b/g) || [];
+            const characters = text.replace(/\s/g, '').length;
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+
+            document.getElementById('wordCount').textContent = words.length;
+            document.getElementById('charCount').textContent = characters;
+            document.getElementById('sentenceCount').textContent = sentences;
+
+            // Keyword Analysis
+            const ignoreStopWords = document.getElementById('ignoreStopWords').checked;
+            const wordMap = new Map();
+
+            words.forEach(word => {
+                if (word.length < 3) return;
+                if (ignoreStopWords && stopWords.has(word)) return;
+                wordMap.set(word, (wordMap.get(word) || 0) + 1);
+            });
+
+            const sorted = Array.from(wordMap.entries())
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 15);
+
+            const tbody = document.getElementById('keywordTable');
+            tbody.innerHTML = '';
+
+            sorted.forEach(([keyword, count]) => {
+                const density = ((count / words.length) * 100).toFixed(2);
+                const row = document.createElement('tr');
+                row.className = 'keyword-row';
+                row.innerHTML = `
+                    <td class="px-6 py-3 font-medium capitalize">${keyword}</td>
+                    <td class="px-6 py-3 text-center font-mono">${count}</td>
+                    <td class="px-6 py-3 text-center"><span class="font-medium">${density}%</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('analysisSection').classList.remove('hidden');
+        }
+
+        // Real-time reset
+        document.getElementById('contentInput').addEventListener('input', function() {
+            if (this.value.trim() === '') {
+                document.getElementById('analysisSection').classList.add('hidden');
+                document.getElementById('wordCount').textContent = '0';
+                document.getElementById('charCount').textContent = '0';
+                document.getElementById('sentenceCount').textContent = '0';
+            }
+        });
+
+        console.log('%c[Keyword Density Checker] Tool ready', 'color:#64748b');
+    </script>
+</body>
+</html>

@@ -67,6 +67,7 @@ const AIPromptGenerator = lazy(() => import("@/pages/AIPromptGenerator"));
 const AIImageGenerator = lazy(() => import("@/pages/AIImageGenerator"));
 const PromptsGallery = lazy(() => import("@/pages/PromptsGallery"));
 const PromptDetail = lazy(() => import("@/pages/PromptDetail"));
+const KeywordDensityChecker = lazy(() => import("@/pages/KeywordDensityChecker"));
 const Login = lazy(() => import("@/pages/Login"));
 const Signup = lazy(() => import("@/pages/Signup"));
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
@@ -125,6 +126,7 @@ function Router() {
         <Route path="/invoice-generator" component={InvoiceGenerator} />
         <Route path="/ai-prompt-generator" component={AIPromptGenerator} />
         <Route path="/ai-image-generator" component={AIImageGenerator} />
+        <Route path="/keyword-density-checker" component={KeywordDensityChecker} />
         <Route path="/prompts" component={PromptsGallery} />
         <Route path="/prompt/:id" component={PromptDetail} />
         <Route path="/login" component={Login} />
