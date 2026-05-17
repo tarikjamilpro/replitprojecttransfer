@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta Tags + JSON-LD Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-white text-slate-800">
+    <div class="max-w-6xl mx-auto px-6 py-10">
+        
+        <div class="flex flex-col items-center text-center mb-10">
+            <div class="w-14 h-14 bg-violet-100 rounded-2xl flex items-center justify-center mb-4">
+                <i class="fas fa-tags text-violet-600 text-3xl"></i>
+            </div>
+            <h1 class="text-4xl font-semibold tracking-tight">Meta Tags + JSON-LD Generator</h1>
+            <p class="text-slate-500 mt-2">Complete SEO meta tags + Structured Data</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Left: Inputs -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-8">
+                <h3 class="font-semibold mb-5">Page Details</h3>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-sm text-slate-600">Title</label>
+                        <input type="text" id="title" oninput="generateAll()" class="w-full border border-slate-300 rounded-2xl px-4 py-2.5" placeholder="Page Title">
+                    </div>
+                    <div>
+                        <label class="text-sm text-slate-600">Description</label>
+                        <textarea id="description" rows="3" oninput="generateAll()" class="w-full border border-slate-300 rounded-2xl px-4 py-2.5" placeholder="Page description"></textarea>
+                    </div>
+                    <div>
+                        <label class="text-sm text-slate-600">Keywords</label>
+                        <input type="text" id="keywords" oninput="generateAll()" class="w-full border border-slate-300 rounded-2xl px-4 py-2.5" placeholder="seo, meta tags, generator">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-sm text-slate-600">Author</label>
+                            <input type="text" id="author" oninput="generateAll()" class="w-full border border-slate-300 rounded-2xl px-4 py-2.5">
+                        </div>
+                        <div>
+                            <label class="text-sm text-slate-600">Canonical URL</label>
+                            <input type="url" id="canonical" oninput="generateAll()" class="w-full border border-slate-300 rounded-2xl px-4 py-2.5">
+                        </div>
+                    </div>
+
+                    <!-- JSON-LD Type -->
+                    <div>
+                        <label class="text-sm text-slate-600 block mb-1.5">JSON-LD Schema Type</label>
+                        <select id="schemaType" onchange="toggleSchemaFields(); generateAll()" class="w-full border border-slate-300 rounded-2xl px-4 py-2.5 bg-white">
+                            <option value="">None</option>
+                            <option value="Article">Article</option>
+                            <option value="Product">Product</option>
+                            <option value="WebSite">Website</option>
+                        </select>
+                    </div>
+
+                    <!-- Dynamic JSON-LD Fields -->
+                    <div id="schemaFields" class="hidden space-y-4 border-t pt-4">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Output -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-8">
+                <div class="flex justify-between mb-4">
+                    <h3 class="font-semibold">Generated Code</h3>
+                    <button onclick="copyAll()" class="text-sm px-4 py-2 bg-violet-600 text-white rounded-2xl flex items-center gap-x-2">
+                        <i class="fas fa-copy"></i> <span>Copy All</span>
+                    </button>
+                </div>
+
+                <pre id="output" class="bg-slate-900 text-emerald-300 p-5 rounded-2xl text-xs overflow-auto" style="min-height: 380px; white-space: pre-wrap;"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSchemaFields() {
+            const type = document.getElementById('schemaType').value;
+            const container = document.getElementById('schemaFields');
+            container.innerHTML = '';
+            container.classList.remove('hidden');
+
+            if (type === 'Article') {
+                container.innerHTML = `
+                    <div><label class="text-sm">Date Published</label><input type="date" id="datePublished" class="w-full border rounded-2xl px-4 py-2"></div>
+                    <div><label class="text-sm">Image URL</label><input type="url" id="articleImage" class="w-full border rounded-2xl px-4 py-2"></div>
+                `;
+            } 
+            else if (type === 'Product') {
+                container.innerHTML = `
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="text-sm">Price</label><input type="number" id="price" class="w-full border rounded-2xl px-4 py-2"></div>
+                        <div><label class="text-sm">Currency</label><input type="text" id="currency" value="USD" class="w-full border rounded-2xl px-4 py-2"></div>
+                    </div>
+                    <div><label class="text-sm">Brand</label><input type="text" id="brand" class="w-full border rounded-2xl px-4 py-2"></div>
+                `;
+            } 
+            else if (type === 'WebSite') {
+                container.innerHTML = `<p class="text-sm text-slate-500">Basic Website schema will be generated.</p>`;
+            } 
+            else {
+                container.classList.add('hidden');
+            }
+        }
+
+        function generateAll() {
+            const title = document.getElementById('title').value || 'Page Title';
+            const description = document.getElementById('description').value || 'Page description';
+            const keywords = document.getElementById('keywords').value;
+            const author = document.getElementById('author').value;
+            const canonical = document.getElementById('canonical').value;
+            const schemaType = document.getElementById('schemaType').value;
+
+            let output = `<!-- Primary Meta Tags -->\n`;
+            output += `<title>${title}</title>\n`;
+            output += `<meta name="description" content="${description}">\n`;
+            if (keywords) output += `<meta name="keywords" content="${keywords}">\n`;
+            if (canonical) output += `<link rel="canonical" href="${canonical}">\n\n`;
+
+            output += `<!-- Open Graph -->\n`;
+            output += `<meta property="og:title" content="${title}">\n`;
+            output += `<meta property="og:description" content="${description}">\n`;
+            if (canonical) output += `<meta property="og:url" content="${canonical}">\n\n`;
+
+            output += `<!-- Twitter -->\n`;
+            output += `<meta name="twitter:card" content="summary_large_image">\n`;
+            output += `<meta name="twitter:title" content="${title}">\n`;
+            output += `<meta name="twitter:description" content="${description}">\n`;
+
+            // JSON-LD
+            if (schemaType) {
+                let jsonLD = {};
+                const base = {
+                    "@context": "https://schema.org",
+                    "@type": schemaType,
+                    "name": title,
+                    "description": description,
+                    "url": canonical || window.location.href
+                };
+
+                if (schemaType === "Article") {
+                    jsonLD = {
+                        ...base,
+                        "headline": title,
+                        "author": { "@type": "Person", "name": author || "Author Name" },
+                        "datePublished": document.getElementById('datePublished')?.value || new Date().toISOString(),
+                        "image": document.getElementById('articleImage')?.value || ""
+                    };
+                } 
+                else if (schemaType === "Product") {
+                    jsonLD = {
+                        ...base,
+                        "brand": { "@type": "Brand", "name": document.getElementById('brand')?.value || "Brand" },
+                        "offers": {
+                            "@type": "Offer",
+                            "priceCurrency": document.getElementById('currency')?.value || "USD",
+                            "price": document.getElementById('price')?.value || "0"
+                        }
+                    };
+                }
+
+                output += `\n<!-- JSON-LD Structured Data -->\n`;
+                output += `<script type="application/ld+json">\n${JSON.stringify(jsonLD, null, 2)}\n<\/script>`;
+            }
+
+            document.getElementById('output').textContent = output;
+        }
+
+        function copyAll() {
+            const text = document.getElementById('output').textContent;
+            navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard!"));
+        }
+
+        // Auto update
+        window.onload = () => {
+            ['title','description','keywords','author','canonical','schemaType'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('input', generateAll);
+            });
+            generateAll();
+        };
+    </script>
+</body>
+</html>
