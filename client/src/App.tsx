@@ -69,6 +69,7 @@ const PromptsGallery = lazy(() => import("@/pages/PromptsGallery"));
 const PromptDetail = lazy(() => import("@/pages/PromptDetail"));
 const KeywordDensityChecker = lazy(() => import("@/pages/KeywordDensityChecker"));
 const SlugGeneratorPro = lazy(() => import("@/pages/SlugGeneratorPro"));
+const MetaTagsJsonLdGenerator = lazy(() => import("@/pages/MetaTagsJsonLdGenerator"));
 const Login = lazy(() => import("@/pages/Login"));
 const Signup = lazy(() => import("@/pages/Signup"));
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
@@ -129,6 +130,7 @@ function Router() {
         <Route path="/ai-image-generator" component={AIImageGenerator} />
         <Route path="/keyword-density-checker" component={KeywordDensityChecker} />
         <Route path="/slug-generator-pro" component={SlugGeneratorPro} />
+        <Route path="/meta-tags-json-ld-generator" component={MetaTagsJsonLdGenerator} />
         <Route path="/prompts" component={PromptsGallery} />
         <Route path="/prompt/:id" component={PromptDetail} />
         <Route path="/login" component={Login} />

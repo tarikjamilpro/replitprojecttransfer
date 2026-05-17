@@ -374,6 +374,16 @@ export const toolsData: ToolData[] = [
     icon: "Dices",
   },
   {
+    id: "meta-tags-json-ld-generator",
+    path: "/meta-tags-json-ld-generator",
+    name: "Meta Tags + JSON-LD Generator",
+    description: "Complete SEO meta tags with structured data",
+    seoTitle: "Free Meta Tags + JSON-LD Generator - SEO & Structured Data",
+    seoDescription: "Generate complete SEO meta tags (Primary, Open Graph, Twitter) plus JSON-LD structured data for Article, Product, and Website schemas with live Google, Facebook, and Twitter previews.",
+    category: "Developer Tools",
+    icon: "Tags",
+  },
+  {
     id: "slug-generator-pro",
     path: "/slug-generator-pro",
     name: "Slug Generator Pro",

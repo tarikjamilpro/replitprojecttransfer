@@ -106,6 +106,13 @@ const textTools = [
     color: "bg-purple-500 dark:bg-purple-600",
   },
   {
+    name: "Meta Tags + JSON-LD Generator",
+    description: "Generate full SEO meta tags + structured data with live Google, Facebook, Twitter previews.",
+    icon: Tags,
+    path: "/meta-tags-json-ld-generator",
+    color: "bg-violet-500 dark:bg-violet-600",
+  },
+  {
     name: "AI Humanizer",
     description: "Transform AI-generated text into natural, human-like content instantly.",
     icon: Wand2,
