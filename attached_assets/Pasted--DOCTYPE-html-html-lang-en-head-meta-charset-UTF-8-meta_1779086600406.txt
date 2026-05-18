@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Products | DigiBest Tools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <div class="flex justify-between items-center mb-10">
+            <div>
+                <h1 class="text-4xl font-bold">Digital Products</h1>
+                <p class="text-gray-600 mt-1">Premium digital tools & accounts</p>
+            </div>
+        </div>
+
+        <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Products loaded via JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        async function loadProducts() {
+            const res = await fetch('/api/store/products');
+            const products = await res.json();
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+
+            products.forEach(product => {
+                const isOutOfStock = product.stock_status === 'out_of_stock';
+                
+                const cardHTML = `
+                    <div class="bg-white border rounded-3xl overflow-hidden flex flex-col">
+                        <img src="${product.image_url || 'https://picsum.photos/id/1015/400/220'}" 
+                             class="w-full h-48 object-cover" alt="${product.title}">
+                        
+                        <div class="p-5 flex flex-col flex-1">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-semibold text-lg">${product.title}</h3>
+                                <span class="text-xs px-3 py-1 rounded-full font-medium 
+                                    ${isOutOfStock ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-600'}">
+                                    ${isOutOfStock ? 'Out of Stock' : 'In Stock'}
+                                </span>
+                            </div>
+                            
+                            <p class="text-gray-600 text-sm flex-1 mb-4">${product.short_description}</p>
+                            
+                            <div class="flex items-center justify-between mt-auto">
+                                <span class="text-2xl font-bold">$${product.price}</span>
+                                
+                                <button onclick="buyNow()"
+                                        class="px-6 py-2.5 rounded-2xl text-sm font-medium transition-all
+                                        ${isOutOfStock 
+                                            ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
+                                            : 'bg-purple-600 hover:bg-purple-700 text-white'}"
+                                        ${isOutOfStock ? 'disabled' : ''}>
+                                    Buy Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += cardHTML;
+            });
+        }
+
+        function buyNow() {
+            window.open('https://t.me/digibesttools', '_blank');
+        }
+
+        loadProducts();
+    </script>
+</body>
+</html>

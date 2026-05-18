@@ -370,6 +370,203 @@ app.delete("/api/prompts/:id", async (req, res) => {
   }
 });
 
+// ── Digital Products (Store) ─────────────────────────────────────────────────
+
+let _productsTableReady: Promise<void> | null = null;
+function ensureDigitalProductsTable(): Promise<void> {
+  if (!_productsTableReady) {
+    _productsTableReady = (async () => {
+      await getPool().query(
+        `CREATE TABLE IF NOT EXISTS digital_products (
+           id SERIAL PRIMARY KEY,
+           title VARCHAR(255) NOT NULL,
+           short_description TEXT,
+           price DECIMAL(10, 2) NOT NULL,
+           image_url TEXT,
+           stock_status VARCHAR(20) DEFAULT 'in_stock' CHECK (stock_status IN ('in_stock', 'out_of_stock')),
+           category VARCHAR(100),
+           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+         )`
+      );
+    })().catch((err) => { _productsTableReady = null; throw err; });
+  }
+  return _productsTableReady;
+}
+
+function rowToProduct(row: any) {
+  return {
+    id: row.id,
+    title: row.title,
+    shortDescription: row.short_description,
+    price: row.price,
+    imageUrl: row.image_url,
+    stockStatus: row.stock_status,
+    category: row.category,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+function validateProductInput(body: any, partial: boolean) {
+  const errors: string[] = [];
+  const out: any = {};
+  const req = (cond: boolean, msg: string) => { if (!cond) errors.push(msg); };
+
+  if (body?.title !== undefined) {
+    const v = String(body.title).trim();
+    req(v.length > 0 && v.length <= 255, "title must be 1-255 chars");
+    out.title = v;
+  } else if (!partial) errors.push("title is required");
+
+  if (body?.shortDescription !== undefined) {
+    const v = String(body.shortDescription).trim();
+    req(v.length <= 2000, "shortDescription too long");
+    out.shortDescription = v;
+  }
+
+  if (body?.price !== undefined) {
+    let num: number = NaN;
+    if (typeof body.price === "number") {
+      num = body.price;
+    } else if (typeof body.price === "string") {
+      const s = body.price.trim();
+      // strict numeric string: optional sign, digits, optional decimal
+      if (/^-?\d+(\.\d+)?$/.test(s)) num = Number(s);
+    }
+    req(Number.isFinite(num) && num >= 0 && num <= 999999.99, "price must be a number 0..999999.99");
+    out.price = num;
+  } else if (!partial) errors.push("price is required");
+
+  if (body?.imageUrl !== undefined) {
+    const v = String(body.imageUrl).trim();
+    if (v) {
+      try { new URL(v); out.imageUrl = v; }
+      catch { errors.push("imageUrl must be a valid URL"); }
+    } else { out.imageUrl = null; }
+  }
+
+  if (body?.stockStatus !== undefined) {
+    const v = String(body.stockStatus);
+    req(v === "in_stock" || v === "out_of_stock", "stockStatus invalid");
+    out.stockStatus = v;
+  } else if (!partial) {
+    out.stockStatus = "in_stock";
+  }
+
+  if (body?.category !== undefined) {
+    const v = String(body.category).trim();
+    req(v.length <= 100, "category too long");
+    out.category = v || null;
+  }
+
+  return errors.length ? { ok: false as const, errors } : { ok: true as const, data: out };
+}
+
+app.get("/api/store/products", async (_req, res) => {
+  try {
+    await ensureDigitalProductsTable();
+    const r = await getPool().query(
+      `SELECT id, title, short_description, price, image_url, stock_status, category, created_at, updated_at
+       FROM digital_products
+       ORDER BY (stock_status = 'in_stock') DESC, created_at DESC`
+    );
+    res.json(r.rows.map(rowToProduct));
+  } catch (err) {
+    console.error("GET /api/store/products error:", err);
+    res.status(500).json({ error: "Failed to load products" });
+  }
+});
+
+app.get("/api/store/admin/products", async (req, res) => {
+  if (!verifyAdminToken(req.headers.authorization)) return res.status(401).json({ error: "Unauthorized" });
+  try {
+    await ensureDigitalProductsTable();
+    const r = await getPool().query(
+      `SELECT id, title, short_description, price, image_url, stock_status, category, created_at, updated_at
+       FROM digital_products
+       ORDER BY (stock_status = 'in_stock') DESC, created_at DESC`
+    );
+    res.json(r.rows.map(rowToProduct));
+  } catch (err) {
+    console.error("GET /api/store/admin/products error:", err);
+    res.status(500).json({ error: "Failed to load products" });
+  }
+});
+
+app.post("/api/store/admin/products", async (req, res) => {
+  if (!verifyAdminToken(req.headers.authorization)) return res.status(401).json({ error: "Unauthorized" });
+  const v = validateProductInput(req.body, false);
+  if (!v.ok) return res.status(400).json({ error: "Invalid data", details: v.errors });
+  try {
+    await ensureDigitalProductsTable();
+    const r = await getPool().query(
+      `INSERT INTO digital_products (title, short_description, price, image_url, stock_status, category)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING id, title, short_description, price, image_url, stock_status, category, created_at, updated_at`,
+      [v.data.title, v.data.shortDescription ?? null, v.data.price, v.data.imageUrl ?? null, v.data.stockStatus, v.data.category ?? null]
+    );
+    res.status(201).json(rowToProduct(r.rows[0]));
+  } catch (err) {
+    console.error("POST /api/store/admin/products error:", err);
+    res.status(500).json({ error: "Failed to create product" });
+  }
+});
+
+app.patch("/api/store/admin/products/:id", async (req, res) => {
+  if (!verifyAdminToken(req.headers.authorization)) return res.status(401).json({ error: "Unauthorized" });
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ error: "Invalid id" });
+  const v = validateProductInput(req.body, true);
+  if (!v.ok) return res.status(400).json({ error: "Invalid data", details: v.errors });
+  try {
+    await ensureDigitalProductsTable();
+    const map: Record<string, string> = {
+      title: "title", shortDescription: "short_description", price: "price",
+      imageUrl: "image_url", stockStatus: "stock_status", category: "category",
+    };
+    const setClauses: string[] = []; const values: any[] = []; let i = 1;
+    for (const [k, col] of Object.entries(map)) {
+      if (v.data[k] !== undefined) { setClauses.push(`${col} = $${i++}`); values.push(v.data[k]); }
+    }
+    if (setClauses.length === 0) {
+      const cur = await getPool().query(
+        `SELECT id, title, short_description, price, image_url, stock_status, category, created_at, updated_at FROM digital_products WHERE id = $1`,
+        [id]
+      );
+      if (!cur.rows[0]) return res.status(404).json({ error: "Product not found" });
+      return res.json(rowToProduct(cur.rows[0]));
+    }
+    setClauses.push(`updated_at = CURRENT_TIMESTAMP`);
+    values.push(id);
+    const r = await getPool().query(
+      `UPDATE digital_products SET ${setClauses.join(", ")} WHERE id = $${i}
+       RETURNING id, title, short_description, price, image_url, stock_status, category, created_at, updated_at`,
+      values
+    );
+    if (!r.rows[0]) return res.status(404).json({ error: "Product not found" });
+    res.json(rowToProduct(r.rows[0]));
+  } catch (err) {
+    console.error("PATCH /api/store/admin/products/:id error:", err);
+    res.status(500).json({ error: "Failed to update product" });
+  }
+});
+
+app.delete("/api/store/admin/products/:id", async (req, res) => {
+  if (!verifyAdminToken(req.headers.authorization)) return res.status(401).json({ error: "Unauthorized" });
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ error: "Invalid id" });
+  try {
+    await ensureDigitalProductsTable();
+    const r = await getPool().query(`DELETE FROM digital_products WHERE id = $1`, [id]);
+    if ((r.rowCount ?? 0) === 0) return res.status(404).json({ error: "Product not found" });
+    res.json({ success: true });
+  } catch (err) {
+    console.error("DELETE /api/store/admin/products/:id error:", err);
+    res.status(500).json({ error: "Failed to delete product" });
+  }
+});
+
 // ── OpenRouter (single LLM provider for ALL AI calls) ────────────────────────
 
 const OPENROUTER_MODEL = "openrouter/auto";

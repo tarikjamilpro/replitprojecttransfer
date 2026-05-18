@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, serial, decimal } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -60,3 +60,44 @@ export const updateAiPromptSchema = insertAiPromptSchema.partial();
 export type InsertAiPrompt = z.infer<typeof insertAiPromptSchema>;
 export type UpdateAiPrompt = z.infer<typeof updateAiPromptSchema>;
 export type AiPrompt = typeof aiPrompts.$inferSelect;
+
+// ── Digital Products (Store) ────────────────────────────────────────────────
+
+export const digitalProducts = pgTable("digital_products", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  shortDescription: text("short_description"),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  imageUrl: text("image_url"),
+  stockStatus: varchar("stock_status", { length: 20 }).notNull().default("in_stock"),
+  category: varchar("category", { length: 100 }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const STOCK_STATUSES = ["in_stock", "out_of_stock"] as const;
+
+export const insertDigitalProductSchema = z.object({
+  title: z.string().trim().min(1, "Title is required").max(255),
+  shortDescription: z.string().trim().max(2000).optional().default(""),
+  price: z.coerce.number().min(0, "Price must be >= 0").max(999999.99),
+  imageUrl: z.string().trim().url("Must be a valid URL").max(2000).optional().or(z.literal("")).transform((v) => (v ? v : undefined)),
+  stockStatus: z.enum(STOCK_STATUSES).default("in_stock"),
+  category: z.string().trim().max(100).optional().or(z.literal("")).transform((v) => (v ? v : undefined)),
+});
+
+export const updateDigitalProductSchema = insertDigitalProductSchema.partial();
+
+export type InsertDigitalProduct = z.infer<typeof insertDigitalProductSchema>;
+export type UpdateDigitalProduct = z.infer<typeof updateDigitalProductSchema>;
+export type DigitalProduct = {
+  id: number;
+  title: string;
+  shortDescription: string | null;
+  price: string;
+  imageUrl: string | null;
+  stockStatus: "in_stock" | "out_of_stock";
+  category: string | null;
+  createdAt: string;
+  updatedAt: string;
+};

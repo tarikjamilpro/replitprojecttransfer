@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Menu, X, Wrench, ChevronDown, ChevronRight, Shield, LogIn, UserPlus, LogOut, LayoutDashboard } from "lucide-react";
+import { Search, Menu, X, Wrench, ChevronDown, ChevronRight, Shield, LogIn, UserPlus, LogOut, LayoutDashboard, ShoppingBag } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
@@ -207,6 +207,12 @@ export function Header() {
           </nav>
 
           <div className="hidden md:flex items-center gap-2 shrink-0">
+            <Link href="/store">
+              <Button variant="ghost" size="sm" className="gap-1.5" data-testid="link-header-store">
+                <ShoppingBag className="w-4 h-4" />
+                Store
+              </Button>
+            </Link>
             {user ? (
               <>
                 <Link href="/dashboard">

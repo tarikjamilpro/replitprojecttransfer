@@ -17,8 +17,22 @@ import {
   Shield, Settings, Link2, Code2, Save, LogOut,
   ToggleLeft, Loader2, CheckCircle2, Globe, AlertCircle,
   ImageIcon, Plus, Pencil, Trash2, ExternalLink, Search,
+  ShoppingBag, DollarSign,
 } from "lucide-react";
-import type { AiPrompt, InsertAiPrompt } from "@shared/schema";
+import type { AiPrompt, InsertAiPrompt, DigitalProduct } from "@shared/schema";
+
+type ProductFormState = {
+  title: string;
+  shortDescription: string;
+  price: string;
+  imageUrl: string;
+  stockStatus: "in_stock" | "out_of_stock";
+  category: string;
+};
+
+const EMPTY_PRODUCT: ProductFormState = {
+  title: "", shortDescription: "", price: "", imageUrl: "", stockStatus: "in_stock", category: "",
+};
 
 const TOKEN_KEY = "admin_jwt";
 
@@ -550,11 +564,380 @@ function PromptManagerPanel({ onSessionExpired }: { onSessionExpired: () => void
   );
 }
 
+// ─── Store Manager Panel ────────────────────────────────────────────────────
+
+function StoreManagerPanel({ onSessionExpired }: { onSessionExpired: () => void }) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const authedFetch = useCallback(async (url: string, init: RequestInit = {}) => {
+    const token = getStoredToken();
+    if (!token) { onSessionExpired(); throw new Error("No token"); }
+    const res = await fetch(url, {
+      ...init,
+      headers: {
+        "Content-Type": "application/json",
+        ...(init.headers || {}),
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+    if (res.status === 401) {
+      toast({ title: "Session expired", description: "Please log in again.", variant: "destructive" });
+      onSessionExpired();
+      throw new Error("Unauthorized");
+    }
+    return res;
+  }, [onSessionExpired, toast]);
+
+  const { data: products, isLoading } = useQuery<DigitalProduct[]>({
+    queryKey: ["/api/store/admin/products"],
+    queryFn: async () => {
+      const res = await authedFetch("/api/store/admin/products");
+      if (!res.ok) throw new Error("Failed to load products");
+      return res.json();
+    },
+  });
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editing, setEditing] = useState<DigitalProduct | null>(null);
+  const [form, setForm] = useState<ProductFormState>(EMPTY_PRODUCT);
+  const [submitting, setSubmitting] = useState(false);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [togglingId, setTogglingId] = useState<number | null>(null);
+
+  const openAdd = () => { setEditing(null); setForm(EMPTY_PRODUCT); setDialogOpen(true); };
+  const openEdit = (p: DigitalProduct) => {
+    setEditing(p);
+    setForm({
+      title: p.title,
+      shortDescription: p.shortDescription ?? "",
+      price: p.price ?? "",
+      imageUrl: p.imageUrl ?? "",
+      stockStatus: p.stockStatus,
+      category: p.category ?? "",
+    });
+    setDialogOpen(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const title = form.title.trim();
+    const priceNum = parseFloat(form.price);
+    if (!title) {
+      toast({ title: "Title required", variant: "destructive" });
+      return;
+    }
+    if (!Number.isFinite(priceNum) || priceNum < 0) {
+      toast({ title: "Valid price required", variant: "destructive" });
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const payload = {
+        title,
+        shortDescription: form.shortDescription.trim(),
+        price: priceNum,
+        imageUrl: form.imageUrl.trim(),
+        stockStatus: form.stockStatus,
+        category: form.category.trim(),
+      };
+      const url = editing
+        ? `/api/store/admin/products/${editing.id}`
+        : "/api/store/admin/products";
+      const method = editing ? "PATCH" : "POST";
+      const res = await authedFetch(url, { method, body: JSON.stringify(payload) });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.error || "Save failed");
+      }
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["/api/store/admin/products"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/store/products"] }),
+      ]);
+      toast({ title: editing ? "Product updated" : "Product added" });
+      setDialogOpen(false);
+      setForm(EMPTY_PRODUCT);
+      setEditing(null);
+    } catch (err: any) {
+      if (err.message !== "Unauthorized" && err.message !== "No token") {
+        toast({ title: "Save failed", description: err.message || "Try again.", variant: "destructive" });
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (deleteId === null) return;
+    setDeleting(true);
+    try {
+      const res = await authedFetch(`/api/store/admin/products/${deleteId}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Delete failed");
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["/api/store/admin/products"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/store/products"] }),
+      ]);
+      toast({ title: "Product deleted" });
+      setDeleteId(null);
+    } catch (err: any) {
+      if (err.message !== "Unauthorized" && err.message !== "No token") {
+        toast({ title: "Delete failed", description: err.message || "Try again.", variant: "destructive" });
+      }
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const toggleStock = async (p: DigitalProduct) => {
+    setTogglingId(p.id);
+    try {
+      const next = p.stockStatus === "in_stock" ? "out_of_stock" : "in_stock";
+      const res = await authedFetch(`/api/store/admin/products/${p.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ stockStatus: next }),
+      });
+      if (!res.ok) throw new Error("Update failed");
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["/api/store/admin/products"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/store/products"] }),
+      ]);
+      toast({ title: `Marked ${next === "in_stock" ? "In Stock" : "Out of Stock"}` });
+    } catch (err: any) {
+      if (err.message !== "Unauthorized" && err.message !== "No token") {
+        toast({ title: "Update failed", description: err.message || "Try again.", variant: "destructive" });
+      }
+    } finally {
+      setTogglingId(null);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900">Store Management</h2>
+          <p className="text-sm text-gray-500 mt-0.5">Manage digital products shown on the public store</p>
+        </div>
+        <Button onClick={openAdd} className="bg-purple-600 hover:bg-purple-700 text-white shrink-0" data-testid="button-add-product">
+          <Plus className="w-4 h-4 mr-2" /> Add New Product
+        </Button>
+      </div>
+
+      <Card className="shadow-sm">
+        <CardContent className="p-0">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-16 text-gray-500">
+              <Loader2 className="w-5 h-5 animate-spin mr-2" /> Loading products…
+            </div>
+          ) : !products || products.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <ShoppingBag className="w-10 h-10 text-gray-300 mb-3" />
+              <p className="text-sm font-medium text-gray-700">No products yet</p>
+              <p className="text-xs text-gray-500 mt-1 mb-4">Add your first product to populate the store.</p>
+              <Button onClick={openAdd} variant="outline" size="sm" data-testid="button-add-first-product">
+                <Plus className="w-4 h-4 mr-1.5" /> Add First Product
+              </Button>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full" data-testid="table-products">
+                <thead className="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
+                  <tr>
+                    <th className="text-left p-4 font-medium">Product</th>
+                    <th className="text-left p-4 font-medium">Price</th>
+                    <th className="text-left p-4 font-medium">Status</th>
+                    <th className="text-right p-4 font-medium">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {products.map((p) => {
+                    const out = p.stockStatus === "out_of_stock";
+                    return (
+                      <tr key={p.id} data-testid={`row-product-${p.id}`}>
+                        <td className="p-4">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <img
+                              src={p.imageUrl || "https://picsum.photos/seed/digibest/80/80"}
+                              alt=""
+                              className="w-12 h-12 rounded-lg object-cover bg-gray-100 shrink-0"
+                              onError={(e) => { (e.target as HTMLImageElement).style.opacity = "0.2"; }}
+                            />
+                            <div className="min-w-0">
+                              <p className="font-medium text-sm text-gray-900 truncate" data-testid={`text-admin-product-title-${p.id}`}>{p.title}</p>
+                              {p.category && <p className="text-xs text-gray-500 truncate">{p.category}</p>}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-4 font-semibold text-gray-900 whitespace-nowrap">
+                          ${parseFloat(p.price || "0").toFixed(2)}
+                        </td>
+                        <td className="p-4">
+                          <button
+                            type="button"
+                            disabled={togglingId === p.id}
+                            onClick={() => toggleStock(p)}
+                            className={`text-xs px-2.5 py-1 rounded-full font-medium transition ${
+                              out
+                                ? "bg-red-100 text-red-700 hover:bg-red-200"
+                                : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+                            } ${togglingId === p.id ? "opacity-60 cursor-wait" : ""}`}
+                            data-testid={`button-toggle-stock-${p.id}`}
+                          >
+                            {togglingId === p.id ? "…" : out ? "Out of Stock" : "In Stock"}
+                          </button>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex gap-1 justify-end">
+                            <Button variant="ghost" size="sm" onClick={() => openEdit(p)} data-testid={`button-edit-product-${p.id}`}>
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                              onClick={() => setDeleteId(p.id)}
+                              data-testid={`button-delete-product-${p.id}`}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Add / Edit Dialog */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{editing ? "Edit Product" : "Add New Product"}</DialogTitle>
+            <DialogDescription>
+              These details appear on the public /store page. Buy Now opens the Telegram contact.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="product-title">Title *</Label>
+              <Input
+                id="product-title"
+                value={form.title}
+                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                placeholder="ChatGPT Plus Account — 1 Month"
+                required
+                maxLength={255}
+                data-testid="input-product-title"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="product-desc">Short Description</Label>
+              <Textarea
+                id="product-desc"
+                value={form.shortDescription}
+                onChange={(e) => setForm((f) => ({ ...f, shortDescription: e.target.value }))}
+                placeholder="Premium ChatGPT account with full GPT-4o access…"
+                rows={3}
+                data-testid="input-product-description"
+              />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="product-price">Price (USD) *</Label>
+                <div className="relative">
+                  <DollarSign className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                  <Input
+                    id="product-price"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="999999.99"
+                    value={form.price}
+                    onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
+                    placeholder="9.99"
+                    required
+                    className="pl-9"
+                    data-testid="input-product-price"
+                  />
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="product-status">Stock Status</Label>
+                <Select
+                  value={form.stockStatus}
+                  onValueChange={(v) => setForm((f) => ({ ...f, stockStatus: v as "in_stock" | "out_of_stock" }))}
+                >
+                  <SelectTrigger id="product-status" data-testid="select-product-status">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="in_stock">In Stock</SelectItem>
+                    <SelectItem value="out_of_stock">Out of Stock</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="product-image">Image URL</Label>
+              <Input
+                id="product-image"
+                type="url"
+                value={form.imageUrl}
+                onChange={(e) => setForm((f) => ({ ...f, imageUrl: e.target.value }))}
+                placeholder="https://example.com/product.jpg"
+                data-testid="input-product-image"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="product-category">Category</Label>
+              <Input
+                id="product-category"
+                value={form.category}
+                onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+                placeholder="Accounts / Scripts / Courses"
+                maxLength={100}
+                data-testid="input-product-category"
+              />
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+              <Button type="submit" disabled={submitting} className="bg-purple-600 hover:bg-purple-700" data-testid="button-save-product">
+                {submitting ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Saving…</> : (editing ? "Save Changes" : "Add Product")}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete confirmation */}
+      <Dialog open={deleteId !== null} onOpenChange={(o) => !o && setDeleteId(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Delete this product?</DialogTitle>
+            <DialogDescription>This action cannot be undone.</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteId(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={deleting} data-testid="button-confirm-delete-product">
+              {deleting ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Deleting…</> : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
 // ─── Main Dashboard with Tabs ─────────────────────────────────────────────────
 
 export default function AdminDashboard() {
   const [authed, setAuthed] = useState(() => !!getStoredToken());
-  const [tab, setTab] = useState<"ads" | "prompts">("ads");
+  const [tab, setTab] = useState<"ads" | "prompts" | "store">("ads");
 
   const logout = useCallback(() => {
     clearToken();
@@ -587,7 +970,7 @@ export default function AdminDashboard() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-        <Tabs value={tab} onValueChange={(v) => setTab(v as "ads" | "prompts")}>
+        <Tabs value={tab} onValueChange={(v) => setTab(v as "ads" | "prompts" | "store")}>
           <TabsList className="mb-6">
             <TabsTrigger value="ads" data-testid="tab-ads">
               <Settings className="w-4 h-4 mr-1.5" /> Ad Configuration
@@ -595,12 +978,18 @@ export default function AdminDashboard() {
             <TabsTrigger value="prompts" data-testid="tab-prompts">
               <ImageIcon className="w-4 h-4 mr-1.5" /> Prompt Manager
             </TabsTrigger>
+            <TabsTrigger value="store" data-testid="tab-store">
+              <ShoppingBag className="w-4 h-4 mr-1.5" /> Store
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="ads">
             <AdConfigurationPanel onSessionExpired={logout} />
           </TabsContent>
           <TabsContent value="prompts">
             <PromptManagerPanel onSessionExpired={logout} />
+          </TabsContent>
+          <TabsContent value="store">
+            <StoreManagerPanel onSessionExpired={logout} />
           </TabsContent>
         </Tabs>
       </div>

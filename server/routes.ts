@@ -10,8 +10,16 @@ import {
   createAiPrompt,
   updateAiPrompt,
   deleteAiPrompt,
+  listDigitalProducts,
+  getDigitalProduct,
+  createDigitalProduct,
+  updateDigitalProduct,
+  deleteDigitalProduct,
 } from "./db";
-import { insertAiPromptSchema, updateAiPromptSchema } from "@shared/schema";
+import {
+  insertAiPromptSchema, updateAiPromptSchema,
+  insertDigitalProductSchema, updateDigitalProductSchema,
+} from "@shared/schema";
 
 const OPENROUTER_MODEL = "openrouter/auto";
 
@@ -663,6 +671,90 @@ Rules:
     } catch (err) {
       console.error("DELETE /api/prompts/:id error:", err);
       res.status(500).json({ error: "Failed to delete prompt" });
+    }
+  });
+
+  // ── Digital Products (Store) — public ────────────────────────────────────
+
+  app.get("/api/store/products", async (_req, res) => {
+    try {
+      const products = await listDigitalProducts();
+      res.json(products);
+    } catch (err) {
+      console.error("GET /api/store/products error:", err);
+      res.status(500).json({ error: "Failed to load products" });
+    }
+  });
+
+  // ── Digital Products — admin CRUD ─────────────────────────────────────────
+
+  app.get("/api/store/admin/products", async (req, res) => {
+    if (!verifyAdminToken(req.headers.authorization)) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    try {
+      const products = await listDigitalProducts();
+      res.json(products);
+    } catch (err) {
+      console.error("GET /api/store/admin/products error:", err);
+      res.status(500).json({ error: "Failed to load products" });
+    }
+  });
+
+  app.post("/api/store/admin/products", async (req, res) => {
+    if (!verifyAdminToken(req.headers.authorization)) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const parsed = insertDigitalProductSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Invalid data", details: parsed.error.flatten() });
+    }
+    try {
+      const created = await createDigitalProduct(parsed.data);
+      res.status(201).json(created);
+    } catch (err) {
+      console.error("POST /api/store/admin/products error:", err);
+      res.status(500).json({ error: "Failed to create product" });
+    }
+  });
+
+  app.patch("/api/store/admin/products/:id", async (req, res) => {
+    if (!verifyAdminToken(req.headers.authorization)) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id <= 0) {
+      return res.status(400).json({ error: "Invalid id" });
+    }
+    const parsed = updateDigitalProductSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Invalid data", details: parsed.error.flatten() });
+    }
+    try {
+      const updated = await updateDigitalProduct(id, parsed.data);
+      if (!updated) return res.status(404).json({ error: "Product not found" });
+      res.json(updated);
+    } catch (err) {
+      console.error("PATCH /api/store/admin/products/:id error:", err);
+      res.status(500).json({ error: "Failed to update product" });
+    }
+  });
+
+  app.delete("/api/store/admin/products/:id", async (req, res) => {
+    if (!verifyAdminToken(req.headers.authorization)) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id <= 0) {
+      return res.status(400).json({ error: "Invalid id" });
+    }
+    try {
+      const ok = await deleteDigitalProduct(id);
+      if (!ok) return res.status(404).json({ error: "Product not found" });
+      res.json({ success: true });
+    } catch (err) {
+      console.error("DELETE /api/store/admin/products/:id error:", err);
+      res.status(500).json({ error: "Failed to delete product" });
     }
   });
 

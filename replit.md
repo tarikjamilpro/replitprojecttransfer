@@ -148,13 +148,26 @@ API endpoints:
 - `POST /api/auth/login` — authenticate by username OR email, returns `{success, user}`
 
 Existing admin `POST /api/login` (ADMIN_PASSWORD + JWT) is unchanged.
+- `/store` - Digital Products Store (public storefront grid; Buy Now opens https://t.me/digibesttools)
 - `/prompts` - Prompt Preview Gallery (responsive masonry grid, public)
 - `/prompt/:id` - Single prompt detail page with 3 ad slots (top header, below image, sidebar) and "Copy Exact Prompt from MeiGen" CTA
 
 ### Prompt Manager
-The `/admin` dashboard now has two tabs:
+The `/admin` dashboard has three tabs:
 - **Ad Configuration** — existing ad/interstitial settings (unchanged)
 - **Prompt Manager** — CRUD for the `ai_prompts` table (title, description, image_url, meigen_target_link). Public gallery never displays the actual prompt text — only the title, description, image, and CTA.
+- **Store** — CRUD for the `digital_products` table (title, short_description, price, image_url, stock_status, category). Includes one-click stock toggle.
+
+### Digital Products Store
+- Public storefront at `/store` shows in-stock items first, then out-of-stock. "Buy Now" opens `https://t.me/digibesttools` in a new tab.
+- Table auto-created via `ensureDigitalProductsTable()` in both `server/db.ts` (dev) and `api/index.ts` (Vercel) with SERIAL id, DECIMAL(10,2) price, stock_status CHECK constraint.
+- API endpoints:
+  - `GET /api/store/products` — public list
+  - `GET /api/store/admin/products` — admin list (Bearer JWT)
+  - `POST /api/store/admin/products` — create
+  - `PATCH /api/store/admin/products/:id` — update (id must be positive integer)
+  - `DELETE /api/store/admin/products/:id` — delete
+- Dev validates with Zod (`insertDigitalProductSchema`); Vercel mirrors with handwritten `validateProductInput` that uses strict numeric-string regex `^-?\d+(\.\d+)?$` for price (no `parseFloat` trailing-junk acceptance).
 
 API endpoints (all under existing JWT admin auth except GETs):
 - `GET /api/prompts` — list (public)
