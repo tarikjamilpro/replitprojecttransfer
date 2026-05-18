@@ -17,9 +17,47 @@ import {
   Shield, Settings, Link2, Code2, Save, LogOut,
   ToggleLeft, Loader2, CheckCircle2, Globe, AlertCircle,
   ImageIcon, Plus, Pencil, Trash2, ExternalLink, Search,
-  ShoppingBag, DollarSign,
+  ShoppingBag, DollarSign, Upload,
 } from "lucide-react";
 import type { AiPrompt, InsertAiPrompt, DigitalProduct } from "@shared/schema";
+import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET } from "@/lib/constants";
+
+declare global {
+  interface Window {
+    cloudinary?: any;
+  }
+}
+
+function openCloudinaryWidget(
+  onSuccess: (secureUrl: string) => void,
+  onError: (msg: string) => void,
+) {
+  if (!window.cloudinary || typeof window.cloudinary.createUploadWidget !== "function") {
+    onError("Cloudinary widget is still loading. Please wait a moment and try again.");
+    return;
+  }
+  const widget = window.cloudinary.createUploadWidget(
+    {
+      cloudName: CLOUDINARY_CLOUD_NAME,
+      uploadPreset: CLOUDINARY_UPLOAD_PRESET,
+      sources: ["local", "url", "camera"],
+      multiple: false,
+      maxFiles: 1,
+      clientAllowedFormats: ["png", "jpg", "jpeg", "webp", "gif"],
+      maxFileSize: 10_000_000,
+    },
+    (error: any, result: any) => {
+      if (error) {
+        onError(error?.statusText || error?.message || "Upload failed");
+        return;
+      }
+      if (result && result.event === "success" && result.info?.secure_url) {
+        onSuccess(result.info.secure_url as string);
+      }
+    },
+  );
+  widget.open();
+}
 
 type ProductFormState = {
   title: string;
@@ -883,15 +921,43 @@ function StoreManagerPanel({ onSessionExpired }: { onSessionExpired: () => void 
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="product-image">Image URL</Label>
-              <Input
-                id="product-image"
-                type="url"
-                value={form.imageUrl}
-                onChange={(e) => setForm((f) => ({ ...f, imageUrl: e.target.value }))}
-                placeholder="https://example.com/product.jpg"
-                data-testid="input-product-image"
-              />
+              <Label htmlFor="product-image">Product Image</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="product-image"
+                  type="url"
+                  value={form.imageUrl}
+                  onChange={(e) => setForm((f) => ({ ...f, imageUrl: e.target.value }))}
+                  placeholder="Paste image URL or click Upload"
+                  className="flex-1"
+                  data-testid="input-product-image"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    openCloudinaryWidget(
+                      (url) => {
+                        setForm((f) => ({ ...f, imageUrl: url }));
+                        toast({ title: "Image uploaded", description: "Cloudinary URL added to the form." });
+                      },
+                      (msg) => toast({ title: "Upload failed", description: msg, variant: "destructive" }),
+                    )
+                  }
+                  data-testid="button-upload-product-image"
+                >
+                  <Upload className="w-4 h-4 mr-1.5" /> Upload
+                </Button>
+              </div>
+              {form.imageUrl && (
+                <img
+                  src={form.imageUrl}
+                  alt="Preview"
+                  className="mt-2 w-24 h-24 object-cover rounded-lg border"
+                  onError={(e) => ((e.currentTarget.style.display = "none"))}
+                  data-testid="img-product-preview"
+                />
+              )}
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="product-category">Category</Label>
