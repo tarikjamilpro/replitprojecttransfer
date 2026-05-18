@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -89,16 +89,36 @@ export default function AIThumbnailPromptGenerator() {
   const [showHistory, setShowHistory] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
 
+  const skipAutoRatio = useRef(false);
+
   useEffect(() => {
     try {
       const raw = localStorage.getItem(HISTORY_KEY);
-      if (raw) setHistory(JSON.parse(raw));
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return;
+      const clean = parsed.filter(
+        (i: any): i is HistoryItem =>
+          i && typeof i === "object" &&
+          typeof i.title === "string" &&
+          typeof i.platform === "string" &&
+          typeof i.style === "string" &&
+          typeof i.aspectRatio === "string" &&
+          Array.isArray(i.prompts) &&
+          i.prompts.every((p: any) => typeof p === "string") &&
+          typeof i.date === "string"
+      ).slice(0, HISTORY_LIMIT);
+      setHistory(clean);
     } catch {
       /* ignore */
     }
   }, []);
 
   useEffect(() => {
+    if (skipAutoRatio.current) {
+      skipAutoRatio.current = false;
+      return;
+    }
     const def = PLATFORM_DEFAULT_RATIO[platform];
     if (def) setAspectRatio(def);
   }, [platform]);
@@ -106,13 +126,15 @@ export default function AIThumbnailPromptGenerator() {
   const platformLabel = useMemo(() => platform, [platform]);
 
   const saveHistory = (newItem: HistoryItem) => {
-    const next = [newItem, ...history].slice(0, HISTORY_LIMIT);
-    setHistory(next);
-    try {
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
-    } catch {
-      /* ignore */
-    }
+    setHistory((prev) => {
+      const next = [newItem, ...prev].slice(0, HISTORY_LIMIT);
+      try {
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
   };
 
   const handleGenerate = (saveToHistory = true) => {
@@ -163,6 +185,7 @@ export default function AIThumbnailPromptGenerator() {
   };
 
   const loadHistoryItem = (item: HistoryItem) => {
+    skipAutoRatio.current = true;
     setTitle(item.title);
     setPlatform(item.platform);
     setStyle(item.style);
