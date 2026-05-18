@@ -1,0 +1,223 @@
+import React, { useState, useEffect } from 'react';
+
+interface Product {
+  id?: number;
+  title: string;
+  short_description: string;
+  price: number;
+  image_url: string;
+  stock_status: 'in_stock' | 'out_of_stock';
+}
+
+declare global {
+  interface Window {
+    cloudinary: any;
+  }
+}
+
+const AdminStoreManagement: React.FC = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [formData, setFormData] = useState<Product>({
+    title: '',
+    short_description: '',
+    price: 0,
+    image_url: '',
+    stock_status: 'in_stock',
+  });
+  const [uploading, setUploading] = useState(false);
+
+  // Fetch products
+  const fetchProducts = async () => {
+    const res = await fetch('/api/store/admin/products');
+    const data = await res.json();
+    setProducts(data);
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // Open Modal
+  const openModal = (product?: Product) => {
+    if (product) {
+      setEditingProduct(product);
+      setFormData(product);
+    } else {
+      setEditingProduct(null);
+      setFormData({
+        title: '', short_description: '', price: 0, image_url: '', stock_status: 'in_stock'
+      });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // ==================== CLOUDINARY UPLOAD ====================
+  const uploadImage = () => {
+    if (!window.cloudinary) {
+      alert("Cloudinary script not loaded. Please add it in index.html");
+      return;
+    }
+
+    const widget = window.cloudinary.createUploadWidget(
+      {
+        cloudName: "YOUR_CLOUD_NAME",        // ← Change this
+        uploadPreset: "YOUR_UPLOAD_PRESET",  // ← Change this
+        sources: ['local', 'url', 'camera'],
+        multiple: false,
+        maxFiles: 1,
+      },
+      (error: any, result: any) => {
+        if (!error && result && result.event === "success") {
+          setFormData(prev => ({
+            ...prev,
+            image_url: result.info.secure_url
+          }));
+          setUploading(false);
+        }
+      }
+    );
+
+    widget.open();
+  };
+
+  // Save Product
+  const handleSave = async () => {
+    const method = editingProduct ? 'PUT' : 'POST';
+    const url = editingProduct 
+      ? `/api/store/admin/products/${editingProduct.id}` 
+      : '/api/store/admin/products';
+
+    await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    });
+
+    setIsModalOpen(false);
+    fetchProducts();
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm("Delete this product?")) return;
+    await fetch(`/api/store/admin/products/${id}`, { method: 'DELETE' });
+    fetchProducts();
+  };
+
+  const toggleStock = async (product: Product) => {
+    const newStatus = product.stock_status === 'in_stock' ? 'out_of_stock' : 'in_stock';
+    await fetch(`/api/store/admin/products/${product.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ stock_status: newStatus }),
+    });
+    fetchProducts();
+  };
+
+  return (
+    <div className="p-8">
+      <div className="flex justify-between mb-6">
+        <h1 className="text-3xl font-bold">Store Management</h1>
+        <button onClick={() => openModal()} className="bg-purple-600 text-white px-6 py-3 rounded-2xl">
+          + Add New Product
+        </button>
+      </div>
+
+      {/* Products Table */}
+      <div className="bg-white rounded-3xl border overflow-hidden">
+        <table className="w-full">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="p-4 text-left">Product</th>
+              <th className="p-4 text-left">Price</th>
+              <th className="p-4 text-left">Status</th>
+              <th className="p-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((product) => (
+              <tr key={product.id} className="border-t">
+                <td className="p-4 flex items-center gap-3">
+                  {product.image_url && (
+                    <img src={product.image_url} alt="" className="w-12 h-12 rounded-xl object-cover" />
+                  )}
+                  {product.title}
+                </td>
+                <td className="p-4">${product.price}</td>
+                <td className="p-4">
+                  <button onClick={() => toggleStock(product)} className={`px-4 py-1 rounded-full text-sm font-medium
+                    ${product.stock_status === 'in_stock' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                    {product.stock_status === 'in_stock' ? 'In Stock' : 'Out of Stock'}
+                  </button>
+                </td>
+                <td className="p-4 text-right space-x-3">
+                  <button onClick={() => openModal(product)} className="text-blue-600 hover:underline">Edit</button>
+                  <button onClick={() => handleDelete(product.id!)} className="text-red-600 hover:underline">Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Add/Edit Modal with Cloudinary Upload */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white w-full max-w-lg rounded-3xl p-8">
+            <h2 className="text-2xl font-bold mb-6">
+              {editingProduct ? 'Edit Product' : 'Add New Product'}
+            </h2>
+
+            <div className="space-y-4">
+              <input name="title" value={formData.title} onChange={handleChange} placeholder="Product Title" className="w-full border p-3 rounded-2xl" />
+              <textarea name="short_description" value={formData.short_description} onChange={handleChange} placeholder="Short Description" className="w-full border p-3 rounded-2xl h-24" />
+              <input name="price" type="number" value={formData.price} onChange={handleChange} placeholder="Price" className="w-full border p-3 rounded-2xl" />
+
+              {/* Image Upload Section */}
+              <div>
+                <label className="block text-sm font-medium mb-2">Product Image</label>
+                <div className="flex gap-3">
+                  <input 
+                    name="image_url" 
+                    value={formData.image_url} 
+                    onChange={handleChange} 
+                    placeholder="Image URL or upload below" 
+                    className="flex-1 border p-3 rounded-2xl" 
+                  />
+                  <button 
+                    type="button" 
+                    onClick={uploadImage}
+                    className="px-6 py-3 bg-gray-800 text-white rounded-2xl text-sm flex items-center gap-2"
+                  >
+                    {uploading ? "Uploading..." : "Upload Image"}
+                  </button>
+                </div>
+                {formData.image_url && (
+                  <img src={formData.image_url} alt="Preview" className="mt-3 w-32 h-32 object-cover rounded-2xl border" />
+                )}
+              </div>
+
+              <select name="stock_status" value={formData.stock_status} onChange={handleChange} className="w-full border p-3 rounded-2xl">
+                <option value="in_stock">In Stock</option>
+                <option value="out_of_stock">Out of Stock</option>
+              </select>
+            </div>
+
+            <div className="flex gap-4 mt-6">
+              <button onClick={() => setIsModalOpen(false)} className="flex-1 py-3 border rounded-2xl">Cancel</button>
+              <button onClick={handleSave} className="flex-1 py-3 bg-purple-600 text-white rounded-2xl">Save Product</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AdminStoreManagement;
