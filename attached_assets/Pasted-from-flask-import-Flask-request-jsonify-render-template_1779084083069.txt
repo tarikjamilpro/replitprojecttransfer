@@ -1,0 +1,82 @@
+from flask import Flask, request, jsonify, render_template
+import os
+from openai import OpenAI
+import json
+import re
+
+app = Flask(__name__)
+
+# OpenRouter Configuration
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
+
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=OPENROUTER_API_KEY,
+)
+
+SYSTEM_PROMPT = """You are an expert SEO and viral content strategist.
+Return ONLY valid JSON in this exact format. Do not add any extra text.
+
+{
+  "titles": ["Title 1", "Title 2", "Title 3", "Title 4", "Title 5"],
+  "seo_tags": "tag1, tag2, tag3, ... (15-20 tags)",
+  "hashtags": "#hashtag1, #hashtag2, ... (10-15 hashtags)",
+  "caption": "Start with a powerful hook. Write a short engaging caption (max 80 words). Use 2-3 emojis. End with a clear CTA."
+}"""
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/generate', methods=['POST'])
+def generate():
+    try:
+        data = request.get_json()
+        topic = data.get('topic', '').strip()
+
+        if not topic:
+            return jsonify({"error": "Please enter a topic"}), 400
+
+        if not OPENROUTER_API_KEY:
+            return jsonify({"error": "OPENROUTER_API_KEY is not set in Secrets"}), 500
+
+        response = client.chat.completions.create(
+            model="openai/gpt-4o",           # You can change to: anthropic/claude-3.5-sonnet
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": f"Topic: {topic}"}
+            ],
+            temperature=0.7,
+            max_tokens=1200,
+            extra_headers={
+                "HTTP-Referer": "https://digibesttools.site",  # Optional: your site
+                "X-Title": "DigiBest AI Content Optimizer"
+            }
+        )
+
+        content = response.choices[0].message.content.strip()
+
+        # Clean JSON if wrapped in markdown
+        if content.startswith("```"):
+            content = content.split("```")[1].strip()
+            if content.startswith("json"):
+                content = content[4:].strip()
+
+        # Try parsing JSON
+        try:
+            result = json.loads(content)
+        except:
+            json_match = re.search(r'\{.*\}', content, re.DOTALL)
+            if json_match:
+                result = json.loads(json_match.group())
+            else:
+                return jsonify({"error": "AI returned invalid format"}), 500
+
+        return jsonify(result)
+
+    except Exception as e:
+        print("Error:", str(e))
+        return jsonify({"error": "Something went wrong. Please try again."}), 500
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080)
