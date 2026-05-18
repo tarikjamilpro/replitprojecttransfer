@@ -129,6 +129,13 @@ const textTools = [
     color: "bg-indigo-500 dark:bg-indigo-600",
   },
   {
+    name: "AI Content Optimizer",
+    description: "Generate SEO titles, tags, hashtags, and a viral caption from any topic — instantly.",
+    icon: Sparkles,
+    path: "/ai-content-optimizer",
+    color: "bg-violet-500 dark:bg-violet-600",
+  },
+  {
     name: "AI Humanizer",
     description: "Transform AI-generated text into natural, human-like content instantly.",
     icon: Wand2,

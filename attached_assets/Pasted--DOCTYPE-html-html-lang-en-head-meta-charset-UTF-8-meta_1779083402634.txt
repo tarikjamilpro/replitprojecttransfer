@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Content Optimizer • DigiBest</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-50">
+    <div class="max-w-5xl mx-auto px-6 py-10">
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-gray-900">AI Content Optimizer</h1>
+            <p class="text-gray-600 mt-2">Generate SEO-friendly &amp; viral content packages instantly</p>
+        </div>
+
+        <!-- Input Section -->
+        <div class="bg-white p-8 rounded-3xl shadow border mb-10">
+            <div class="flex flex-col md:flex-row gap-4">
+                <input id="topicInput" type="text" 
+                       class="flex-1 px-5 py-4 border border-gray-300 rounded-2xl text-lg focus:outline-none focus:border-purple-500"
+                       placeholder="Enter your title or topic (e.g., Best faceless YouTube niches 2026)">
+                <button onclick="generateContent()" 
+                        class="px-10 py-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-2xl flex items-center justify-center gap-2 transition-colors">
+                    <i class="fa-solid fa-magic"></i>
+                    <span>Generate</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Output Section -->
+        <div id="outputSection" class="hidden space-y-8">
+            
+            <!-- Optimized Titles -->
+            <div class="bg-white p-6 rounded-3xl border">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-semibold text-xl flex items-center gap-2">
+                        <i class="fa-solid fa-heading text-purple-600"></i> 
+                        Optimized Titles
+                    </h2>
+                    <button onclick="copyAllTitles()" 
+                            class="text-sm px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
+                        Copy All
+                    </button>
+                </div>
+                <div id="titlesContainer" class="space-y-3"></div>
+            </div>
+
+            <!-- SEO Tags -->
+            <div class="bg-white p-6 rounded-3xl border">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-semibold text-xl flex items-center gap-2">
+                        <i class="fa-solid fa-tags text-blue-600"></i> 
+                        SEO Tags
+                    </h2>
+                    <button onclick="copyElement('tagsOutput')" 
+                            class="text-sm px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
+                        Copy
+                    </button>
+                </div>
+                <div id="tagsOutput" class="text-gray-700 leading-relaxed"></div>
+            </div>
+
+            <!-- Hashtags -->
+            <div class="bg-white p-6 rounded-3xl border">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-semibold text-xl flex items-center gap-2">
+                        <i class="fa-brands fa-instagram text-pink-600"></i> 
+                        Hashtags
+                    </h2>
+                    <button onclick="copyElement('hashtagsOutput')" 
+                            class="text-sm px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
+                        Copy
+                    </button>
+                </div>
+                <div id="hashtagsOutput" class="text-gray-700"></div>
+            </div>
+
+            <!-- Viral Caption -->
+            <div class="bg-white p-6 rounded-3xl border">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-semibold text-xl flex items-center gap-2">
+                        <i class="fa-solid fa-comment-dots text-green-600"></i> 
+                        Viral Caption
+                    </h2>
+                    <button onclick="copyElement('captionOutput')" 
+                            class="text-sm px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
+                        Copy
+                    </button>
+                </div>
+                <div id="captionOutput" class="text-gray-700 leading-relaxed whitespace-pre-line"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        async function generateContent() {
+            const topic = document.getElementById('topicInput').value.trim();
+            if (!topic) {
+                alert("Please enter a topic or title");
+                return;
+            }
+
+            const outputSection = document.getElementById('outputSection');
+            outputSection.classList.add('hidden');
+
+            // Show loading state
+            const generateBtn = event.currentTarget;
+            
+            try {
+                const res = await fetch('/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ topic: topic })
+                });
+
+                const data = await res.json();
+
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                // Render Titles
+                const titlesContainer = document.getElementById('titlesContainer');
+                titlesContainer.innerHTML = '';
+
+                data.titles.forEach(title => {
+                    const div = document.createElement('div');
+                    div.className = `flex justify-between items-center p-3 bg-gray-50 rounded-2xl hover:bg-gray-100`;
+                    div.innerHTML = `
+                        <span class="flex-1 pr-4">${title}</span>
+                        <button onclick="copySingleTitle(this)" 
+                                class="text-purple-600 hover:text-purple-700 text-sm px-3 py-1 transition-colors">
+                            Copy
+                        </button>
+                    `;
+                    titlesContainer.appendChild(div);
+                });
+
+                // Render other sections
+                document.getElementById('tagsOutput').innerText = data.seo_tags;
+                document.getElementById('hashtagsOutput').innerText = data.hashtags;
+                document.getElementById('captionOutput').innerText = data.caption;
+
+                outputSection.classList.remove('hidden');
+
+            } catch (error) {
+                alert("Something went wrong. Please try again.");
+                console.error(error);
+            }
+        }
+
+        function copySingleTitle(element) {
+            const text = element.parentElement.innerText.replace('Copy', '').trim();
+            navigator.clipboard.writeText(text);
+            const originalText = element.innerText;
+            element.innerText = "Copied!";
+            setTimeout(() => {
+                element.innerText = originalText;
+            }, 1500);
+        }
+
+        function copyElement(id) {
+            const text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text);
+            alert("Copied to clipboard!");
+        }
+
+        function copyAllTitles() {
+            const titles = Array.from(document.querySelectorAll('#titlesContainer span'))
+                .map(el => el.innerText)
+                .join('\n');
+            
+            navigator.clipboard.writeText(titles);
+            alert("All titles copied to clipboard!");
+        }
+
+        // Allow pressing Enter to generate
+        document.getElementById('topicInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateContent();
+            }
+        });
+    </script>
+</body>
+</html>

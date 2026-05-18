@@ -20,6 +20,7 @@ const toolCategories = {
     { name: "AI Post Generator", path: "/ai-post-generator" },
     { name: "AI Hashtag Generator", path: "/ai-hashtag-generator" },
     { name: "AI Content Generator", path: "/ai-content-generator" },
+    { name: "AI Content Optimizer", path: "/ai-content-optimizer" },
     { name: "Keyword Density Checker", path: "/keyword-density-checker" },
     { name: "Slug Generator Pro", path: "/slug-generator-pro" },
   ],

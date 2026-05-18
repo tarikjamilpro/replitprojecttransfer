@@ -415,6 +415,79 @@ app.post("/api/ai-detection", async (req, res) => {
   }
 });
 
+// ── Content Optimizer (Titles + Tags + Hashtags + Caption) ───────────────────
+
+app.post("/api/content-optimizer", async (req, res) => {
+  try {
+    const { topic } = req.body || {};
+    if (!topic || typeof topic !== "string" || !topic.trim()) {
+      return res.status(400).json({ error: "Topic is required" });
+    }
+    if (topic.length > 500) {
+      return res.status(400).json({ error: "Topic too long (max 500 chars)" });
+    }
+
+    const systemPrompt = `You are an expert SEO & Viral Content Strategist for YouTube, Instagram, TikTok, and blogs.
+
+Return ONLY valid JSON. No markdown, no code fences, no commentary.
+
+Use this EXACT structure:
+{
+  "titles": ["Title 1", "Title 2", "Title 3", "Title 4", "Title 5"],
+  "seo_tags": "tag1, tag2, tag3, ... (15-20 comma separated tags, lowercase, no #)",
+  "hashtags": "#hashtag1 #hashtag2 #hashtag3 ... (10-15 hashtags separated by spaces, each prefixed with #)",
+  "caption": "Start with a powerful hook. Write a short, engaging caption max 80 words. Use 2-3 emojis. End with a clear CTA."
+}
+
+Rules:
+- Exactly 5 titles, each 40-70 characters, click-worthy and SEO-optimized.
+- 15-20 SEO tags relevant to the topic, comma separated, lowercase.
+- 10-15 hashtags, mix of broad + niche, each starting with #.
+- Caption must START with a strong hook (question, bold claim, or "POV:"), include 2-3 relevant emojis, and END with a clear CTA.
+- Output ONLY the JSON object. No prose before or after.`;
+
+    const r = await getOpenRouter().chat.completions.create({
+      model: OPENROUTER_MODEL,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: `Topic: ${topic.trim()}` },
+      ],
+      temperature: 0.8,
+      max_tokens: 1200,
+      response_format: { type: "json_object" },
+    });
+
+    let content = (r.choices[0]?.message?.content || "").trim();
+    content = content.replace(/^```(?:json)?\s*/i, "").replace(/```$/i, "").trim();
+
+    let parsed: any;
+    try {
+      parsed = JSON.parse(content);
+    } catch {
+      return res.status(502).json({ error: "AI returned invalid JSON. Please try again." });
+    }
+
+    const titles = Array.isArray(parsed.titles)
+      ? parsed.titles.filter((t: any) => typeof t === "string" && t.trim().length > 0).slice(0, 5)
+      : [];
+    const result = {
+      titles,
+      seo_tags: typeof parsed.seo_tags === "string" ? parsed.seo_tags.trim() : "",
+      hashtags: typeof parsed.hashtags === "string" ? parsed.hashtags.trim() : "",
+      caption: typeof parsed.caption === "string" ? parsed.caption.trim() : "",
+    };
+
+    if (titles.length < 5 || !result.seo_tags || !result.hashtags || !result.caption) {
+      return res.status(502).json({ error: "AI response was incomplete. Please try again." });
+    }
+
+    res.json(result);
+  } catch (err: any) {
+    console.error("content-optimizer error:", err?.message || err);
+    res.status(500).json({ error: "Failed to generate content. Please try again." });
+  }
+});
+
 // ── Enhance Prompt (AI Image Prompt Generator) ────────────────────────────────
 
 app.post("/api/enhance-prompt", async (req, res) => {

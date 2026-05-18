@@ -376,6 +376,16 @@ export const toolsData: ToolData[] = [
     icon: "Dices",
   },
   {
+    id: "ai-content-optimizer",
+    path: "/ai-content-optimizer",
+    name: "AI Content Optimizer",
+    description: "AI titles, SEO tags, hashtags & viral caption",
+    seoTitle: "Free AI Content Optimizer - SEO Titles, Tags, Hashtags & Captions",
+    seoDescription: "Generate 5 SEO-optimized titles, 15-20 SEO tags, 10-15 hashtags, and a viral caption from any topic. Free AI content optimizer for YouTube, Instagram, TikTok & blogs.",
+    category: "Text Tools",
+    icon: "Sparkles",
+  },
+  {
     id: "schema-markup-generator",
     path: "/schema-markup-generator",
     name: "Schema Markup Generator Pro",
