@@ -376,6 +376,16 @@ export const toolsData: ToolData[] = [
     icon: "Dices",
   },
   {
+    id: "ai-thumbnail-prompt-generator",
+    path: "/ai-thumbnail-prompt-generator",
+    name: "AI Thumbnail Prompt Generator",
+    description: "6 AI thumbnail prompts for any platform",
+    seoTitle: "Free AI Thumbnail Prompt Generator - YouTube, Instagram, TikTok",
+    seoDescription: "Generate 6 high-converting AI thumbnail prompts for YouTube, Instagram, TikTok and 8+ platforms. Pick style, aspect ratio, copy to Midjourney, DALL·E, Flux. Free, no signup.",
+    category: "YouTube Tools",
+    icon: "ImageIcon",
+  },
+  {
     id: "ai-content-optimizer",
     path: "/ai-content-optimizer",
     name: "AI Content Optimizer",
@@ -631,4 +641,5 @@ export const iconMap: Record<string, any> = {
   Link2,
   Share2,
   Database,
+  ImageIcon: Image,
 };

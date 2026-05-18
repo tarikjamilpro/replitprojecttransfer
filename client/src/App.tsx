@@ -73,6 +73,7 @@ const MetaTagsJsonLdGenerator = lazy(() => import("@/pages/MetaTagsJsonLdGenerat
 const OpenGraphGenerator = lazy(() => import("@/pages/OpenGraphGenerator"));
 const SchemaMarkupGenerator = lazy(() => import("@/pages/SchemaMarkupGenerator"));
 const AIContentOptimizer = lazy(() => import("@/pages/AIContentOptimizer"));
+const AIThumbnailPromptGenerator = lazy(() => import("@/pages/AIThumbnailPromptGenerator"));
 const Login = lazy(() => import("@/pages/Login"));
 const Signup = lazy(() => import("@/pages/Signup"));
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
@@ -137,6 +138,7 @@ function Router() {
         <Route path="/open-graph-generator" component={OpenGraphGenerator} />
         <Route path="/schema-markup-generator" component={SchemaMarkupGenerator} />
         <Route path="/ai-content-optimizer" component={AIContentOptimizer} />
+        <Route path="/ai-thumbnail-prompt-generator" component={AIThumbnailPromptGenerator} />
         <Route path="/prompts" component={PromptsGallery} />
         <Route path="/prompt/:id" component={PromptDetail} />
         <Route path="/login" component={Login} />

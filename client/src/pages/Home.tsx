@@ -52,11 +52,18 @@ import {
 
 const textTools = [
   {
+    name: "AI Thumbnail Prompt Generator",
+    description: "NEW — Create 6 high-converting AI thumbnail prompts for YouTube, IG, TikTok & more.",
+    icon: ImageIcon,
+    path: "/ai-thumbnail-prompt-generator",
+    color: "bg-violet-500 dark:bg-violet-600",
+  },
+  {
     name: "AI Content Optimizer",
-    description: "NEW — Generate 5 SEO titles, tags, hashtags & a viral caption from any topic.",
+    description: "Generate 5 SEO titles, tags, hashtags & a viral caption from any topic.",
     icon: Sparkles,
     path: "/ai-content-optimizer",
-    color: "bg-violet-500 dark:bg-violet-600",
+    color: "bg-fuchsia-500 dark:bg-fuchsia-600",
   },
   {
     name: "Word Counter",

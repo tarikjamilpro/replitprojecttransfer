@@ -63,6 +63,7 @@ const toolCategories = {
   "YouTube Tools": [
     { name: "YouTube Thumbnail Downloader", path: "/youtube-thumbnail-downloader" },
     { name: "YouTube Tag Extractor", path: "/youtube-tag-extractor" },
+    { name: "AI Thumbnail Prompt Generator", path: "/ai-thumbnail-prompt-generator" },
   ],
   "Content Creator Tools": [
     { name: "Viral Hook Generator", path: "/viral-hooks-generator" },

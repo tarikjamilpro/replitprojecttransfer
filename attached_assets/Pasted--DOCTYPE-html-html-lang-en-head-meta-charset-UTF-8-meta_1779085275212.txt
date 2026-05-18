@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Thumbnail Prompt Generator • DigiBest</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-50">
+    <div class="max-w-5xl mx-auto px-6 py-10">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold">AI Thumbnail Prompt Generator</h1>
+                <p class="text-gray-600">Create high-converting prompts for any platform</p>
+            </div>
+            <button onclick="showHistory()" 
+                    class="flex items-center gap-2 px-4 py-2 bg-white border rounded-2xl text-sm hover:bg-gray-100">
+                <i class="fa-solid fa-history"></i>
+                <span>History</span>
+            </button>
+        </div>
+
+        <!-- Input Section -->
+        <div class="bg-white rounded-3xl p-8 shadow border mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <div class="md:col-span-3">
+                    <label class="block text-sm font-semibold mb-2">Title / Topic</label>
+                    <input id="titleInput" type="text" class="w-full px-5 py-3 border rounded-2xl text-lg" 
+                           placeholder="How I made $10k/month with faceless YouTube">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Platform</label>
+                    <select id="platform" onchange="updateAspectRatio()" class="w-full px-4 py-3 border rounded-2xl">
+                        <option value="YouTube">YouTube</option>
+                        <option value="Instagram">Instagram / Reels</option>
+                        <option value="TikTok">TikTok</option>
+                        <option value="Facebook Reels">Facebook Reels</option>
+                        <option value="Threads">Threads</option>
+                        <option value="LinkedIn">LinkedIn</option>
+                        <option value="Telegram">Telegram</option>
+                        <option value="Pinterest">Pinterest</option>
+                        <option value="Reddit">Reddit</option>
+                        <option value="Dailymotion">Dailymotion</option>
+                        <option value="General">General</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Aspect Ratio</label>
+                    <select id="aspectRatio" class="w-full px-4 py-3 border rounded-2xl">
+                        <option value="16:9">16:9 (YouTube, Landscape)</option>
+                        <option value="9:16">9:16 (Vertical / Stories)</option>
+                        <option value="1:1">1:1 (Square)</option>
+                        <option value="4:5">4:5 (Instagram Portrait)</option>
+                        <option value="2:3">2:3 (Pinterest)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Style</label>
+                    <select id="style" class="w-full px-4 py-3 border rounded-2xl">
+                        <option value="Cinematic and dramatic">Cinematic & Dramatic</option>
+                        <option value="Bold and vibrant">Bold & Vibrant</option>
+                        <option value="Minimal and clean">Minimal & Clean</option>
+                        <option value="Emotional and storytelling">Emotional & Storytelling</option>
+                        <option value="Luxury and premium">Luxury & Premium</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex gap-4 mt-6">
+                <button onclick="generatePrompts()" 
+                        class="flex-1 py-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-2xl flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-magic"></i>
+                    <span>Generate Prompts</span>
+                </button>
+                <button onclick="regeneratePrompts()" 
+                        class="px-6 py-4 border rounded-2xl flex items-center justify-center gap-2 hover:bg-gray-100">
+                    <i class="fa-solid fa-redo"></i>
+                    <span>Regenerate</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Output -->
+        <div id="outputSection" class="hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold">Generated Thumbnail Prompts</h2>
+                <div class="flex gap-3">
+                    <button onclick="exportAsTxt()" class="px-4 py-2 bg-gray-800 text-white rounded-2xl text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-download"></i>
+                        <span>Export .txt</span>
+                    </button>
+                    <button onclick="copyAllPrompts()" class="px-4 py-2 bg-purple-600 text-white rounded-2xl text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-copy"></i>
+                        <span>Copy All</span>
+                    </button>
+                </div>
+            </div>
+            <div id="promptsContainer" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentPrompts = [];
+
+        function updateAspectRatio() {
+            const platform = document.getElementById('platform').value;
+            const aspectSelect = document.getElementById('aspectRatio');
+
+            const ratios = {
+                "YouTube": "16:9",
+                "Instagram": "9:16",
+                "TikTok": "9:16",
+                "Facebook Reels": "9:16",
+                "Pinterest": "2:3",
+                "Threads": "9:16",
+                "General": "16:9"
+            };
+
+            if (ratios[platform]) {
+                aspectSelect.value = ratios[platform];
+            }
+        }
+
+        function generatePrompts() {
+            const title = document.getElementById('titleInput').value.trim();
+            if (!title) return alert("Please enter a title");
+
+            const platform = document.getElementById('platform').value;
+            const style = document.getElementById('style').value;
+            const aspectRatio = document.getElementById('aspectRatio').value;
+
+            currentPrompts = createPrompts(title, platform, style, aspectRatio);
+            renderPrompts();
+            document.getElementById('outputSection').classList.remove('hidden');
+
+            // Save to history
+            saveToHistory(title, currentPrompts);
+        }
+
+        function regeneratePrompts() {
+            if (currentPrompts.length === 0) return;
+            const title = document.getElementById('titleInput').value.trim();
+            const platform = document.getElementById('platform').value;
+            const style = document.getElementById('style').value;
+            const aspectRatio = document.getElementById('aspectRatio').value;
+
+            currentPrompts = createPrompts(title, platform, style, aspectRatio);
+            renderPrompts();
+        }
+
+        function createPrompts(title, platform, style, aspectRatio) {
+            const base = `Create a highly click-worthy thumbnail for "${title}". ${style} style, optimized for ${platform}, aspect ratio ${aspectRatio}.`;
+
+            return [
+                `${base} Dramatic lighting, strong emotion, bold composition, high contrast.`,
+                `${base} Vibrant colors, powerful focal point, modern and energetic style.`,
+                `${base} Minimalist, clean design, premium aesthetic, elegant lighting.`,
+                `${base} Emotional storytelling, rich colors, high visual impact.`,
+                `${base} Luxury feel, cinematic lighting, highly detailed and professional.`,
+                `${base} Bold and scroll-stopping design, optimized for maximum engagement.`
+            ];
+        }
+
+        function renderPrompts() {
+            const container = document.getElementById('promptsContainer');
+            container.innerHTML = '';
+
+            currentPrompts.forEach((prompt, index) => {
+                const div = document.createElement('div');
+                div.className = `bg-white border rounded-3xl p-5 flex flex-col lg:flex-row gap-4`;
+                div.innerHTML = `
+                    <div class="flex-1">
+                        <div class="text-xs text-purple-600 font-medium mb-1">PROMPT ${index + 1}</div>
+                        <p class="text-gray-700">${prompt}</p>
+                    </div>
+                    <div>
+                        <button onclick="copyPrompt(this)" class="px-5 py-2.5 bg-purple-600 text-white rounded-2xl text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-copy"></i> Copy
+                        </button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function copyPrompt(element) {
+            const text = element.closest('.flex-col, .flex').querySelector('p').innerText;
+            navigator.clipboard.writeText(text);
+            element.innerHTML = `<i class="fa-solid fa-check"></i> Copied`;
+            setTimeout(() => element.innerHTML = `<i class="fa-solid fa-copy"></i> Copy`, 1500);
+        }
+
+        function copyAllPrompts() {
+            const text = currentPrompts.join('\n\n');
+            navigator.clipboard.writeText(text);
+            alert("All prompts copied!");
+        }
+
+        function exportAsTxt() {
+            if (currentPrompts.length === 0) return;
+            const text = currentPrompts.join('\n\n---\n\n');
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'thumbnail-prompts.txt';
+            a.click();
+        }
+
+        // History using localStorage
+        function saveToHistory(title, prompts) {
+            let history = JSON.parse(localStorage.getItem('thumbnailHistory') || '[]');
+            history.unshift({ title, prompts, date: new Date().toLocaleString() });
+            if (history.length > 5) history.pop();
+            localStorage.setItem('thumbnailHistory', JSON.stringify(history));
+        }
+
+        function showHistory() {
+            const history = JSON.parse(localStorage.getItem('thumbnailHistory') || '[]');
+            if (history.length === 0) return alert("No history yet");
+
+            let html = `<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onclick="this.remove()">
+                <div class="bg-white w-full max-w-2xl mx-4 rounded-3xl p-6" onclick="event.stopImmediatePropagation()">
+                    <h3 class="text-xl font-semibold mb-4">Prompt History</h3>
+                    <div class="space-y-4 max-h-[400px] overflow-auto">`;
+
+            history.forEach((item, i) => {
+                html += `<div class="border p-4 rounded-2xl">
+                    <div class="font-medium">${item.title}</div>
+                    <div class="text-xs text-gray-500">${item.date}</div>
+                </div>`;
+            });
+
+            html += `</div></div></div>`;
+            document.body.insertAdjacentHTML('beforeend', html);
+        }
+
+        // Auto update aspect ratio
+        document.getElementById('platform').addEventListener('change', updateAspectRatio);
+    </script>
+</body>
+</html>
