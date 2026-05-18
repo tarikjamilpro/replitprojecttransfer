@@ -52,6 +52,13 @@ import {
 
 const textTools = [
   {
+    name: "AI Content Optimizer",
+    description: "NEW — Generate 5 SEO titles, tags, hashtags & a viral caption from any topic.",
+    icon: Sparkles,
+    path: "/ai-content-optimizer",
+    color: "bg-violet-500 dark:bg-violet-600",
+  },
+  {
     name: "Word Counter",
     description: "Count words, characters, sentences, and estimate reading time in real-time.",
     icon: FileText,
@@ -127,13 +134,6 @@ const textTools = [
     icon: Database,
     path: "/schema-markup-generator",
     color: "bg-indigo-500 dark:bg-indigo-600",
-  },
-  {
-    name: "AI Content Optimizer",
-    description: "Generate SEO titles, tags, hashtags, and a viral caption from any topic — instantly.",
-    icon: Sparkles,
-    path: "/ai-content-optimizer",
-    color: "bg-violet-500 dark:bg-violet-600",
   },
   {
     name: "AI Humanizer",
